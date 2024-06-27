@@ -25,14 +25,12 @@ public class InvButton extends GuiButton implements IColorsGui {
         parent = parentGui;
     }
 
-    // @Override
-    // public void onPress() {
-    // MainScreen.open();
-    // }
-
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
+            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
+                && mouseX < this.xPosition + this.width
+                && mouseY < this.yPosition + this.height;
             SoundMuffler.renderGui();
             func_146110_a(xPosition, yPosition, 43f, 202f, 11, 11, 256, 256);
             if (func_146115_a() && !hold) {
@@ -59,7 +57,7 @@ public class InvButton extends GuiButton implements IColorsGui {
                 return true;
             }
         }
-        return false;/* super.mousePressed(mc, mouseX, mouseY); */
+        return false;
     }
 
     @Override

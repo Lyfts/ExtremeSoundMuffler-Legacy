@@ -28,7 +28,6 @@ public class Config {
     }
 
     private static void buildConfig() {
-
         forbiddenSounds = config.getStringList(
             "forbiddenSounds",
             CATEGORY_GENERAL,
@@ -110,6 +109,7 @@ public class Config {
 
     public static void setInvButtonHorizontal(int invButtonHorizontal) {
         Config.invButtonHorizontal = invButtonHorizontal;
+        config.save();
     }
 
     static int getInvButtonVertical() {
@@ -118,5 +118,6 @@ public class Config {
 
     public static void setInvButtonVertical(int invButtonVertical) {
         Config.invButtonVertical = invButtonVertical;
+        config.save();
     }
 }

@@ -1,47 +1,35 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
 
-public class PlaySoundButton extends GuiButton {
+import com.leobeliik.extremesoundmuffler.utils.ESMButton;
 
-    private final ISound sound;
+public class PlaySoundButton extends ESMButton {
+
+    private final ResourceLocation sound;
     private static boolean isFromPSB = false;
 
-    PlaySoundButton(int x, int y, ISound sound) {
+    PlaySoundButton(int x, int y, ResourceLocation sound) {
         super(0, x, y, 10, 10, "");
-        // this.setAlpha(0);
         this.sound = sound;
     }
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        this.func_146113_a(mc.getSoundHandler());
         return false;
     }
 
-    // @Override
-    // public void playDownSound(SoundManager soundHandler) {
-    // isFromPSB = true;
-    // soundHandler.play(SimpleSoundInstance.forUI(this.sound, 1.0F));
-    // isFromPSB = false;
-    // //it maybe a mess but it does prevent to sounds to get muted when they're player from this button
-    // }
-
     public void func_146113_a(SoundHandler soundHandlerIn) {
         isFromPSB = true;
-        soundHandlerIn.playSound(sound);
+        soundHandlerIn.playSound(PositionedSoundRecord.func_147673_a(sound));
         isFromPSB = false;
-        // it maybe a mess but it does prevent to sounds to get muted when they're player from this button
     }
 
     public static boolean isFromPSB() {
         return isFromPSB;
     }
-
-    // @Override
-    // public void updateNarration(NarrationElementOutput elementOutput) {
-    // elementOutput.add(NarratedElementType.TITLE, this.createNarrationMessage());
-    // }
 }

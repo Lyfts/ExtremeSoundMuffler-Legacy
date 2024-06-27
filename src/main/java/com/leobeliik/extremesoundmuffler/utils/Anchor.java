@@ -7,11 +7,13 @@ import java.util.TreeMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.DimensionManager;
 
-@SuppressWarnings("WeakerAccess")
+import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
+
 public class Anchor {
 
     private final int id;
@@ -134,17 +136,18 @@ public class Anchor {
 
     public static Anchor getAnchor(ISound sound) {
 
-        // BlockPos soundPos = new BlockPos(sound.getX(), sound.getY(), sound.getZ());
-        // for (Anchor anchor : ISoundLists.anchorList) {
-        // ClientLevel world = Minecraft.getInstance().level;
-        // if (anchor.getAnchorPos() != null
-        // && world != null
-        // && world.dimension().location().equals(anchor.getDimension())
-        // && soundPos.closerThan(anchor.getAnchorPos(), anchor.getRadius())
-        // && anchor.getMuffledSounds().containsKey(sound.getLocation())) {
-        // return anchor;
-        // }
-        // }
+        Vec3 soundPos = Vec3.createVectorHelper(sound.getXPosF(), sound.getYPosF(), sound.getZPosF());
+        for (Anchor anchor : ISoundLists.anchorList) {
+            WorldClient world = Minecraft.getMinecraft().theWorld;
+            if (anchor.getAnchorPos() != null && world != null
+                && world.provider.getDimensionName()
+                    .equals(anchor.getDimension())
+                && soundPos.distanceTo(anchor.getAnchorPos()) < anchor.getRadius()
+                && anchor.getMuffledSounds()
+                    .containsKey(new ComparableResource(sound.getPositionedSoundLocation()))) {
+                return anchor;
+            }
+        }
         return null;
     }
 }

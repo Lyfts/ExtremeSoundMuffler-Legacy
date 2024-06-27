@@ -6,8 +6,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,10 +22,13 @@ import cpw.mods.fml.common.FMLCommonHandler;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class DataManager implements ISoundLists {
 
+    public static String identifier;
+
     private static final Gson gson = new GsonBuilder().setPrettyPrinting()
         .create();
 
-    public static void loadData() {
+    public static void loadData(String address) {
+        identifier = getIdentifier(address);
         loadMuffledMap().forEach((R, F) -> muffledSounds.put(new ComparableResource(R), F));
         if (!Config.getDisableAchors()) {
             anchorList.clear();
@@ -41,17 +44,17 @@ public class DataManager implements ISoundLists {
         }
     }
 
-    private static String getWorldName() {
-        MinecraftServer server = FMLCommonHandler.instance()
-            .getMinecraftServerInstance();
-        return "test";
-        // if (server != null) {
-        // return server.getWorldName();
-        //// } else if (Minecraft.getMinecraft().isSingleplayer()) {
-        //// return server.getWorldName();
-        // } else {
-        // return "ServerWorld";
-        // }
+    private static String getIdentifier(String address) {
+        if (Minecraft.getMinecraft()
+            .isSingleplayer()) {
+            return FMLCommonHandler.instance()
+                .getMinecraftServerInstance()
+                .getFolderName();
+        }
+
+        int index = address.indexOf("/") + 1;
+        return address.substring(index)
+            .replace(":", ".");
     }
 
     private static NBTTagCompound serializeAnchor(Anchor anchor) {
@@ -121,9 +124,9 @@ public class DataManager implements ISoundLists {
     }
 
     private static void saveAnchors() {
-        new File("ESM/", getWorldName()).mkdirs();
+        new File("ESM/", identifier).mkdirs();
         try (Writer writer = new OutputStreamWriter(
-            new FileOutputStream("ESM/" + getWorldName() + "/anchors.dat"),
+            new FileOutputStream("ESM/" + identifier + "/anchors.dat"),
             StandardCharsets.UTF_8)) {
             writer.write(gson.toJson(anchorList));
         } catch (IOException ignored) {}
@@ -131,7 +134,7 @@ public class DataManager implements ISoundLists {
 
     private static List<Anchor> loadAnchors() {
         try (InputStreamReader reader = new InputStreamReader(
-            new FileInputStream("ESM/" + getWorldName() + "/anchors.dat"),
+            new FileInputStream("ESM/" + identifier + "/anchors.dat"),
             StandardCharsets.UTF_8)) {
             return gson.fromJson(new JsonReader(reader), new TypeToken<List<Anchor>>() {}.getType());
         } catch (JsonSyntaxException | IOException ignored) {

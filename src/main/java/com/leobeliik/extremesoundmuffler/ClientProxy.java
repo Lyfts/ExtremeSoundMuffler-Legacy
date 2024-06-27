@@ -25,7 +25,6 @@ public class ClientProxy extends CommonProxy {
         ISoundLists.forbiddenSounds.addAll(
             Arrays.stream(Config.getForbiddenSounds())
                 .collect(Collectors.toList()));
-        // Config.init(event.getSuggestedConfigurationFile());
     }
 
     public void init(FMLInitializationEvent event) {

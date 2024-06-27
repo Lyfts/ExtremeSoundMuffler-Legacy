@@ -27,15 +27,12 @@ import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// @Mod("extremesoundmuffler")
 @Mod(
     modid = SoundMuffler.MODID,
     version = Tags.VERSION,
     name = SoundMuffler.MODNAME,
     acceptedMinecraftVersions = "[1.7.10]",
-    // guiFactory = "com.caedis.duradisplay.config.GuiFactory",
     acceptableRemoteVersions = "*")
-// dependencies = "after:gregtech@[5.09.43.63,);" + " after:EnderIO@[2.4.18,);")
 public class SoundMuffler {
 
     public static final String MODID = "extremesoundmuffler";
@@ -46,14 +43,6 @@ public class SoundMuffler {
         serverSide = "com.leobeliik.extremesoundmuffler.CommonProxy",
         clientSide = "com.leobeliik.extremesoundmuffler.ClientProxy")
     public static CommonProxy proxy;
-
-    // public SoundMuffler() {
-
-    // ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class,
-    // () -> new IExtensionPoint.DisplayTest(() -> "", (a, b) -> true));
-
-    // ISoundLists.forbiddenSounds.addAll(Config.getForbiddenSounds());
-    // }
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
@@ -74,38 +63,25 @@ public class SoundMuffler {
         proxy.postInit(event);
     }
 
-    // private void clientInit(final FMLClientSetupEvent event) {
-    // openMufflerScreen = new KeyMapping(
-    // "Open sound muffler screen",
-    // KeyConflictContext.IN_GAME,
-    // InputConstants.UNKNOWN,
-    // "key.categories.misc");
-    // ClientRegistry.registerKeyBinding(openMufflerScreen);
-    // }
-
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onPlayerLoggin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        DataManager.loadData();
+        DataManager.loadData(
+            event.manager.getSocketAddress()
+                .toString());
     }
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
         GuiScreen screen = event.gui;
-        if (Config.getDisableInventoryButton()
-            || screen instanceof GuiContainerCreative /* || event.getWidgetList() == null */) {
+        if (Config.getDisableInventoryButton() || screen instanceof GuiContainerCreative) {
             return;
         }
         try {
-            if (screen instanceof InventoryEffectRenderer) {
-                event.buttonList.add(
-                    new InvButton(
-                        (InventoryEffectRenderer) screen,
-                        Config.getInvButtonHorizontal() + 50,
-                        Config.getInvButtonVertical()));
-                // event.addWidget(new InvButton((AbstractContainerScreen) screen, Config.getInvButtonHorizontal(),
-                // Config.getInvButtonVertical()));
+            if (screen instanceof InventoryEffectRenderer inv) {
+                event.buttonList
+                    .add(new InvButton(inv, Config.getInvButtonHorizontal(), Config.getInvButtonVertical()));
             }
         } catch (NullPointerException e) {
             LOGGER.error(
@@ -128,7 +104,5 @@ public class SoundMuffler {
     public static void renderGui() {
         String texture = Config.useDarkTheme() ? "textures/gui/sm_gui_dark.png" : "textures/gui/sm_gui.png";
         Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(SoundMuffler.MODID, texture));
-        // RenderSystem.setShaderTexture(0, (new ResourceLocation(SoundMuffler.MODID, texture)));
     }
-
 }

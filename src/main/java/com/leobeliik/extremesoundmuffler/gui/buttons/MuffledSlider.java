@@ -1,13 +1,16 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
 
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
@@ -16,27 +19,32 @@ import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
 import com.leobeliik.extremesoundmuffler.utils.ComparableResource;
+import com.leobeliik.extremesoundmuffler.utils.ESMButton;
 
 @SuppressWarnings("EmptyMethod")
 public class MuffledSlider extends GuiButton implements ISoundLists, IColorsGui {
 
     private final String mainTitle = "ESM - Main Screen";
-    private double sliderValue;
+    private final String screenTitle;
+    private final Anchor anchor;
+    private float sliderValue;
     private GuiButton btnToggleSound;
     private PlaySoundButton btnPlaySound;
     private final ComparableResource sound;
     public static ResourceLocation tickSound;
     public static boolean showSlider = false;
     private boolean isDragging;
+    private final List<GuiButton> subButtons = new ArrayList<>();
 
-    public MuffledSlider(int x, int y, int width, int height, double sliderValue, ComparableResource sound,
+    public MuffledSlider(int x, int y, int width, int height, float sliderValue, ComparableResource sound,
         String screenTitle, Anchor anchor) {
         super(0, x, y, width, height, sound.getResourceDomain() + ":" + sound.getResourcePath());
         this.sliderValue = sliderValue;
         this.sound = sound;
-        setBtnToggleSound(screenTitle, sound, anchor);
-        setBtnPlaySound(sound);
+        this.screenTitle = screenTitle;
+        this.anchor = anchor;
         packedFGColour = whiteText;
+        refreshButtons();
     }
 
     @Override
@@ -46,11 +54,18 @@ public class MuffledSlider extends GuiButton implements ISoundLists, IColorsGui 
         this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
             && mouseX < this.xPosition + this.width
             && mouseY < this.yPosition + this.height;
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
         drawGradient();
-        float v = packedFGColour == whiteText ? 213F : 202F;
-        func_146110_a(btnToggleSound.xPosition, btnToggleSound.yPosition, 43f, v, 11, 11, 256, 256); // muffle button bg
-        func_146110_a(btnPlaySound.xPosition, btnPlaySound.yPosition, 32f, 202f, 11, 11, 256, 256); // play button bg
+        int v = packedFGColour == whiteText ? 213 : 202;
+        drawTexturedModalRect(btnToggleSound.xPosition, btnToggleSound.yPosition, 43, v, 11, 11);
+        drawTexturedModalRect(btnPlaySound.xPosition, btnPlaySound.yPosition, 32, 202, 11, 11);
         this.drawMessage(mc);
+
+        for (GuiButton button : subButtons) {
+            button.drawButton(mc, mouseX, mouseY);
+        }
+
         this.mouseDragged(mc, mouseX, mouseY);
     }
 
@@ -104,55 +119,45 @@ public class MuffledSlider extends GuiButton implements ISoundLists, IColorsGui 
                     256,
                     256); // Slider
             }
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
-    private void setBtnToggleSound(String screenTitle, ResourceLocation sound, Anchor anchor) {
+    public void refreshButtons() {
+        subButtons.clear();
         int x = Config.getLeftButtons() ? this.xPosition - 24 : this.xPosition + width + 5;
-        ComparableResource soundResource = new ComparableResource(sound);
-        btnToggleSound = new GuiButton(0, x, this.yPosition, 11, 11, "") {
-
-            @Override
-            public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-                if (!super.mousePressed(mc, mouseX, mouseY)) return false;
-                if (packedFGColour == cyanText) {
-                    if (screenTitle.equals(mainTitle)) {
-                        muffledSounds.remove(soundResource);
-                    } else {
-                        anchor.removeSound(soundResource);
-                    }
-                    packedFGColour = whiteText;
-                    return true;
-                } else {
-                    if (screenTitle.equals(mainTitle)) {
-                        setSliderValue(Config.getDefaultMuteVolume());
-                        muffledSounds.put(soundResource, (float) sliderValue);
-                        return true;
-                    } else if (anchor.getAnchorPos() != null) {
-                        setSliderValue(Config.getDefaultMuteVolume());
-                        anchor.addSound(soundResource, (float) sliderValue);
-                        return true;
-                    }
-
-                    return false;
-                }
-            }
-        };
+        btnToggleSound = new ESMButton(0, x, this.yPosition, 11, 11, "", this::toggleSound);
+        btnPlaySound = new PlaySoundButton(btnToggleSound.xPosition + 12, this.yPosition, sound);
+        subButtons.add(btnToggleSound);
+        subButtons.add(btnPlaySound);
     }
 
     public GuiButton getBtnToggleSound() {
         return btnToggleSound;
     }
 
-    private void setBtnPlaySound(ResourceLocation sound) {
-        btnPlaySound = new PlaySoundButton(
-            btnToggleSound.xPosition + 12,
-            this.yPosition,
-            PositionedSoundRecord.func_147673_a(sound));
-    }
-
     public PlaySoundButton getBtnPlaySound() {
         return btnPlaySound;
+    }
+
+    private void toggleSound() {
+        if (packedFGColour == cyanText) {
+            if (screenTitle.equals(mainTitle)) {
+                muffledSounds.remove(sound);
+            } else {
+                anchor.removeSound(sound);
+            }
+            packedFGColour = whiteText;
+        } else {
+            if (screenTitle.equals(mainTitle)) {
+                setSliderValue(Config.getDefaultMuteVolume());
+                muffledSounds.put(sound, sliderValue);
+            } else if (anchor.getAnchorPos() != null) {
+                setSliderValue(Config.getDefaultMuteVolume());
+                anchor.addSound(sound, sliderValue);
+            }
+            packedFGColour = cyanText;
+        }
     }
 
     // @Override
@@ -170,7 +175,7 @@ public class MuffledSlider extends GuiButton implements ISoundLists, IColorsGui 
     }
 
     private void setSliderValue(float value) {
-        this.sliderValue = MathHelper.clamp_double(value, 0.0F, 1F);
+        this.sliderValue = MathHelper.clamp_float(value, 0.0F, 1F);
         updateVolume();
     }
 
@@ -184,18 +189,31 @@ public class MuffledSlider extends GuiButton implements ISoundLists, IColorsGui 
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        if (!visible || !enabled) return false;
+        for (GuiButton button : subButtons) {
+            if (!button.func_146115_a()) continue;
+            button.mousePressed(mc, mouseX, mouseY);
+        }
+
         if (super.mousePressed(mc, mouseX, mouseY)) {
-            // this.changeSliderValue((float) mouseX);
             isDragging = true;
             showSlider = true;
             tickSound = this.sound;
             return true;
         }
+
         return false;
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY) {
+        if (!visible || !enabled) return;
+
+        for (GuiButton button : subButtons) {
+            if (!button.func_146115_a()) continue;
+            button.mouseReleased(mouseX, mouseY);
+        }
+
         isDragging = false;
         super.mouseReleased(mouseX, mouseY);
     }
@@ -204,10 +222,10 @@ public class MuffledSlider extends GuiButton implements ISoundLists, IColorsGui 
         String screenTitle = MainScreen.getScreenTitle();
 
         if (screenTitle.equals(mainTitle)) {
-            muffledSounds.replace(this.sound, (float) this.sliderValue);
+            muffledSounds.replace(this.sound, this.sliderValue);
         } else {
             Objects.requireNonNull(MainScreen.getAnchorByName(screenTitle))
-                .replaceSound(this.sound, (float) this.sliderValue);
+                .replaceSound(this.sound, this.sliderValue);
         }
     }
 }
