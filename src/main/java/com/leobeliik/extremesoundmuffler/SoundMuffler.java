@@ -1,100 +1,134 @@
 package com.leobeliik.extremesoundmuffler;
 
-import com.leobeliik.extremesoundmuffler.gui.MainScreen;
-import com.leobeliik.extremesoundmuffler.gui.buttons.InvButton;
-import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
-import com.leobeliik.extremesoundmuffler.utils.DataManager;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
+import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.IExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmlclient.registry.ClientRegistry;
-import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.commons.lang3.tuple.Pair;
 
-@Mod("extremesoundmuffler")
+import com.leobeliik.extremesoundmuffler.gui.MainScreen;
+import com.leobeliik.extremesoundmuffler.gui.buttons.InvButton;
+import com.leobeliik.extremesoundmuffler.utils.DataManager;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+// @Mod("extremesoundmuffler")
+@Mod(
+    modid = SoundMuffler.MODID,
+    version = Tags.VERSION,
+    name = SoundMuffler.MODNAME,
+    acceptedMinecraftVersions = "[1.7.10]",
+    // guiFactory = "com.caedis.duradisplay.config.GuiFactory",
+    acceptableRemoteVersions = "*")
+// dependencies = "after:gregtech@[5.09.43.63,);" + " after:EnderIO@[2.4.18,);")
 public class SoundMuffler {
 
-    static final String MODID = "extremesoundmuffler";
-    private static KeyMapping openMufflerScreen;
+    public static final String MODID = "extremesoundmuffler";
+    public static final String MODNAME = "Extreme Sound Muffler";
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SoundMuffler() {
+    @SidedProxy(
+        serverSide = "com.leobeliik.extremesoundmuffler.CommonProxy",
+        clientSide = "com.leobeliik.extremesoundmuffler.ClientProxy")
+    public static CommonProxy proxy;
+
+    // public SoundMuffler() {
+
+    // ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class,
+    // () -> new IExtensionPoint.DisplayTest(() -> "", (a, b) -> true));
+
+    // ISoundLists.forbiddenSounds.addAll(Config.getForbiddenSounds());
+    // }
+
+    @Mod.EventHandler
+    public void onPreInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
-        Config.init();
-
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class,
-                () -> new IExtensionPoint.DisplayTest(() -> "", (a, b) -> true));
-
-        ISoundLists.forbiddenSounds.addAll(Config.getForbiddenSounds());
+        FMLCommonHandler.instance()
+            .bus()
+            .register(this);
+        proxy.preInit(event);
     }
 
-    private void clientInit(final FMLClientSetupEvent event) {
-        openMufflerScreen = new KeyMapping(
-                "Open sound muffler screen",
-                KeyConflictContext.IN_GAME,
-                InputConstants.UNKNOWN,
-                "key.categories.misc");
-        ClientRegistry.registerKeyBinding(openMufflerScreen);
+    @Mod.EventHandler
+    public void onInit(FMLInitializationEvent event) {
+        proxy.init(event);
     }
+
+    @Mod.EventHandler
+    public void onPostInit(FMLPostInitializationEvent event) {
+        proxy.postInit(event);
+    }
+
+    // private void clientInit(final FMLClientSetupEvent event) {
+    // openMufflerScreen = new KeyMapping(
+    // "Open sound muffler screen",
+    // KeyConflictContext.IN_GAME,
+    // InputConstants.UNKNOWN,
+    // "key.categories.misc");
+    // ClientRegistry.registerKeyBinding(openMufflerScreen);
+    // }
 
     @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
-    public void onPlayerLoggin(ClientPlayerNetworkEvent.LoggedInEvent event) {
+    @SideOnly(Side.CLIENT)
+    public void onPlayerLoggin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         DataManager.loadData();
     }
 
     @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
+    @SideOnly(Side.CLIENT)
     public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
-        Screen screen = event.getGui();
-        if (Config.getDisableInventoryButton() || screen instanceof CreativeModeInventoryScreen || event.getWidgetList() == null) {
+        GuiScreen screen = event.gui;
+        if (Config.getDisableInventoryButton()
+            || screen instanceof GuiContainerCreative /* || event.getWidgetList() == null */) {
             return;
         }
         try {
-            if (screen instanceof EffectRenderingInventoryScreen) {
-                event.addWidget(new InvButton((AbstractContainerScreen) screen, Config.getInvButtonHorizontal(), Config.getInvButtonVertical()));
+            if (screen instanceof InventoryEffectRenderer) {
+                event.buttonList.add(
+                    new InvButton(
+                        (InventoryEffectRenderer) screen,
+                        Config.getInvButtonHorizontal() + 50,
+                        Config.getInvButtonVertical()));
+                // event.addWidget(new InvButton((AbstractContainerScreen) screen, Config.getInvButtonHorizontal(),
+                // Config.getInvButtonVertical()));
             }
         } catch (NullPointerException e) {
-            LOGGER.error("Extreme sound muffler: Error trying to add the muffler button in the player's inventory. \n" + e);
+            LOGGER.error(
+                "Extreme sound muffler: Error trying to add the muffler button in the player's inventory. \n" + e);
         }
     }
 
     @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
+    @SideOnly(Side.CLIENT)
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        if (openMufflerScreen.consumeClick()) {
+        if (ClientProxy.openMufflerScreen.isPressed()) {
             MainScreen.open();
         }
     }
 
     public static int getHotkey() {
-        return openMufflerScreen.getKey().getValue();
+        return ClientProxy.openMufflerScreen.getKeyCode();
     }
 
     public static void renderGui() {
         String texture = Config.useDarkTheme() ? "textures/gui/sm_gui_dark.png" : "textures/gui/sm_gui.png";
-        RenderSystem.setShaderTexture(0, (new ResourceLocation(SoundMuffler.MODID, texture)));
+        Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(SoundMuffler.MODID, texture));
+        // RenderSystem.setShaderTexture(0, (new ResourceLocation(SoundMuffler.MODID, texture)));
     }
 
 }
