@@ -1,0 +1,23 @@
+{
+  "modListVersion": 2,
+  "modList": [
+    {
+      "modid": "${modId}",
+      "name": "${modName}",
+      "description": "Muffle those nasty sounds",
+      "version": "${modVersion}",
+      "mcversion": "${minecraftVersion}",
+      "url": "",
+      "updateUrl": "",
+      "authorList": [
+        "LeoBeliik",
+        "Lyft"
+      ],
+      "credits": "",
+      "logoFile": "esm_logo.png",
+      "screenshots": [],
+      "parent": "",
+      "dependencies": []
+    }
+  ]
+}

@@ -32,11 +32,12 @@ import cpw.mods.fml.relauncher.SideOnly;
     version = Tags.VERSION,
     name = SoundMuffler.MODNAME,
     acceptedMinecraftVersions = "[1.7.10]",
-    acceptableRemoteVersions = "*")
+    acceptableRemoteVersions = "*",
+    guiFactory = "com.leobeliik.extremesoundmuffler.GuiFactory")
 public class SoundMuffler {
 
     public static final String MODID = "extremesoundmuffler";
-    public static final String MODNAME = "Extreme Sound Muffler";
+    public static final String MODNAME = "Extreme Sound Muffler Legacy";
     private static final Logger LOGGER = LogManager.getLogger();
 
     @SidedProxy(

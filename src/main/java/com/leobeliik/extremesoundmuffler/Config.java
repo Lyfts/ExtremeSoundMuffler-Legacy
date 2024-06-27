@@ -2,11 +2,14 @@ package com.leobeliik.extremesoundmuffler;
 
 import net.minecraftforge.common.config.Configuration;
 
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class Config {
 
-    private static Configuration config;
+    public static Configuration config;
     private static String[] forbiddenSounds;
     private static boolean lawfulAllList;
     private static boolean disableInventoryButton;
@@ -25,6 +28,9 @@ public class Config {
         config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
         buildConfig();
+        FMLCommonHandler.instance()
+            .bus()
+            .register(new Config());
     }
 
     private static void buildConfig() {
@@ -69,6 +75,7 @@ public class Config {
             Integer.MAX_VALUE,
             "Coordinates for the Muffler button in the player inventory. You can change this in game by holding the RMB over the button and draging it around");
         disableAnchors = config.getBoolean("disableAnchors", CATEGORY_ANCHORS, false, "Disable the Anchors?");
+        config.save();
     }
 
     static boolean getDisableInventoryButton() {
@@ -119,5 +126,12 @@ public class Config {
     public static void setInvButtonVertical(int invButtonVertical) {
         Config.invButtonVertical = invButtonVertical;
         config.save();
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+        if (event.modID.equals(SoundMuffler.MODID)) {
+            buildConfig();
+        }
     }
 }
