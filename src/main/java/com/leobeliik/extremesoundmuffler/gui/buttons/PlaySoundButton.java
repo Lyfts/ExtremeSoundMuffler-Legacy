@@ -5,8 +5,6 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.util.ResourceLocation;
 
-import com.leobeliik.extremesoundmuffler.utils.ESMButton;
-
 public class PlaySoundButton extends ESMButton {
 
     private final ResourceLocation sound;

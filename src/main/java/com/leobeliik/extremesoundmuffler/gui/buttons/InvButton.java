@@ -1,7 +1,6 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
@@ -10,13 +9,8 @@ import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+public class InvButton extends ESMButton implements IColorsGui {
 
-@SideOnly(Side.CLIENT)
-public class InvButton extends GuiButton implements IColorsGui {
-
-    private final Minecraft minecraft = Minecraft.getMinecraft();
     private final GuiContainer parent;
     private boolean hold = false;
 
@@ -27,19 +21,11 @@ public class InvButton extends GuiButton implements IColorsGui {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        if (this.visible) {
-            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
-                && mouseX < this.xPosition + this.width
-                && mouseY < this.yPosition + this.height;
+        if (visible) {
             SoundMuffler.renderGui();
-            func_146110_a(xPosition, yPosition, 43f, 202f, 11, 11, 256, 256);
-            if (func_146115_a() && !hold) {
-                drawCenteredString(
-                    minecraft.fontRenderer,
-                    "Muffler",
-                    xPosition + 5,
-                    this.yPosition + this.height + 1,
-                    whiteText);
+            drawTexturedModalRect(xPosition, yPosition, 43, 202, 11, 11);
+            if (isMouseOver(mouseX, mouseY) && !hold) {
+                drawCenteredString(mc.fontRenderer, "Muffler", xPosition + 5, yPosition + height + 1, whiteText);
             }
             if (hold) {
                 drag(mouseX, mouseY);
@@ -50,19 +36,19 @@ public class InvButton extends GuiButton implements IColorsGui {
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
         if (super.mousePressed(mc, mouseX, mouseY)) {
-            if (GuiScreen.isCtrlKeyDown() && func_146115_a()) {
+            if (GuiScreen.isCtrlKeyDown() && isMouseOver(mouseX, mouseY)) {
                 hold = true;
             } else {
                 MainScreen.open();
-                return true;
             }
+            return true;
         }
         return false;
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY) {
-        if (GuiScreen.isCtrlKeyDown() && func_146115_a()) {
+        if (hold) {
             hold = false;
             Config.setInvButtonHorizontal(xPosition - parent.guiLeft);
             Config.setInvButtonVertical(yPosition - parent.guiTop);
