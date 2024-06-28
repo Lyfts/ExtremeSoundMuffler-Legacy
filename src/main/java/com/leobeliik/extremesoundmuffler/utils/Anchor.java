@@ -114,7 +114,7 @@ public class Anchor {
 
     public void setAnchor() {
         EntityClientPlayerMP player = Objects.requireNonNull(Minecraft.getMinecraft().thePlayer);
-        setAnchorPos(player.serverPosX, player.serverPosY, player.serverPosZ);
+        setAnchorPos((int) player.posX, (int) player.posY, (int) player.posZ);
         setDimension(
             DimensionManager.getProvider(player.dimension)
                 .getDimensionName());
