@@ -2,7 +2,7 @@
   "required": true,
   "package": "com.leobeliik.extremesoundmuffler.mixins",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "extremesoundmuffler.refmap.json",
+  "refmap": "mixins.extremesoundmuffler.refmap.json",
   "minVersion": "0.8",
   "client": [
     "minecraft.SoundMixin"

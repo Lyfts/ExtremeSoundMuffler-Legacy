@@ -31,8 +31,8 @@ public abstract class SoundMixin implements ISoundLists {
         return false;
     }
 
-    @ModifyReturnValue(method = "getNormalizedVolume", at = @At("RETURN"), remap = false)
-    private float extremeSoundMuffler$checkSound(float original, @Local(ordinal = 0, argsOnly = true) ISound sound) {
+    @ModifyReturnValue(method = "getNormalizedVolume", at = @At("RETURN"))
+    private float checkSound(float original, @Local(ordinal = 0, argsOnly = true) ISound sound) {
         if (extremeSoundMuffler$isForbidden(sound) || PlaySoundButton.isFromPSB()) {
             return original;
         }
