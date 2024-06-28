@@ -79,7 +79,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
 
             if (icon != null) {
                 SoundMuffler.renderGui();
-                Icon.drawIcon(xPosition, yPosition, iconWidth, iconHeight, icon);
+                icon.draw(xPosition, yPosition, iconWidth, iconHeight);
             }
         }
 

@@ -20,7 +20,7 @@ public enum Icon {
         this.v = y;
     }
 
-    public static void drawIcon(int x, int y, int width, int height, Icon icon) {
-        GuiUtils.drawTexturedModalRect(x, y, icon.u, icon.v, width, height, 0);
+    public void draw(int x, int y, int width, int height) {
+        GuiUtils.drawTexturedModalRect(x, y, u, v, width, height, 0);
     }
 }

@@ -112,10 +112,10 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     }
 
     private void drawSubButtons(Minecraft mc, int mouseX, int mouseY) {
+        btnToggleSound.setIcon(muffled ? MUFFLE_ON : MUFFLE_OFF);
         for (GuiButton button : subButtons) {
             button.drawButton(mc, mouseX, mouseY);
         }
-        btnToggleSound.setIcon(muffled ? MUFFLE_ON : MUFFLE_OFF);
     }
 
     public void refreshButtons() {
