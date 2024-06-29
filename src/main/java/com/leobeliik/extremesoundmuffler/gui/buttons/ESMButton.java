@@ -115,7 +115,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     }
 
     public ESMButton setVisible(BooleanSupplier supplier) {
-        this.visible = supplier.getAsBoolean();
+        this.visibilitySupplier = supplier;
         return this;
     }
 
@@ -168,7 +168,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     }
 
     public boolean isVisible() {
-        return visible || (visibilitySupplier != null && visibilitySupplier.getAsBoolean());
+        return visible && (visibilitySupplier == null || visibilitySupplier.getAsBoolean());
     }
 
     public boolean isMouseOver(int mouseX, int mouseY) {

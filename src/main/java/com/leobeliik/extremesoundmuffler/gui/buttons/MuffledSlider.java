@@ -136,16 +136,20 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
             } else {
                 anchor.removeSound(sound);
             }
+            setMuffled(false);
         } else {
+            boolean didMuffle = false;
             if (MainScreen.isMain()) {
                 setSliderValue(Config.getDefaultMuteVolume());
                 muffledSounds.put(sound, sliderValue);
+                didMuffle = true;
             } else if (anchor.getAnchorPos() != null) {
                 setSliderValue(Config.getDefaultMuteVolume());
                 anchor.addSound(sound, sliderValue);
+                didMuffle = true;
             }
+            setMuffled(didMuffle);
         }
-        setMuffled(!muffled);
     }
 
     private void changeSliderValue(float mouseX) {
@@ -154,13 +158,17 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
 
     private void setSliderValue(float value) {
         sliderValue = MathHelper.clamp_float(value, 0.0F, 1F);
-        updateVolume();
+        if (sliderValue == 1F) {
+            toggleSound();
+        } else {
+            updateVolume();
+        }
     }
 
     @Override
     protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
         if (isDragging) {
-            if (!muffled) toggleSound();
+            if (!muffled && canMuffle()) toggleSound();
             changeSliderValue((float) mouseX);
         }
         super.mouseDragged(mc, mouseX, mouseY);
@@ -168,7 +176,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        if (!visible || !enabled) return false;
+        if (!isVisible() || !enabled) return false;
         for (ESMButton button : subButtons) {
             if (!button.isMouseOver(mouseX, mouseY)) continue;
             button.mousePressed(mc, mouseX, mouseY);
@@ -186,7 +194,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
 
     @Override
     public void mouseReleased(int mouseX, int mouseY) {
-        if (!visible || !enabled) return;
+        if (!isVisible() || !enabled) return;
 
         for (ESMButton button : subButtons) {
             if (!button.isMouseOver(mouseX, mouseY)) continue;
@@ -209,5 +217,9 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     public MuffledSlider setMuffled(boolean muffled) {
         this.muffled = muffled;
         return this;
+    }
+
+    private boolean canMuffle() {
+        return MainScreen.isMain() || anchor.getAnchorPos() != null;
     }
 }
