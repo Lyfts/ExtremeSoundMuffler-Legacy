@@ -4,18 +4,9 @@
 name: Release tagged build
 
 on:
-  workflow_call:
-    secrets:
-      CURSEFORGE_TOKEN:
-        required: false
-      MODRINTH_TOKEN:
-        required: false
-    inputs:
-      workspace:
-        description: 'setupCIWorkspace/setupDecompWorkspace'
-        required: false
-        default: "setupCIWorkspace"
-        type: string
+  push:
+    tags: [ '*' ]
+  workflow_dispatch:
 
 jobs:
   build:
