@@ -15,14 +15,14 @@
 
     2. Click on the button next to the sound you want to muffle.
 
-    3.  Optional: set the volume of the sound dragging the slider around.
+    3. Optional: Set the volume of the sound dragging the slider around.
 
-    4. Optional: press the play button to be sure that's the sound you want to muffle.
+    4. Optional: Press the play button to be sure that's the sound you want to muffle.
 
     5. Enjoy peace.
 
 ## What about Anchors?
-#### Anchors are ranged mufflers, for when you want to muffle a sound on a small area.
+#### Anchors are ranged mufflers, for when you want to muffle a sound in a small area.
 
     1. Open your ESM Screen
 
@@ -39,7 +39,7 @@
 ## Inventory button
 
 #### if you don't like the ESM muffler in the inventory, you can disable it in the config.
-#### if you don't like the position of the button, you can hold right mouse button over the muffler button and drag it wherever you want.
+#### if you don't like the position of the button, you can hold CTRL + left mouse button over the muffler button and drag it wherever you want.
 
 ## Most things are configurable! like:
 
