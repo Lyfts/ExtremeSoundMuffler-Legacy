@@ -21,33 +21,29 @@ public class Anchor {
     private String dimension;
     private int radius;
     private SortedMap<String, Float> muffledSounds = new TreeMap<>();
-    private int x, y, z;
+    private Vec3 anchorPos;
 
     public Anchor(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Anchor(int id, String name, int x, int y, int z, String dimension, int radius,
+    public Anchor(int id, String name, Vec3 anchorPos, String dimension, int radius,
         SortedMap<String, Float> muffledSounds) {
         this.id = id;
         this.name = name;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.anchorPos = anchorPos;
         this.dimension = dimension;
         this.radius = radius;
         this.muffledSounds = muffledSounds;
     }
 
     public Vec3 getAnchorPos() {
-        return Vec3.createVectorHelper(x, y, z);
+        return anchorPos;
     }
 
     private void setAnchorPos(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        anchorPos = Vec3.createVectorHelper(x, y, z);
     }
 
     public int getAnchorId() {
@@ -88,16 +84,16 @@ public class Anchor {
         muffledSounds.replace(sound.toString(), volume);
     }
 
-    public String getX() {
-        return String.valueOf(x);
+    public int getX() {
+        return anchorPos == null ? 0 : (int) anchorPos.xCoord;
     }
 
-    public String getY() {
-        return String.valueOf(y);
+    public int getY() {
+        return anchorPos == null ? 0 : (int) anchorPos.yCoord;
     }
 
-    public String getZ() {
-        return String.valueOf(z);
+    public int getZ() {
+        return anchorPos == null ? 0 : (int) anchorPos.zCoord;
     }
 
     public String getDimension() {
@@ -123,7 +119,7 @@ public class Anchor {
 
     public void deleteAnchor() {
         setName("Anchor: " + this.getAnchorId());
-        setAnchorPos(0, 0, 0);
+        anchorPos = null;
         setDimension(null);
         setRadius(0);
         muffledSounds.clear();

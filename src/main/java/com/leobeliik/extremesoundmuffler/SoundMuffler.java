@@ -38,7 +38,7 @@ public class SoundMuffler {
 
     public static final String MODID = "extremesoundmuffler";
     public static final String MODNAME = "Extreme Sound Muffler Legacy";
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     @SidedProxy(
         serverSide = "com.leobeliik.extremesoundmuffler.CommonProxy",

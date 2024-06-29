@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +18,15 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.storage.ThreadedFileIOBase;
+
+import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,6 +34,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -99,15 +109,13 @@ public class DataManager implements ISoundLists {
             muffledSounds.put(key, muffledNBT.getFloat(key));
         }
 
-        if (!nbt.hasKey("POS")) {
+        if (!nbt.hasKey("X") || !nbt.hasKey("Y") || !nbt.hasKey("Z")) {
             return new Anchor(nbt.getInteger("ID"), nbt.getString("NAME"));
         } else {
             return new Anchor(
                 nbt.getInteger("ID"),
                 nbt.getString("NAME"),
-                nbt.getInteger("X"),
-                nbt.getInteger("Y"),
-                nbt.getInteger("Z"),
+                Vec3.createVectorHelper(nbt.getInteger("X"), nbt.getInteger("Y"), nbt.getInteger("Z")),
                 nbt.getString("DIM"),
                 nbt.getInteger("RAD"),
                 muffledSounds);
@@ -134,23 +142,55 @@ public class DataManager implements ISoundLists {
     }
 
     private static void saveAnchors() {
-        new File("ESM/", identifier).mkdirs();
-        try (Writer writer = new OutputStreamWriter(
-            new FileOutputStream("ESM/" + identifier + "/anchors.dat"),
-            StandardCharsets.UTF_8)) {
-            writer.write(gson.toJson(anchorList));
-        } catch (IOException ignored) {}
+        File file = new File("ESM/" + identifier, "anchor.dat");
+        NBTTagCompound anchorsNBT = new NBTTagCompound();
+        for (Anchor anchor : anchorList) {
+            anchorsNBT.setTag("Anchor" + anchor.getAnchorId(), serializeAnchor(anchor));
+        }
+        writeNBT(file, anchorsNBT);
     }
 
     private static List<Anchor> loadAnchors() {
-        try (InputStreamReader reader = new InputStreamReader(
-            new FileInputStream("ESM/" + identifier + "/anchors.dat"),
-            StandardCharsets.UTF_8)) {
-            return gson.fromJson(new JsonReader(reader), new TypeToken<List<Anchor>>() {}.getType());
-        } catch (JsonSyntaxException | IOException ignored) {
+        File file = new File("ESM/" + identifier, "anchor.dat");
+        NBTTagCompound anchorsNBT = readNBT(file);
+        if (anchorsNBT == null) {
             return IntStream.range(0, 10)
                 .mapToObj(i -> new Anchor(i, "Anchor " + i))
                 .collect(Collectors.toList());
+        }
+
+        List<Anchor> temp = new ArrayList<>();
+        for (int i = 0; i < anchorsNBT.func_150296_c()
+            .size(); i++) {
+            temp.add(deserializeAnchor(anchorsNBT.getCompoundTag("Anchor" + i)));
+        }
+        return temp;
+    }
+
+    public static void writeNBT(File file, NBTTagCompound tag) {
+        ThreadedFileIOBase.threadedIOInstance.queueIO(() -> {
+            try (FileOutputStream stream = FileUtils.openOutputStream(file)) {
+                CompressedStreamTools.writeCompressed(tag, stream);
+            } catch (Exception ex) {
+                SoundMuffler.LOGGER.warn("Failed to save file: {}", file.getName(), ex);
+            }
+            return false;
+        });
+    }
+
+    @Nullable
+    public static NBTTagCompound readNBT(File file) {
+        if (!file.exists() || !file.isFile()) {
+            return null;
+        }
+        try (InputStream stream = FileUtils.openInputStream(file)) {
+            return CompressedStreamTools.readCompressed(stream);
+        } catch (Exception ex) {
+            try {
+                return CompressedStreamTools.read(file);
+            } catch (Exception ex1) {
+                return null;
+            }
         }
     }
 }

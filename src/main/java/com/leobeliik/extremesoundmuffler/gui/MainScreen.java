@@ -185,7 +185,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 11,
                 11,
                 () -> editTitle(Objects.requireNonNull(getAnchorByName(screenTitle))))
-                    .setVisible(() -> !isMain() && anchor.getAnchorPos() != null)
+                    .setVisible(() -> !isMain() && anchor != null && anchor.getAnchorPos() != null)
                     .setIcon(EDIT_ANCHOR));
 
         addEditAnchorButtons();
