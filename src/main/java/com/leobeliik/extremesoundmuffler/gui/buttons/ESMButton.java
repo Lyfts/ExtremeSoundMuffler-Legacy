@@ -29,6 +29,8 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     protected Icon icon;
     protected int iconWidth;
     protected int iconHeight;
+    protected int iconXOffset;
+    protected int iconYOffset;
 
     public ESMButton(int id, int x, int y, int width, int height, String displayString) {
         this(id, x, y, width, height, displayString, null);
@@ -79,7 +81,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
 
             if (icon != null) {
                 SoundMuffler.renderGui();
-                icon.draw(xPosition, yPosition, iconWidth, iconHeight);
+                icon.draw(xPosition + iconXOffset, yPosition + iconYOffset, iconWidth, iconHeight);
             }
         }
 
@@ -152,9 +154,16 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     }
 
     public ESMButton setIcon(@Nullable Icon icon, int width, int height) {
+        setIcon(icon, 0, 0, width, height);
+        return this;
+    }
+
+    public ESMButton setIcon(@Nullable Icon icon, int xOffset, int yOffset, int width, int height) {
         this.icon = icon;
         this.iconWidth = width;
         this.iconHeight = height;
+        this.iconXOffset = xOffset;
+        this.iconYOffset = yOffset;
         return this;
     }
 

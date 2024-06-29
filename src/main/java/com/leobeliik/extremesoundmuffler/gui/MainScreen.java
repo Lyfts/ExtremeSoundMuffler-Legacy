@@ -7,7 +7,6 @@ import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE;
 import static com.leobeliik.extremesoundmuffler.utils.Icon.RESET;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -117,6 +116,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         drawCenteredString(fontRendererObj, screenTitle, getX() + 128, getY() + 8, whiteText); // Screen title
         renderButtonsTextures(mouseX, mouseY);
         super.drawScreen(mouseX, mouseY, partialTicks);
+        renderTip();
     }
 
     @Override
@@ -383,8 +383,8 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             return;
         }
 
-        btnDelete.setIcon(clearRecentSounds() ? RESET : null, 13, 13);
-        btnToggleMuffled.setIcon(isMuffling ? MUFFLE : null, 15, 15);
+        btnDelete.setIcon(clearRecentSounds() ? RESET : null, 2, 2, 13, 13);
+        btnToggleMuffled.setIcon(isMuffling ? MUFFLE : null, 1, 1, 15, 15);
 
         // Anchor coordinates and set coord button
         Anchor anchor = getAnchorByName(screenTitle);
@@ -497,18 +497,15 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             if (!textField.getVisible()) continue;
             textField.drawTextBox();
         }
-
-        // Show a tip
-        if (Config.getShowTip()) {
-            renderTips(Collections.singletonList(tip));
-        }
     }
 
     private boolean clearRecentSounds() {
         return listMode.equals(RECENT) && isShiftKeyDown();
     }
 
-    private void renderTips(List<String> tips) {
+    private void renderTip() {
+        // Show a tip
+        List<String> tips = fontRendererObj.listFormattedStringToWidth(tip, xSize);
         drawHoveringText(tips, getX() - 5, getY() + 223, fontRendererObj);
     }
 
