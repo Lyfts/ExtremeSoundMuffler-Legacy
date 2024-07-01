@@ -114,18 +114,18 @@ public class Config {
         return invButtonHorizontal;
     }
 
-    public static void setInvButtonHorizontal(int invButtonHorizontal) {
-        Config.invButtonHorizontal = invButtonHorizontal;
+    public static void setInvButtonPosition(int x, int y) {
+        Config.invButtonHorizontal = x;
+        config.get(CATEGORY_INVENTORY_BUTTON, "invButtonX", invButtonHorizontal)
+            .set(x);
+        Config.invButtonVertical = y;
+        config.get(CATEGORY_INVENTORY_BUTTON, "invButtonY", invButtonVertical)
+            .set(y);
         config.save();
     }
 
     static int getInvButtonVertical() {
         return invButtonVertical;
-    }
-
-    public static void setInvButtonVertical(int invButtonVertical) {
-        Config.invButtonVertical = invButtonVertical;
-        config.save();
     }
 
     @SubscribeEvent
