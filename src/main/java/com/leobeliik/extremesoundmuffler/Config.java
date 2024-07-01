@@ -66,14 +66,14 @@ public class Config {
             75,
             Integer.MIN_VALUE,
             Integer.MAX_VALUE,
-            "Coordinates for the Muffler button in the player inventory. You can change this in game by holding the RMB over the button and draging it around");
+            "Coordinates of the Muffler button in the player inventory. You can change this in game by holding CTRL and LMB over the button and dragging it around");
         invButtonVertical = config.getInt(
             "invButtonY",
             CATEGORY_INVENTORY_BUTTON,
             7,
             Integer.MIN_VALUE,
             Integer.MAX_VALUE,
-            "Coordinates for the Muffler button in the player inventory. You can change this in game by holding the RMB over the button and draging it around");
+            "Coordinates of the Muffler button in the player inventory. You can change this in game by holding CTRL and LMB over the button and dragging it around");
         disableAnchors = config.getBoolean("disableAnchors", CATEGORY_ANCHORS, false, "Disable the Anchors?");
         config.save();
     }
@@ -94,8 +94,8 @@ public class Config {
         return lawfulAllList;
     }
 
-    public static boolean getDisableAchors() {
-        return false;
+    public static boolean getDisableAnchors() {
+        return disableAnchors;
     }
 
     public static float getDefaultMuteVolume() {

@@ -47,7 +47,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     private static String screenTitle = "";
     private final int xSize = 256;
     private final int ySize = 202;
-    private final boolean isAnchorsDisabled = Config.getDisableAchors();
+    private final boolean isAnchorsDisabled = Config.getDisableAnchors();
     private final String tip = Tips.randomTip();
     private int minYButton, maxYButton, index;
     private ESMButton btnToggleMuffled;

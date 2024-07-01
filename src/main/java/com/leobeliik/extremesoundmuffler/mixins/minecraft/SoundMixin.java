@@ -46,7 +46,7 @@ public abstract class SoundMixin implements ISoundLists {
                 return original * muffledSounds.get(soundLocation);
             }
 
-            if (Config.getDisableAchors()) {
+            if (Config.getDisableAnchors()) {
                 return original;
             }
 

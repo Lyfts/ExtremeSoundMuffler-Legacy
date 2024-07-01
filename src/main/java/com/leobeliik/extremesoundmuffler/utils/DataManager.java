@@ -50,7 +50,7 @@ public class DataManager implements ISoundLists {
     public static void loadData(String address) {
         identifier = getIdentifier(address);
         loadMuffledMap().forEach((R, F) -> muffledSounds.put(new ComparableResource(R), F));
-        if (!Config.getDisableAchors()) {
+        if (!Config.getDisableAnchors()) {
             anchorList.clear();
             anchorList.addAll(loadAnchors());
         }
@@ -59,7 +59,7 @@ public class DataManager implements ISoundLists {
     public static void saveData() {
         saveMuffledMap();
 
-        if (!Config.getDisableAchors()) {
+        if (!Config.getDisableAnchors()) {
             saveAnchors();
         }
     }
