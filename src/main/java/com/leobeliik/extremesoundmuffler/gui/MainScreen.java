@@ -504,6 +504,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     }
 
     private void renderTip() {
+        if (!Config.getShowTip()) return;
         // Show a tip
         List<String> tips = fontRendererObj.listFormattedStringToWidth(tip, xSize);
         drawHoveringText(tips, getX() - 5, getY() + 223, fontRendererObj);
@@ -516,8 +517,8 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         editAnchorRadiusBar.setText(String.valueOf(anchor.getRadius()));
         editAnchorRadiusBar.setVisible(!editAnchorRadiusBar.getVisible());;
 
-        btnAccept.visible = !btnAccept.visible;
-        btnCancel.visible = !btnCancel.visible;
+        btnAccept.setVisible(!btnAccept.visible);
+        btnCancel.setVisible(!btnCancel.visible);
 
         editAnchorRadiusBar.setTextColor(whiteText);
     }

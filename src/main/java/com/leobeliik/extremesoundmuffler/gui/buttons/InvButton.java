@@ -50,8 +50,7 @@ public class InvButton extends ESMButton implements IColorsGui {
     public void mouseReleased(int mouseX, int mouseY) {
         if (hold) {
             hold = false;
-            Config.setInvButtonHorizontal(xPosition - parent.guiLeft);
-            Config.setInvButtonVertical(yPosition - parent.guiTop);
+            Config.setInvButtonPosition(xPosition - parent.guiLeft, yPosition - parent.guiTop);
         }
         super.mouseReleased(mouseX, mouseY);
     }
