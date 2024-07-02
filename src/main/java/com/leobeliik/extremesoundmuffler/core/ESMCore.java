@@ -9,7 +9,7 @@ import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
-@IFMLLoadingPlugin.MCVersion("1.7.10")
+@IFMLLoadingPlugin.MCVersion("1.12.2")
 @IFMLLoadingPlugin.SortingIndex(1005)
 public class ESMCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
