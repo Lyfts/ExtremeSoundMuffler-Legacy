@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
     modid = SoundMuffler.MODID,
     version = Tags.VERSION,
     name = SoundMuffler.MODNAME,
-    acceptedMinecraftVersions = "[1.7.10]",
+    acceptedMinecraftVersions = "[1.12.2]",
     acceptableRemoteVersions = "*",
     guiFactory = "com.leobeliik.extremesoundmuffler.GuiFactory")
 public class SoundMuffler {
