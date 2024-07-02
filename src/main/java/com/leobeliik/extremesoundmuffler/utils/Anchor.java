@@ -1,6 +1,9 @@
 package com.leobeliik.extremesoundmuffler.utils;
 
-import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
+import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -9,9 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.DimensionManager;
 
-import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 
 public class Anchor {
 
@@ -28,7 +29,7 @@ public class Anchor {
     }
 
     public Anchor(int id, String name, Vec3d anchorPos, String dimension, int radius,
-                  SortedMap<String, Float> muffledSounds) {
+        SortedMap<String, Float> muffledSounds) {
         this.id = id;
         this.name = name;
         this.anchorPos = anchorPos;
@@ -37,12 +38,42 @@ public class Anchor {
         this.muffledSounds = muffledSounds;
     }
 
+    public Vec3d getAnchorPos() {
+        return anchorPos;
+    }
+
+    private void setAnchorPos(int x, int y, int z) {
+        anchorPos = new Vec3d(x, y, z);
+    }
+
+    public int getAnchorId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
 
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int Radius) {
+        this.radius = Radius;
+    }
+
     private void setName(String name) {
         this.name = name;
+    }
+
+    public SortedMap<ComparableResource, Float> getMuffledSounds() {
+        SortedMap<ComparableResource, Float> temp = new TreeMap<>();
+        this.muffledSounds.forEach((R, F) -> temp.put(new ComparableResource(R), F));
+        return temp;
+    }
+
+    public void setMuffledSounds(SortedMap<ResourceLocation, Float> muffledSounds) {
+        muffledSounds.forEach((R, F) -> this.muffledSounds.put(R.toString(), F));
     }
 
     public void addSound(ResourceLocation sound, float volume) {
@@ -65,6 +96,14 @@ public class Anchor {
         return anchorPos == null ? 0 : (int) anchorPos.z;
     }
 
+    public String getDimension() {
+        return dimension;
+    }
+
+    private void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+
     public void removeSound(ResourceLocation sound) {
         muffledSounds.remove(sound.toString());
     }
@@ -77,18 +116,6 @@ public class Anchor {
         setRadius(this.getRadius() == 0 ? 32 : this.getRadius());
     }
 
-    private void setAnchorPos(int x, int y, int z) {
-        anchorPos = new Vec3d(x, y, z);
-    }
-
-    public int getRadius() {
-        return radius;
-    }
-
-    public void setRadius(int Radius) {
-        this.radius = Radius;
-    }
-
     public void deleteAnchor() {
         setName("Anchor: " + this.getAnchorId());
         anchorPos = null;
@@ -97,22 +124,18 @@ public class Anchor {
         muffledSounds.clear();
     }
 
-    public int getAnchorId() {
-        return id;
-    }
-
     public void editAnchor(String title, int Radius) {
         setName(title);
         setRadius(Radius);
     }
 
     public static Anchor getAnchor(ISound sound) {
-
         Vec3d soundPos = new Vec3d(sound.getXPosF(), sound.getYPosF(), sound.getZPosF());
         for (Anchor anchor : ISoundLists.anchorList) {
             WorldClient world = Minecraft.getMinecraft().world;
             if (anchor.getAnchorPos() != null && world != null
-                && world.provider.getDimensionType().getName().equals(anchor.getDimension())
+                && world.provider.getDimensionType().getName()
+                    .equals(anchor.getDimension())
                 && soundPos.distanceTo(anchor.getAnchorPos()) < anchor.getRadius()
                 && anchor.getMuffledSounds()
                     .containsKey(new ComparableResource(sound.getSoundLocation()))) {
@@ -120,27 +143,5 @@ public class Anchor {
             }
         }
         return null;
-    }
-
-    public Vec3d getAnchorPos() {
-        return anchorPos;
-    }
-
-    public String getDimension() {
-        return dimension;
-    }
-
-    public SortedMap<ComparableResource, Float> getMuffledSounds() {
-        SortedMap<ComparableResource, Float> temp = new TreeMap<>();
-        this.muffledSounds.forEach((R, F) -> temp.put(new ComparableResource(R), F));
-        return temp;
-    }
-
-    public void setMuffledSounds(SortedMap<ResourceLocation, Float> muffledSounds) {
-        muffledSounds.forEach((R, F) -> this.muffledSounds.put(R.toString(), F));
-    }
-
-    private void setDimension(String dimension) {
-        this.dimension = dimension;
     }
 }

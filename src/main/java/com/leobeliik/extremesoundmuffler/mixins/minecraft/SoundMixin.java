@@ -18,6 +18,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(SoundManager.class)
 public abstract class SoundMixin implements ISoundLists {
+
     @Unique
     private static boolean extremeSoundMuffler$isForbidden(ISound sound) {
         for (String fs : forbiddenSounds) {
@@ -30,7 +31,7 @@ public abstract class SoundMixin implements ISoundLists {
         return false;
     }
 
-    @ModifyReturnValue(method = "getNormalizedValue", at = @At("RETURN"))
+    @ModifyReturnValue(method = "getNormalizedVolume", at = @At("RETURN"))
     private float checkSound(float original, @Local(ordinal = 0, argsOnly = true) ISound sound) {
         if (extremeSoundMuffler$isForbidden(sound) || PlaySoundButton.isFromPSB()) {
             return original;
