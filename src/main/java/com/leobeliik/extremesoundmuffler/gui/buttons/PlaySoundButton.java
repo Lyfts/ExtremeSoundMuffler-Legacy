@@ -2,7 +2,6 @@ package com.leobeliik.extremesoundmuffler.gui.buttons;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.util.ResourceLocation;
 
 public class PlaySoundButton extends ESMButton {
@@ -13,17 +12,14 @@ public class PlaySoundButton extends ESMButton {
     PlaySoundButton(int x, int y, ResourceLocation sound) {
         super(0, x, y, 10, 10, "");
         this.sound = sound;
+        setClickAction(this::playSound);
     }
 
-    @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        this.func_146113_a(mc.getSoundHandler());
-        return false;
-    }
-
-    public void func_146113_a(SoundHandler soundHandlerIn) {
+    public void playSound() {
         isFromPSB = true;
-        soundHandlerIn.playSound(PositionedSoundRecord.func_147673_a(sound));
+        Minecraft.getMinecraft()
+            .getSoundHandler()
+            .playSound(PositionedSoundRecord.func_147673_a(sound));
         isFromPSB = false;
     }
 
