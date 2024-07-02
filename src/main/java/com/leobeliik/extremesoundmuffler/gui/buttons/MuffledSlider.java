@@ -13,7 +13,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -30,7 +29,6 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private float sliderValue;
     private ESMButton btnToggleSound;
     private final ComparableResource sound;
-    public static ResourceLocation tickSound;
     public static boolean showSlider = false;
     private boolean isDragging;
     private final List<ESMButton> subButtons = new ArrayList<>();
@@ -47,7 +45,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        if (!visible) return;
+        if (!isVisible()) return;
         SoundMuffler.renderGui();
         setTextColor(muffled ? cyanText : whiteText);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -65,48 +63,31 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private void drawMessage(Minecraft minecraft, int mouseX, int mouseY) {
         FontRenderer font = minecraft.fontRenderer;
         int v = Math.max(width, font.getStringWidth(displayString));
-        if (showSlider && visible && isMouseOver(mouseX, mouseY)) {
+        if (showSlider && isVisible() && isMouseOver(mouseX, mouseY)) {
             drawCenteredString(
                 font,
                 "Volume: " + (int) (sliderValue * 100),
-                this.xPosition + (this.width / 2),
-                this.yPosition + 2,
-                whiteText); // title
+                xPosition + (width / 2),
+                yPosition + 2,
+                whiteText);
         } else {
             String msgTruncated;
             if (isMouseOver(mouseX, mouseY)) {
                 msgTruncated = displayString;
-                drawRect(
-                    this.xPosition + this.width + 3,
-                    this.yPosition,
-                    this.xPosition + v + 3,
-                    this.yPosition + font.FONT_HEIGHT + 2,
-                    darkBG);
+                drawRect(xPosition + width + 3, yPosition, xPosition + v + 3, yPosition + font.FONT_HEIGHT + 2, darkBG);
             } else {
                 msgTruncated = font.trimStringToWidth(displayString, 205);
             }
-            font.drawStringWithShadow(msgTruncated, this.xPosition + 2, this.yPosition + 2, textColor); // title
+            font.drawStringWithShadow(msgTruncated, xPosition + 2, yPosition + 2, textColor);
         }
     }
 
     private void drawGradient(int mouseX, int mouseY) {
         if (muffled) {
-            drawTexturedModalRect(
-                this.xPosition,
-                this.yPosition - 1,
-                0,
-                234,
-                (int) (sliderValue * (width - 6)) + 5,
-                height + 1); // draw bg
+            drawTexturedModalRect(xPosition, yPosition - 1, 0, 234, (int) (sliderValue * (width - 6)) + 5, height + 1);
 
-            if (isMouseOver(mouseX, mouseY)) {
-                drawTexturedModalRect(
-                    this.xPosition + (int) (sliderValue * (width - 6)) + 1,
-                    this.yPosition + 1,
-                    32,
-                    224,
-                    5,
-                    9); // Slider
+            if (isMouseOver(mouseX, mouseY) && showSlider) {
+                drawTexturedModalRect(xPosition + (int) (sliderValue * (width - 6)) + 1, yPosition + 1, 32, 224, 5, 9);
             }
         }
     }
@@ -120,9 +101,9 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
 
     public void refreshButtons() {
         subButtons.clear();
-        int x = Config.getLeftButtons() ? this.xPosition - 24 : this.xPosition + width + 5;
-        subButtons.add(btnToggleSound = new ESMButton(0, x, this.yPosition, 11, 11, "", this::toggleSound));
-        subButtons.add(new PlaySoundButton(btnToggleSound.xPosition + 12, this.yPosition, sound).setIcon(PLAY));
+        int x = Config.getLeftButtons() ? xPosition - 24 : xPosition + width + 5;
+        subButtons.add(btnToggleSound = new ESMButton(0, x, yPosition, 11, 11, "", this::toggleSound));
+        subButtons.add(new PlaySoundButton(btnToggleSound.xPosition + 12, yPosition, sound).setIcon(PLAY));
     }
 
     public ESMButton getBtnToggleSound() {
@@ -185,7 +166,6 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         if (isMouseOver(mouseX, mouseY)) {
             isDragging = true;
             showSlider = true;
-            tickSound = this.sound;
             return true;
         }
 

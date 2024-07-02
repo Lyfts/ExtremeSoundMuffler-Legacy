@@ -131,7 +131,6 @@ public class Anchor {
     }
 
     public static Anchor getAnchor(ISound sound) {
-
         Vec3 soundPos = Vec3.createVectorHelper(sound.getXPosF(), sound.getYPosF(), sound.getZPosF());
         for (Anchor anchor : ISoundLists.anchorList) {
             WorldClient world = Minecraft.getMinecraft().theWorld;

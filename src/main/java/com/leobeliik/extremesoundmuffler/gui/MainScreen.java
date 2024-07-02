@@ -2,6 +2,7 @@ package com.leobeliik.extremesoundmuffler.gui;
 
 import static com.leobeliik.extremesoundmuffler.SoundMuffler.renderGui;
 import static com.leobeliik.extremesoundmuffler.gui.MainScreen.ListMode.*;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.ANCHOR;
 import static com.leobeliik.extremesoundmuffler.utils.Icon.EDIT_ANCHOR;
 import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE;
 import static com.leobeliik.extremesoundmuffler.utils.Icon.RESET;
@@ -128,6 +129,8 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     public void initGui() {
         super.initGui();
         Keyboard.enableRepeatEvents(true);
+        MuffledSlider.showSlider = true;
+        textFields.clear();
         minYButton = getY() + 46;
         maxYButton = getY() + 164;
         addSoundButtons();
@@ -139,7 +142,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         buttonList.add(
             btnToggleSoundsList = new ESMButton(0, getX() + 13, getY() + 181, 52, 13, display, this::toggleSoundList)
                 .setRenderText(true)
-                .setTooltip("Showing " + display + " sounds", false));
+                .setTooltip("Showing " + display + " Sounds", false));
         buttonList.add(
             btnToggleMuffled = new ESMButton(0, getX() + 229, getY() + 179, 17, 17, () -> isMuffling = !isMuffling)
                 .setTooltip(isMuffling ? "Stop Muffling" : "Start Muffling", false));
@@ -175,7 +178,10 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 11,
                 11,
                 () -> Objects.requireNonNull(getAnchorByName(screenTitle))
-                    .setAnchor()).setVisible(!isMain()));
+                    .setAnchor()).setVisible(!isMain())
+                        .setTooltip(
+                            () -> btnSetAnchor.mouseOver && !editAnchorTitleBar.getVisible() ? "Set Anchor" : "",
+                            true));
 
         buttonList.add(
             btnEditAnchor = new ESMButton(
@@ -186,7 +192,10 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 11,
                 () -> editTitle(Objects.requireNonNull(getAnchorByName(screenTitle))))
                     .setVisible(() -> !isMain() && anchor != null && anchor.getAnchorPos() != null)
-                    .setIcon(EDIT_ANCHOR));
+                    .setIcon(EDIT_ANCHOR)
+                    .setTooltip(
+                        () -> btnEditAnchor.mouseOver && !editAnchorTitleBar.getVisible() ? "Edit Anchor" : "",
+                        true));
 
         addEditAnchorButtons();
 
@@ -259,7 +268,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
 
             buttonH += volumeSlider.height + 2;
             buttonList.add(volumeSlider);
-            volumeSlider.visible = buttonList.indexOf(volumeSlider) < index + 10;
+            volumeSlider.setVisible(buttonList.indexOf(volumeSlider) < index + 10);
         }
     }
 
@@ -293,10 +302,12 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
 
                 if (!anchorList.isEmpty()) {
                     btnAnchor.setTextColor(
-                        anchorList.get(Integer.parseInt(btnAnchor.displayString))
-                            .getAnchorPos() != null ? greenText : whiteText);
+                        anchorList.get(i)
+                            .getAnchorPos() != null ? greenText : whiteText)
+                        .setIcon(isActiveAnchor(btnAnchor) ? ANCHOR : null, -5, -2, 27, 22);
                 }
             }
+
             buttonList.add(
                 btnAnchor.setTooltip(
                     isAnchorsDisabled ? "Anchors are disabled"
@@ -308,7 +319,6 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     }
 
     private void addEditAnchorButtons() {
-
         textFields.add(
             editAnchorTitleBar = new GuiTextField(fontRendererObj, getX() + 302, btnEditAnchor.yPosition + 20, 84, 11));
         editAnchorTitleBar.setVisible(false);
@@ -387,7 +397,6 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         btnToggleMuffled.setIcon(isMuffling ? MUFFLE : null, 1, 1, 15, 15);
 
         // Anchor coordinates and set coord button
-        Anchor anchor = getAnchorByName(screenTitle);
         String dimensionName = "";
         String radius;
         x = btnSetAnchor.xPosition;
@@ -410,7 +419,6 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             func_146110_a(x, y, 0, 69.45F, 11, 11, 88, 88); // set coordinates button
 
             // Indicates the Anchor has to be set before muffling sounds
-            textFields.add(searchBar);
             for (GuiButton btn : buttonList) {
                 if (btn instanceof MuffledSlider slider) {
                     if (slider.getBtnToggleSound()
@@ -419,32 +427,8 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                         fontRendererObj.drawString("Set the", x, y + 18, whiteText);
                         fontRendererObj.drawString("Anchor first", x, y + 29, whiteText);
                     }
-                } else {
-                    renderGui();
-                    if (btn.displayString.equals(String.valueOf(anchor.getAnchorId()))) {
-                        drawTexturedModalRect(btn.xPosition - 5, btn.yPosition - 2, 71, 202, 27, 22);
-                        break;
-                    }
                 }
             }
-        }
-
-        message = "Set Anchor";
-        stringW = fontRendererObj.getStringWidth(message) + 2;
-
-        // Set Anchor tooltip
-        if (btnSetAnchor.isMouseOver(mouseX, mouseY) && !editAnchorTitleBar.getVisible()) {
-            drawRect(x - 5, y + 16, x + stringW, y + 29, darkBG);
-            fontRendererObj.drawString(message, x, y + 18, whiteText);
-        }
-
-        message = "Edit Anchor";
-        stringW = fontRendererObj.getStringWidth(message) + 2;
-
-        if (btnEditAnchor.isVisible() && !editAnchorTitleBar.getVisible()
-            && btnEditAnchor.isMouseOver(mouseX, mouseY)) {
-            drawRect(x - 5, y + 16, x + stringW + 2, y + 29, darkBG);
-            fontRendererObj.drawString(message, x, y + 18, whiteText);
         }
 
         // Show Radius and Title text when editing Anchor and bg
@@ -454,7 +438,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             drawRect(
                 x - 4,
                 y - 4,
-                editAnchorTitleBar.xPosition + editAnchorTitleBar.getWidth() + 3,
+                editAnchorTitleBar.xPosition + editAnchorTitleBar.getWidth() + 10,
                 btnAccept.yPosition + 23,
                 darkBG);
             fontRendererObj.drawString("Title: ", x - 2, y + 1, whiteText);
@@ -465,8 +449,8 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             message = "Range: 1 - 32";
             stringW = fontRendererObj.getStringWidth(message);
             if (editAnchorRadiusBar.isFocused()) {
-                drawRect(x + 3, y, x + stringW + 6, y + 12, darkBG);
-                fontRendererObj.drawString(message, x + 5, y + 2, whiteText);
+                drawRect(x + 3, y, x + stringW + 9, y + 12, darkBG);
+                fontRendererObj.drawString(message, x + 10, y + 2, whiteText);
             }
         }
 
@@ -482,12 +466,12 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         // highlight every other row
         for (int i = 0; i < buttonList.size(); i++) {
             GuiButton button = buttonList.get(i);
-            if (button instanceof MuffledSlider) {
+            if (button instanceof MuffledSlider slider) {
                 x = Config.getLeftButtons() ? button.xPosition - 3 : button.xPosition + 1;
                 y = button.yPosition;
                 int bW = Config.getLeftButtons() ? x + button.width + 5 : x + button.width + 28;
 
-                if (i % 2 == 0 && button.visible) {
+                if (i % 2 == 0 && slider.isVisible()) {
                     drawRect(x, y, bW, y + button.height, brightBG);
                 }
             }
@@ -558,11 +542,11 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         for (GuiButton btn : buttonList) {
             if (btn instanceof MuffledSlider slider) {
                 int buttonIndex = buttonList.indexOf(btn);
-                btn.visible = buttonIndex < index + 10 && buttonIndex >= index;
+                slider.setVisible(buttonIndex < index + 10 && buttonIndex >= index);
 
-                if (btn.visible) {
-                    btn.yPosition = buttonH;
-                    buttonH += btn.height + 2;
+                if (slider.isVisible()) {
+                    slider.yPosition = buttonH;
+                    buttonH += slider.height + 2;
                 }
                 slider.refreshButtons();
             }
@@ -570,6 +554,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     }
 
     private void updateText() {
+        if (!searchBar.isFocused()) return;
         int buttonH = minYButton;
         filteredButtons.clear();
 
@@ -596,22 +581,22 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) {
-        if (searchBar.textboxKeyTyped(typedChar, keyCode)) {
-            updateText();
-            return;
-        }
-
-        if (editAnchorTitleBar.textboxKeyTyped(typedChar, keyCode)
-            || editAnchorRadiusBar.textboxKeyTyped(typedChar, keyCode)) {
-            return;
-        }
 
         // Search bar, Edit title bar & Edit Anchor Radius bar looses focus when pressed "Enter" or "Intro"
-        if (keyCode == 257 || keyCode == 335) {
+        if (keyCode == Keyboard.KEY_RETURN) {
             searchBar.setFocused(false);
             editAnchorTitleBar.setFocused(false);
             editAnchorRadiusBar.setFocused(false);
             return;
+        }
+
+        for (GuiTextField textField : textFields) {
+            if (textField.getVisible()) {
+                if (textField.textboxKeyTyped(typedChar, keyCode)) {
+                    updateText();
+                    return;
+                }
+            }
         }
 
         // Close screen when press "E" or the mod hotkey outside the search bar or edit title bar
@@ -620,6 +605,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             && (minecraft.gameSettings.keyBindInventory.getKeyCode() == keyCode
                 || keyCode == SoundMuffler.getHotkey())) {
             this.onGuiClosed();
+            mc.setIngameFocus();
             filteredButtons.clear();
             return;
         }
@@ -632,34 +618,19 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             if (textField.getVisible()) {
                 textField.mouseClicked(mouseX, mouseY, mouseButton);
             }
+
+            if (mouseButton == 1 && textField.isFocused()) {
+                textField.setText("");
+                updateText();
+                break;
+            }
         }
 
-        if (searchBar.isFocused()) {
-            searchBar.setText("");
-            updateText();
-            return;
-        }
-
-        if (editAnchorTitleBar.isFocused()) {
-            editAnchorTitleBar.setText("");
-            return;
-        }
-
-        if (editAnchorRadiusBar.isFocused()) {
-            editAnchorRadiusBar.setText("");
-            return;
+        if (mouseButton == 1) {
+            MuffledSlider.showSlider = !MuffledSlider.showSlider;
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    protected void mouseMovedOrUp(int mouseX, int mouseY, int state) {
-        if (state == 1) {
-            MuffledSlider.showSlider = false;
-            MuffledSlider.tickSound = null;
-        }
-        super.mouseMovedOrUp(mouseX, mouseY, state);
     }
 
     @Override
@@ -676,11 +647,11 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     }
 
     private int getX() {
-        return (this.width - xSize) / 2;
+        return (width - xSize) / 2;
     }
 
     private int getY() {
-        return (this.height - ySize) / 2;
+        return (height - ySize) / 2;
     }
 
     private void toggleSoundList() {
@@ -698,6 +669,10 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
 
     private Map<ComparableResource, Float> getMuffledSounds() {
         return isMain() ? muffledSounds : anchor.getMuffledSounds();
+    }
+
+    private boolean isActiveAnchor(ESMButton anchorButton) {
+        return anchor != null && anchorButton.displayString.equals(String.valueOf(anchor.getAnchorId()));
     }
 
     private String getDeleteTooltip() {

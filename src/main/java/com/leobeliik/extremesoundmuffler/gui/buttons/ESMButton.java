@@ -17,13 +17,12 @@ import cpw.mods.fml.client.config.GuiButtonExt;
 
 public class ESMButton extends GuiButtonExt implements IColorsGui {
 
-    private final Runnable runnable;
+    private Runnable runnable;
     protected boolean renderNormal = false;
     protected boolean renderText = false;
     protected int textColor = whiteText;
-    protected boolean hasTooltip = false;
     protected boolean renderTooltipAbove = true;
-    protected String tooltip;
+    protected String tooltip = "";
     protected Supplier<String> tooltipSupplier;
     protected BooleanSupplier visibilitySupplier;
     protected Icon icon;
@@ -31,6 +30,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     protected int iconHeight;
     protected int iconXOffset;
     protected int iconYOffset;
+    public boolean mouseOver;
 
     public ESMButton(int id, int x, int y, int width, int height, String displayString) {
         this(id, x, y, width, height, displayString, null);
@@ -57,8 +57,8 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (!isVisible()) return;
-
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        mouseOver = isMouseOver(mouseX, mouseY);
 
         if (renderNormal) {
             super.drawButton(mc, mouseX, mouseY);
@@ -85,7 +85,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
             }
         }
 
-        if (hasTooltip && isMouseOver(mouseX, mouseY)) {
+        if (hasTooltip() && isMouseOver(mouseX, mouseY)) {
             if (tooltipSupplier != null) tooltip = tooltipSupplier.get();
             int stringW = mc.fontRenderer.getStringWidth(tooltip) / 2;
             if (!renderTooltipAbove) {
@@ -137,14 +137,12 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     public ESMButton setTooltip(String tooltip, boolean above) {
         this.tooltip = tooltip;
         this.renderTooltipAbove = above;
-        this.hasTooltip = true;
         return this;
     }
 
     public ESMButton setTooltip(Supplier<String> supplier, boolean above) {
         this.tooltipSupplier = supplier;
         this.renderTooltipAbove = above;
-        this.hasTooltip = true;
         return this;
     }
 
@@ -165,6 +163,16 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
         this.iconXOffset = xOffset;
         this.iconYOffset = yOffset;
         return this;
+    }
+
+    public ESMButton setClickAction(Runnable runnable) {
+        this.runnable = runnable;
+        return this;
+    }
+
+    private boolean hasTooltip() {
+        return !tooltip.isEmpty() || tooltipSupplier != null && !tooltipSupplier.get()
+            .isEmpty();
     }
 
     public boolean isVisible() {
