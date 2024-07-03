@@ -628,6 +628,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
 
         if (mouseButton == 1) {
             MuffledSlider.showSlider = !MuffledSlider.showSlider;
+            MuffledSlider.stopTickSound();
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -643,6 +644,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     @Override
     public void onGuiClosed() {
         DataManager.saveData();
+        MuffledSlider.stopTickSound();
         super.onGuiClosed();
     }
 
