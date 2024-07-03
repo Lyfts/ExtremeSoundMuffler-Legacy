@@ -1,10 +1,10 @@
 <img align="left" width="180" height="100" src="src/main/resources/esm_logo.png">
-<h1 align="center"> Extreme Sound Muffler Legacy</h1>
+<h1 align="center"> Extreme Sound Muffler: Legacy</h1>
 <br/>
 
 ---
-<h1 align="center">Backport of <a href= https://github.com/LeoBeliik/ExtremeSoundMuffler> ESM</a> for 1.7.10</h1>
-<h3 align="center"> Extreme sound muffler is a client side mod that allows you to muffle sounds selectively. </h3>
+<h1 align="center">Backport of <a href= https://github.com/LeoBeliik/ExtremeSoundMuffler> ESM</a> for 1.7.10 & 1.12.2</h1>
+<h3 align="center"> ESM: Legacy is a client side mod that allows you to muffle sounds selectively. </h3>
 <br/>
 
 
