@@ -8,6 +8,8 @@ import com.google.gson.stream.JsonReader;
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
+import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -85,16 +87,16 @@ public class DataManager implements ISoundLists {
     }
 
     public static Anchor deserializeAnchor(NBTTagCompound nbt) {
-        SortedMap<String, Float> muffledSounds = new TreeMap<>();
-        NBTTagCompound muffledNBT = nbt.getCompoundTag("MUFFLED");
-
-        for (String key : muffledNBT.getKeySet()) {
-            muffledSounds.put(key, muffledNBT.getFloat(key));
-        }
-
         if (!nbt.hasKey("POS")) {
             return new Anchor(nbt.getInteger("ID"), nbt.getString("NAME"));
         } else {
+            Object2FloatMap<String> muffledSounds = new Object2FloatAVLTreeMap<>();
+            NBTTagCompound muffledNBT = nbt.getCompoundTag("MUFFLED");
+
+            for (String key : muffledNBT.getKeySet()) {
+                muffledSounds.put(key, muffledNBT.getFloat(key));
+            }
+
             return new Anchor(
                 nbt.getInteger("ID"),
                 nbt.getString("NAME"),

@@ -5,12 +5,16 @@ import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
+import com.leobeliik.extremesoundmuffler.utils.PlayButtonSound;
+import com.leobeliik.extremesoundmuffler.utils.SliderSound;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -27,7 +31,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private float sliderValue;
     private ESMButton btnToggleSound;
     private final ResourceLocation sound;
-    public static ResourceLocation tickSound;
+    public static SliderSound tickSound;
     public static boolean showSlider = false;
     private boolean isDragging;
     private final List<ESMButton> subButtons = new ArrayList<>();
@@ -116,10 +120,12 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     }
 
     public void refreshButtons() {
+        SoundHandler soundHandler = Minecraft.getMinecraft().getSoundHandler();
         subButtons.clear();
         int aX = Config.getLeftButtons() ? x - 24 : x + width + 5;
         subButtons.add(btnToggleSound = new ESMButton(0, aX, y, 11, 11, "", this::toggleSound));
-        subButtons.add(new PlaySoundButton(btnToggleSound.x + 12, y, sound).setIcon(PLAY));
+        subButtons.add(new ESMButton(0, btnToggleSound.x + 12, y, 10, 10,
+            () -> soundHandler.playSound(new PlayButtonSound(sound))).setIcon(PLAY));
     }
 
     public ESMButton getBtnToggleSound() {
@@ -155,6 +161,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
 
     private void setSliderValue(float value) {
         sliderValue = MathHelper.clamp(value, 0.0F, 1F);
+        setTickSound(sliderValue);
         if (sliderValue == 1F) {
             toggleSound();
         } else {
@@ -163,8 +170,8 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     }
 
     @Override
-    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
-        if (isDragging) {
+    protected void mouseDragged(@NotNull Minecraft mc, int mouseX, int mouseY) {
+        if (isDragging && showSlider) {
             if (!muffled && canMuffle()) toggleSound();
             changeSliderValue((float) mouseX);
         }
@@ -182,7 +189,6 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         if (isMouseOver(mouseX, mouseY)) {
             isDragging = true;
             showSlider = true;
-            tickSound = sound;
             return true;
         }
 
@@ -199,8 +205,32 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         }
 
         isDragging = false;
+        stopTickSound();
         super.mouseReleased(mouseX, mouseY);
     }
+
+    public static void stopTickSound() {
+        if (tickSound != null) {
+            tickSound.finishPlaying();
+            tickSound = null;
+        }
+    }
+
+    public void setTickSound(float volume) {
+        SoundHandler soundHandler = Minecraft.getMinecraft()
+            .getSoundHandler();
+        if (volume == 1f || !muffled) {
+            stopTickSound();
+            return;
+        }
+
+        if (tickSound == null) {
+            soundHandler.playSound(tickSound = new SliderSound(sound));
+        }
+
+        tickSound.setVolume(volume);
+    }
+
 
     private void updateVolume() {
         if (MainScreen.isMain()) {

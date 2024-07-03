@@ -1,12 +1,13 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
 import com.leobeliik.extremesoundmuffler.Config;
-import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+
+import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_ON;
 
 public class InvButton extends ESMButton implements IColorsGui {
 
@@ -16,20 +17,16 @@ public class InvButton extends ESMButton implements IColorsGui {
     public InvButton(GuiContainer parentGui, int x, int y) {
         super(1001, parentGui.guiLeft + x, parentGui.guiTop + y, 11, 11, "");
         parent = parentGui;
+        setIcon(MUFFLE_ON, 11, 11);
+        setTooltip("Muffler", true);
     }
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
-        if (visible) {
-            SoundMuffler.renderGui();
-            drawTexturedModalRect(x, y, 43, 202, 11, 11);
-            if (isMouseOver(mouseX, mouseY) && !hold) {
-                drawCenteredString(mc.fontRenderer, "Muffler", x + 5, y + height + 1, whiteText);
-            }
-            if (hold) {
-                drag(mouseX, mouseY);
-            }
+        if (isVisible() && hold) {
+            drag(mouseX, mouseY);
         }
+        super.drawButton(mc, mouseX, mouseY, partial);
     }
 
     @Override

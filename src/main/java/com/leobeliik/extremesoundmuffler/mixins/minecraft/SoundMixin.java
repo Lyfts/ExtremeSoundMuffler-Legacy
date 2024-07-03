@@ -2,9 +2,10 @@ package com.leobeliik.extremesoundmuffler.mixins.minecraft;
 
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
-import com.leobeliik.extremesoundmuffler.gui.buttons.PlaySoundButton;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
+import com.leobeliik.extremesoundmuffler.utils.PlayButtonSound;
+import com.leobeliik.extremesoundmuffler.utils.SliderSound;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.audio.ISound;
@@ -19,19 +20,15 @@ public abstract class SoundMixin implements ISoundLists {
 
     @Unique
     private static boolean extremeSoundMuffler$isForbidden(ISound sound) {
-        for (String fs : forbiddenSounds) {
-            if (sound.getSoundLocation()
-                .toString()
-                .contains(fs)) {
-                return true;
-            }
-        }
-        return false;
+        return forbiddenSounds.stream().anyMatch(fs -> sound.getSoundLocation()
+            .toString()
+            .contains(fs));
     }
 
     @ModifyReturnValue(method = "getClampedVolume", at = @At("RETURN"))
     private float checkSound(float original, @Local(ordinal = 0, argsOnly = true) ISound sound) {
-        if (extremeSoundMuffler$isForbidden(sound) || PlaySoundButton.isFromPSB()) {
+        if (extremeSoundMuffler$isForbidden(sound) || sound instanceof PlayButtonSound
+            || sound instanceof SliderSound) {
             return original;
         }
 

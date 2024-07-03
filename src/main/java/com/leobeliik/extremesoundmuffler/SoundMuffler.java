@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 public class SoundMuffler {
 
     public static final String MODID = "extremesoundmuffler";
-    public static final String MODNAME = "Extreme Sound Muffler Legacy";
+    public static final String MODNAME = "Extreme Sound Muffler: Legacy";
     public static final Logger LOGGER = LogManager.getLogger();
 
     @SidedProxy(
