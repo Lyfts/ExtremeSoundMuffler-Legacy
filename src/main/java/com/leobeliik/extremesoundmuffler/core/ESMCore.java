@@ -17,11 +17,6 @@ public class ESMCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
     }
 
     @Override
-    public boolean shouldMixinConfigQueue(String mixinConfig) {
-        return mixinConfig.equals("minecraft.SoundMixin");
-    }
-
-    @Override
     public String[] getASMTransformerClass() {
         return new String[0];
     }
