@@ -1,9 +1,11 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 
 public class PlaySoundButton extends ESMButton {
 
@@ -23,7 +25,13 @@ public class PlaySoundButton extends ESMButton {
 
     public void func_146113_a(SoundHandler soundHandlerIn) {
         isFromPSB = true;
-        soundHandlerIn.playSound(PositionedSoundRecord.func_147673_a(sound));
+        // TODO: Sound category
+        soundHandlerIn.playSound(
+            new PositionedSoundRecord(sound, SoundCategory.MASTER,
+                1.0F, 1.0F, false,
+                0, ISound.AttenuationType.NONE,
+                0.0F, 0.0F, 0.0F)
+        );
         isFromPSB = false;
     }
 

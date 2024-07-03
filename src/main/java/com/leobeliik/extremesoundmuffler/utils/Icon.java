@@ -1,6 +1,6 @@
 package com.leobeliik.extremesoundmuffler.utils;
 
-import cpw.mods.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.config.GuiUtils;
 
 public enum Icon {
 

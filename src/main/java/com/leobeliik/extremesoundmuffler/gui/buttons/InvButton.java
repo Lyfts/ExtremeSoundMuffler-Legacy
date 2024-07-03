@@ -20,12 +20,12 @@ public class InvButton extends ESMButton implements IColorsGui {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
         if (visible) {
             SoundMuffler.renderGui();
-            drawTexturedModalRect(xPosition, yPosition, 43, 202, 11, 11);
+            drawTexturedModalRect(x, y, 43, 202, 11, 11);
             if (isMouseOver(mouseX, mouseY) && !hold) {
-                drawCenteredString(mc.fontRenderer, "Muffler", xPosition + 5, yPosition + height + 1, whiteText);
+                drawCenteredString(mc.fontRenderer, "Muffler", x + 5, y + height + 1, whiteText);
             }
             if (hold) {
                 drag(mouseX, mouseY);
@@ -50,13 +50,13 @@ public class InvButton extends ESMButton implements IColorsGui {
     public void mouseReleased(int mouseX, int mouseY) {
         if (hold) {
             hold = false;
-            Config.setInvButtonPosition(xPosition - parent.guiLeft, yPosition - parent.guiTop);
+            Config.setInvButtonPosition(x - parent.guiLeft, y - parent.guiTop);
         }
         super.mouseReleased(mouseX, mouseY);
     }
 
     private void drag(int mouseX, int mouseY) {
-        xPosition = mouseX - (this.width / 2);
-        yPosition = mouseY - (this.height / 2);
+        x = mouseX - (this.width / 2);
+        y = mouseY - (this.height / 2);
     }
 }

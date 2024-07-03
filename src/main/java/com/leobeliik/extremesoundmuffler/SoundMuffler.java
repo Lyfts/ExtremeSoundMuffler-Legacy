@@ -1,5 +1,8 @@
 package com.leobeliik.extremesoundmuffler;
 
+import com.leobeliik.extremesoundmuffler.gui.MainScreen;
+import com.leobeliik.extremesoundmuffler.gui.buttons.InvButton;
+import com.leobeliik.extremesoundmuffler.utils.DataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
@@ -7,25 +10,19 @@ import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
-
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.leobeliik.extremesoundmuffler.gui.MainScreen;
-import com.leobeliik.extremesoundmuffler.gui.buttons.InvButton;
-import com.leobeliik.extremesoundmuffler.utils.DataManager;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(
     modid = SoundMuffler.MODID,
@@ -68,20 +65,20 @@ public class SoundMuffler {
     @SideOnly(Side.CLIENT)
     public void onPlayerLoggin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         DataManager.loadData(
-            event.manager.getSocketAddress()
+            event.getManager().getRemoteAddress()
                 .toString());
     }
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
-        GuiScreen screen = event.gui;
+        GuiScreen screen = event.getGui();
         if (Config.getDisableInventoryButton() || screen instanceof GuiContainerCreative) {
             return;
         }
         try {
             if (screen instanceof InventoryEffectRenderer inv) {
-                event.buttonList
+                event.getButtonList()
                     .add(new InvButton(inv, Config.getInvButtonHorizontal(), Config.getInvButtonVertical()));
             }
         } catch (NullPointerException e) {

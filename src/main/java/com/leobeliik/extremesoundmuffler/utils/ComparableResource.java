@@ -13,7 +13,7 @@ public class ComparableResource extends ResourceLocation implements Comparable<R
     }
 
     public ComparableResource(ResourceLocation resourceLocation) {
-        super(resourceLocation.getResourceDomain(), resourceLocation.getResourcePath());
+        super(resourceLocation.getNamespace(), resourceLocation.getPath());
     }
 
     @Override

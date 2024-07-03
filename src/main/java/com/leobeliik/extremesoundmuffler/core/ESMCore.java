@@ -1,26 +1,24 @@
 package com.leobeliik.extremesoundmuffler.core;
 
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import zone.rong.mixinbooter.IEarlyMixinLoader;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
-
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
 @IFMLLoadingPlugin.SortingIndex(1005)
 public class ESMCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
-    public String getMixinConfig() {
-        return "mixins.extremesoundmuffler.json";
+    public List<String> getMixinConfigs() {
+        return Arrays.asList("mixins.extremesoundmuffler.json");
     }
 
     @Override
-    public List<String> getMixins(Set<String> loadedCoreMods) {
-        return Arrays.asList("minecraft.SoundMixin");
+    public boolean shouldMixinConfigQueue(String mixinConfig) {
+        return mixinConfig.equals("minecraft.SoundMixin");
     }
 
     @Override
@@ -45,4 +43,6 @@ public class ESMCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
     public String getAccessTransformerClass() {
         return null;
     }
+
+
 }
