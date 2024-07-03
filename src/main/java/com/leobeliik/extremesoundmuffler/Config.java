@@ -1,7 +1,6 @@
 package com.leobeliik.extremesoundmuffler;
 
 import net.minecraftforge.common.config.Configuration;
-
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -37,7 +36,7 @@ public class Config {
         forbiddenSounds = config.getStringList(
             "forbiddenSounds",
             CATEGORY_GENERAL,
-            new String[] { "ui.", "music.", "ambient." },
+            new String[]{"ui.", "music.", "ambient."},
             "Blacklisted Sounds - add the name of the sounds to blacklist, separated with comma");
         lawfulAllList = config.getBoolean(
             "lawfulAllList",

@@ -1,12 +1,5 @@
 package com.leobeliik.extremesoundmuffler.mixins.minecraft;
 
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.SoundManager;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.gui.buttons.PlaySoundButton;
@@ -15,6 +8,11 @@ import com.leobeliik.extremesoundmuffler.utils.Anchor;
 import com.leobeliik.extremesoundmuffler.utils.ComparableResource;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SoundManager;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(SoundManager.class)
 public abstract class SoundMixin implements ISoundLists {

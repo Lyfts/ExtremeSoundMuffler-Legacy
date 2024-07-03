@@ -1,19 +1,15 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.client.Minecraft;
-
-import org.lwjgl.opengl.GL11;
-
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
 import com.leobeliik.extremesoundmuffler.utils.Icon;
-
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
+import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nullable;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class ESMButton extends GuiButtonExt implements IColorsGui {
 
@@ -70,7 +66,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
 
                 if (strWidth > width - 6 && strWidth > ellipsisWidth)
                     buttonText = mc.fontRenderer.trimStringToWidth(buttonText, width - 6 - ellipsisWidth)
-                        .trim() + "...";
+                                     .trim() + "...";
                 this.drawCenteredString(
                     mc.fontRenderer,
                     buttonText,
@@ -181,7 +177,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
 
     public boolean isMouseOver(int mouseX, int mouseY) {
         return mouseX >= this.x && mouseY >= this.y
-           && mouseX < this.x + this.width
-           && mouseY < this.y + this.height;
+               && mouseX < this.x + this.width
+               && mouseY < this.y + this.height;
     }
 }
