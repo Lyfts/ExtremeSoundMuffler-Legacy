@@ -6,7 +6,7 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.DimensionManager;
 
 import java.util.Objects;
@@ -20,14 +20,14 @@ public class Anchor {
     private String dimension;
     private int radius;
     private SortedMap<String, Float> muffledSounds = new TreeMap<>();
-    private Vec3d anchorPos;
+    private BlockPos anchorPos;
 
     public Anchor(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Anchor(int id, String name, Vec3d anchorPos, String dimension, int radius,
+    public Anchor(int id, String name, BlockPos anchorPos, String dimension, int radius,
                   SortedMap<String, Float> muffledSounds) {
         this.id = id;
         this.name = name;
@@ -37,12 +37,12 @@ public class Anchor {
         this.muffledSounds = muffledSounds;
     }
 
-    public Vec3d getAnchorPos() {
+    public BlockPos getAnchorPos() {
         return anchorPos;
     }
 
-    private void setAnchorPos(int x, int y, int z) {
-        anchorPos = new Vec3d(x, y, z);
+    private void setAnchorPos(BlockPos pos) {
+        anchorPos = pos;
     }
 
     public int getAnchorId() {
@@ -65,9 +65,9 @@ public class Anchor {
         this.name = name;
     }
 
-    public SortedMap<ComparableResource, Float> getMuffledSounds() {
-        SortedMap<ComparableResource, Float> temp = new TreeMap<>();
-        this.muffledSounds.forEach((R, F) -> temp.put(new ComparableResource(R), F));
+    public SortedMap<ResourceLocation, Float> getMuffledSounds() {
+        SortedMap<ResourceLocation, Float> temp = new TreeMap<>();
+        this.muffledSounds.forEach((R, F) -> temp.put(new ResourceLocation(R), F));
         return temp;
     }
 
@@ -84,15 +84,15 @@ public class Anchor {
     }
 
     public int getX() {
-        return anchorPos == null ? 0 : (int) anchorPos.x;
+        return anchorPos == null ? 0 : anchorPos.getX();
     }
 
     public int getY() {
-        return anchorPos == null ? 0 : (int) anchorPos.y;
+        return anchorPos == null ? 0 : anchorPos.getY();
     }
 
     public int getZ() {
-        return anchorPos == null ? 0 : (int) anchorPos.z;
+        return anchorPos == null ? 0 : anchorPos.getZ();
     }
 
     public String getDimension() {
@@ -109,7 +109,7 @@ public class Anchor {
 
     public void setAnchor() {
         EntityPlayerSP player = Objects.requireNonNull(Minecraft.getMinecraft().player);
-        setAnchorPos((int) player.posX, (int) player.posY, (int) player.posZ);
+        setAnchorPos(player.getPosition());
         setDimension(
             DimensionManager.getProvider(player.dimension).getDimensionType().getName());
         setRadius(this.getRadius() == 0 ? 32 : this.getRadius());
@@ -129,15 +129,15 @@ public class Anchor {
     }
 
     public static Anchor getAnchor(ISound sound) {
-        Vec3d soundPos = new Vec3d(sound.getXPosF(), sound.getYPosF(), sound.getZPosF());
+        BlockPos soundPos = new BlockPos(sound.getXPosF(), sound.getYPosF(), sound.getZPosF());
         for (Anchor anchor : ISoundLists.anchorList) {
             WorldClient world = Minecraft.getMinecraft().world;
             if (anchor.getAnchorPos() != null && world != null
                 && world.provider.getDimensionType().getName()
                     .equals(anchor.getDimension())
-                && soundPos.distanceTo(anchor.getAnchorPos()) < anchor.getRadius()
+                && Math.sqrt(soundPos.distanceSq(anchor.getAnchorPos())) <= anchor.getRadius()
                 && anchor.getMuffledSounds()
-                    .containsKey(new ComparableResource(sound.getSoundLocation()))) {
+                    .containsKey(sound.getSoundLocation())) {
                 return anchor;
             }
         }

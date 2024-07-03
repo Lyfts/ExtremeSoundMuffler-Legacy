@@ -11,7 +11,8 @@ import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.ThreadedFileIOBase;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.io.FileUtils;
@@ -33,7 +34,7 @@ public class DataManager implements ISoundLists {
 
     public static void loadData(String address) {
         identifier = getIdentifier(address);
-        loadMuffledMap().forEach((R, F) -> muffledSounds.put(new ComparableResource(R), F));
+        loadMuffledMap().forEach((R, F) -> muffledSounds.put(new ResourceLocation(R), F));
         if (!Config.getDisableAnchors()) {
             anchorList.clear();
             anchorList.addAll(loadAnchors());
@@ -73,9 +74,7 @@ public class DataManager implements ISoundLists {
             return anchorNBT;
         }
 
-        anchorNBT.setInteger("X", (int) anchor.getAnchorPos().x);
-        anchorNBT.setInteger("Y", (int) anchor.getAnchorPos().y);
-        anchorNBT.setInteger("Z", (int) anchor.getAnchorPos().z);
+        anchorNBT.setTag("POS", NBTUtil.createPosTag(anchor.getAnchorPos()));
         anchorNBT.setString("DIM", anchor.getDimension());
         anchorNBT.setInteger("RAD", anchor.getRadius());
         anchor.getMuffledSounds()
@@ -93,13 +92,13 @@ public class DataManager implements ISoundLists {
             muffledSounds.put(key, muffledNBT.getFloat(key));
         }
 
-        if (!nbt.hasKey("X") || !nbt.hasKey("Y") || !nbt.hasKey("Z")) {
+        if (!nbt.hasKey("POS")) {
             return new Anchor(nbt.getInteger("ID"), nbt.getString("NAME"));
         } else {
             return new Anchor(
                 nbt.getInteger("ID"),
                 nbt.getString("NAME"),
-                new Vec3d(nbt.getInteger("X"), nbt.getInteger("Y"), nbt.getInteger("Z")),
+                NBTUtil.getPosFromTag(nbt.getCompoundTag("POS")),
                 nbt.getString("DIM"),
                 nbt.getInteger("RAD"),
                 muffledSounds);

@@ -5,7 +5,6 @@ import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
-import com.leobeliik.extremesoundmuffler.utils.ComparableResource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -18,21 +17,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.leobeliik.extremesoundmuffler.utils.Icon.*;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_OFF;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_ON;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.PLAY;
 
 public class MuffledSlider extends ESMButton implements ISoundLists {
 
     private final Anchor anchor;
     private float sliderValue;
     private ESMButton btnToggleSound;
-    private final ComparableResource sound;
+    private final ResourceLocation sound;
     public static ResourceLocation tickSound;
     public static boolean showSlider = false;
     private boolean isDragging;
     private final List<ESMButton> subButtons = new ArrayList<>();
     private boolean muffled = false;
 
-    public MuffledSlider(int x, int y, int width, int height, float sliderValue, ComparableResource sound,
+    public MuffledSlider(int x, int y, int width, int height, float sliderValue, ResourceLocation sound,
                          Anchor anchor) {
         super(0, x, y, width, height, sound.toString());
         this.sliderValue = sliderValue;
@@ -43,7 +44,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
-        if (!visible) return;
+        if (!isVisible()) return;
         SoundMuffler.renderGui();
         setTextColor(muffled ? cyanText : whiteText);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -61,44 +62,44 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private void drawMessage(Minecraft minecraft, int mouseX, int mouseY) {
         FontRenderer font = minecraft.fontRenderer;
         int v = Math.max(width, font.getStringWidth(displayString));
-        if (showSlider && visible && isMouseOver(mouseX, mouseY)) {
+        if (showSlider && isMouseOver(mouseX, mouseY)) {
             drawCenteredString(
                 font,
                 "Volume: " + (int) (sliderValue * 100),
-                this.x + (this.width / 2),
-                this.y + 2,
+                x + (width / 2),
+                y + 2,
                 whiteText); // title
         } else {
             String msgTruncated;
             if (isMouseOver(mouseX, mouseY)) {
                 msgTruncated = displayString;
                 drawRect(
-                    this.x + this.width + 3,
-                    this.y,
-                    this.x + v + 3,
-                    this.y + font.FONT_HEIGHT + 2,
+                    x + width + 3,
+                    y,
+                    x + v + 3,
+                    y + font.FONT_HEIGHT + 2,
                     darkBG);
             } else {
                 msgTruncated = font.trimStringToWidth(displayString, 205);
             }
-            font.drawStringWithShadow(msgTruncated, this.x + 2, this.y + 2, textColor); // title
+            font.drawStringWithShadow(msgTruncated, x + 2, y + 2, textColor); // title
         }
     }
 
     private void drawGradient(int mouseX, int mouseY) {
         if (muffled) {
             drawTexturedModalRect(
-                this.x,
-                this.y - 1,
+                x,
+                y - 1,
                 0,
                 234,
                 (int) (sliderValue * (width - 6)) + 5,
                 height + 1); // draw bg
 
-            if (isMouseOver(mouseX, mouseY)) {
+            if (isMouseOver(mouseX, mouseY) && showSlider) {
                 drawTexturedModalRect(
-                    this.x + (int) (sliderValue * (width - 6)) + 1,
-                    this.y + 1,
+                    x + (int) (sliderValue * (width - 6)) + 1,
+                    y + 1,
                     32,
                     224,
                     5,
@@ -116,9 +117,9 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
 
     public void refreshButtons() {
         subButtons.clear();
-        int x = Config.getLeftButtons() ? this.x - 24 : this.x + width + 5;
-        subButtons.add(btnToggleSound = new ESMButton(0, x, this.y, 11, 11, "", this::toggleSound));
-        subButtons.add(new PlaySoundButton(btnToggleSound.x + 12, this.y, sound).setIcon(PLAY));
+        int aX = Config.getLeftButtons() ? x - 24 : x + width + 5;
+        subButtons.add(btnToggleSound = new ESMButton(0, aX, y, 11, 11, "", this::toggleSound));
+        subButtons.add(new PlaySoundButton(btnToggleSound.x + 12, y, sound).setIcon(PLAY));
     }
 
     public ESMButton getBtnToggleSound() {
@@ -181,7 +182,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         if (isMouseOver(mouseX, mouseY)) {
             isDragging = true;
             showSlider = true;
-            tickSound = this.sound;
+            tickSound = sound;
             return true;
         }
 
