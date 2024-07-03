@@ -1,33 +1,5 @@
 package com.leobeliik.extremesoundmuffler.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.storage.ThreadedFileIOBase;
-
-import org.apache.commons.io.FileUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -36,8 +8,20 @@ import com.google.gson.stream.JsonReader;
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.storage.ThreadedFileIOBase;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.commons.io.FileUtils;
+
+import javax.annotation.Nullable;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class DataManager implements ISoundLists {
@@ -128,7 +112,8 @@ public class DataManager implements ISoundLists {
             new FileOutputStream("ESM/soundsMuffled.dat"),
             StandardCharsets.UTF_8)) {
             writer.write(gson.toJson(muffledSounds));
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
     private static Map<String, Float> loadMuffledMap() {

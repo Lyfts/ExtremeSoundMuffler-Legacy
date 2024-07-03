@@ -1,9 +1,6 @@
 package com.leobeliik.extremesoundmuffler.utils;
 
-import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
+import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -12,7 +9,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.DimensionManager;
 
-import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
+import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class Anchor {
 
@@ -29,7 +28,7 @@ public class Anchor {
     }
 
     public Anchor(int id, String name, Vec3d anchorPos, String dimension, int radius,
-        SortedMap<String, Float> muffledSounds) {
+                  SortedMap<String, Float> muffledSounds) {
         this.id = id;
         this.name = name;
         this.anchorPos = anchorPos;

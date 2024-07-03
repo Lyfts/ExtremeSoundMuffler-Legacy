@@ -1,28 +1,24 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
-import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_OFF;
-import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_ON;
-import static com.leobeliik.extremesoundmuffler.utils.Icon.PLAY;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
 import com.leobeliik.extremesoundmuffler.utils.ComparableResource;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static com.leobeliik.extremesoundmuffler.utils.Icon.*;
 
 public class MuffledSlider extends ESMButton implements ISoundLists {
 
@@ -37,7 +33,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private boolean muffled = false;
 
     public MuffledSlider(int x, int y, int width, int height, float sliderValue, ComparableResource sound,
-        Anchor anchor) {
+                         Anchor anchor) {
         super(0, x, y, width, height, sound.toString());
         this.sliderValue = sliderValue;
         this.sound = sound;
