@@ -38,8 +38,8 @@
 
 ## Inventory button
 
-#### if you don't like the ESM muffler in the inventory, you can disable it in the config.
-#### if you don't like the position of the button, you can hold CTRL + left mouse button over the muffler button and drag it wherever you want.
+#### If you don't like the ESM muffler in the inventory, you can disable it in the config.
+#### If you don't like the position of the button, you can hold CTRL + left mouse button over the muffler button and drag it wherever you want.
 
 ## Most things are configurable! like:
 

@@ -499,7 +499,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         editAnchorTitleBar.setVisible(!editAnchorTitleBar.getVisible());
 
         editAnchorRadiusBar.setText(String.valueOf(anchor.getRadius()));
-        editAnchorRadiusBar.setVisible(!editAnchorRadiusBar.getVisible());;
+        editAnchorRadiusBar.setVisible(!editAnchorRadiusBar.getVisible());
 
         btnAccept.setVisible(!btnAccept.visible);
         btnCancel.setVisible(!btnCancel.visible);
