@@ -2,11 +2,11 @@
   "modListVersion": 2,
   "modList": [
     {
-      "modid": "${modId}",
-      "name": "${modName}",
+      "modid": "${modid}",
+      "name": "${modname}",
       "description": "Clientside mod that allows you to muffle (almost) any sound selectively, allowing you to choose the volume of the sound you want between 0% and 100%.",
-      "version": "${modVersion}",
-      "mcversion": "${minecraftVersion}",
+      "version": "${version}",
+      "mcversion": "${mcversion}",
       "url": "https://www.curseforge.com/minecraft/mc-mods/extreme-sound-muffler-legacy",
       "updateUrl": "",
       "authorList": [

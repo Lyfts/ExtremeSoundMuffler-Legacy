@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.storage.ThreadedFileIOBase;
 
 import org.apache.commons.io.FileUtils;
@@ -37,7 +37,7 @@ import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class DataManager implements ISoundLists {
@@ -89,9 +89,9 @@ public class DataManager implements ISoundLists {
             return anchorNBT;
         }
 
-        anchorNBT.setInteger("X", (int) anchor.getAnchorPos().xCoord);
-        anchorNBT.setInteger("Y", (int) anchor.getAnchorPos().yCoord);
-        anchorNBT.setInteger("Z", (int) anchor.getAnchorPos().zCoord);
+        anchorNBT.setInteger("X", (int) anchor.getAnchorPos().x);
+        anchorNBT.setInteger("Y", (int) anchor.getAnchorPos().y);
+        anchorNBT.setInteger("Z", (int) anchor.getAnchorPos().z);
         anchorNBT.setString("DIM", anchor.getDimension());
         anchorNBT.setInteger("RAD", anchor.getRadius());
         anchor.getMuffledSounds()
@@ -105,7 +105,7 @@ public class DataManager implements ISoundLists {
         SortedMap<String, Float> muffledSounds = new TreeMap<>();
         NBTTagCompound muffledNBT = nbt.getCompoundTag("MUFFLED");
 
-        for (String key : muffledNBT.func_150296_c()) {
+        for (String key : muffledNBT.getKeySet()) {
             muffledSounds.put(key, muffledNBT.getFloat(key));
         }
 
@@ -115,7 +115,7 @@ public class DataManager implements ISoundLists {
             return new Anchor(
                 nbt.getInteger("ID"),
                 nbt.getString("NAME"),
-                Vec3.createVectorHelper(nbt.getInteger("X"), nbt.getInteger("Y"), nbt.getInteger("Z")),
+                new Vec3d(nbt.getInteger("X"), nbt.getInteger("Y"), nbt.getInteger("Z")),
                 nbt.getString("DIM"),
                 nbt.getInteger("RAD"),
                 muffledSounds);
@@ -160,7 +160,7 @@ public class DataManager implements ISoundLists {
         }
 
         List<Anchor> temp = new ArrayList<>();
-        for (int i = 0; i < anchorsNBT.func_150296_c()
+        for (int i = 0; i < anchorsNBT.getKeySet()
             .size(); i++) {
             temp.add(deserializeAnchor(anchorsNBT.getCompoundTag("Anchor" + i)));
         }
@@ -168,7 +168,7 @@ public class DataManager implements ISoundLists {
     }
 
     public static void writeNBT(File file, NBTTagCompound tag) {
-        ThreadedFileIOBase.threadedIOInstance.queueIO(() -> {
+        ThreadedFileIOBase.getThreadedIOInstance().queueIO(() -> {
             try (FileOutputStream stream = FileUtils.openOutputStream(file)) {
                 CompressedStreamTools.writeCompressed(tag, stream);
             } catch (Exception ex) {
