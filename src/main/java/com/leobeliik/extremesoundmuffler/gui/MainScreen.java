@@ -239,7 +239,9 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         soundsList.clear();
         switch (listMode) {
             case RECENT -> {
-                soundsList.addAll(getMuffledSounds().keySet());
+                if(!Config.hideMuffledFromRecent) {
+                    soundsList.addAll(getMuffledSounds().keySet());
+                }
                 soundsList.addAll(recentSoundsList);
             }
             case ALL -> {

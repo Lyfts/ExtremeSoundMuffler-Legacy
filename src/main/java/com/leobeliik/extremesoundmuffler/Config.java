@@ -20,6 +20,7 @@ public class Config {
     private static boolean useDarkTheme;
     private static int invButtonHorizontal;
     private static int invButtonVertical;
+    public static boolean hideMuffledFromRecent;
     static String CATEGORY_GENERAL = "general";
     static String CATEGORY_INVENTORY_BUTTON = "inventory_button";
     static String CATEGORY_ANCHORS = "Anchors";
@@ -75,6 +76,11 @@ public class Config {
             Integer.MAX_VALUE,
             "Coordinates of the Muffler button in the player inventory. You can change this in game by holding CTRL and LMB over the button and dragging it around");
         disableAnchors = config.getBoolean("disableAnchors", CATEGORY_ANCHORS, false, "Disable the Anchors?");
+        hideMuffledFromRecent = config.getBoolean(
+            "hideMuffledFromRecent",
+            CATEGORY_GENERAL,
+            true,
+            "Hide non-recent muffled sounds from the recent sounds list");
         config.save();
     }
 
