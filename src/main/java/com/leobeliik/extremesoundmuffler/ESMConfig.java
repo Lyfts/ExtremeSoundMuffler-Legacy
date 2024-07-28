@@ -1,134 +1,109 @@
 package com.leobeliik.extremesoundmuffler;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Mod.EventBusSubscriber(modid = SoundMuffler.MODID)
+@Config(modid = SoundMuffler.MODID, category = "")
 public class ESMConfig {
 
-    public static Configuration config;
-    private static String[] forbiddenSounds;
-    private static boolean lawfulAllList;
-    private static boolean disableInventoryButton;
-    private static boolean disableAnchors;
-    private static boolean leftButtons;
-    private static double defaultMuteVolume;
-    private static boolean showTip;
-    private static boolean useDarkTheme;
-    private static int invButtonHorizontal;
-    private static int invButtonVertical;
-    static String CATEGORY_GENERAL = "general";
-    static String CATEGORY_INVENTORY_BUTTON = "inventory_button";
-    static String CATEGORY_ANCHORS = "Anchors";
+    @Config.LangKey("stat.generalButton")
+    public static final General GENERAL = new General();
 
-    static void init(FMLPreInitializationEvent event) {
-        config = new Configuration(event.getSuggestedConfigurationFile());
-        config.load();
-        buildConfig();
-        MinecraftForge.EVENT_BUS.register(new ESMConfig());
+    @Config.Name("inventory_button")
+    @Config.LangKey("stat.inventoryButton")
+    @Config.Comment("Buttons can be moved by holding CTRL and LMB over the button and dragging it around")
+    public static final Buttons BUTTONS = new Buttons();
+
+    public static final Anchors ANCHORS = new Anchors();
+
+    public static class General {
+        @Config.Comment("Blacklisted Sounds - add the name of the sounds to blacklist, separated with comma")
+        public String[] forbiddenSounds = new String[]{"ui.", "music.", "ambient."};
+
+        @Config.Comment("Allow the \"ALL\" sounds list to include the blacklisted sounds?")
+        public boolean lawfulAllList = false;
+
+        @Config.Comment("Move the muffle and play buttons to the left side of the GUI")
+        public boolean leftButtons = false;
+
+        @Config.Comment("Volume set when pressed the mute button by default")
+        @Config.RangeDouble(min = 0, max = 0.99)
+        @Config.SlidingOption
+        public double defaultMuteVolume = 0.0D;
+
+        @Config.Comment("Show tips in the Muffler screen?")
+        public boolean showTip = true;
+
+        @Config.Comment("Whether or not use the dark theme")
+        public boolean useDarkTheme = false;
     }
 
-    private static void buildConfig() {
-        forbiddenSounds = config.getStringList(
-            "forbiddenSounds",
-            CATEGORY_GENERAL,
-            new String[]{"ui.", "music.", "ambient."},
-            "Blacklisted Sounds - add the name of the sounds to blacklist, separated with comma");
-        lawfulAllList = config.getBoolean(
-            "lawfulAllList",
-            CATEGORY_GENERAL,
-            false,
-            "Allow the \"ALL\" sounds list to include the blacklisted sounds?");
-        defaultMuteVolume = config
-            .get(CATEGORY_GENERAL, "defaultMuteVolume", 0, "Volume set when pressed the mute button by default", 0, 0.9)
-            .getDouble();
-        leftButtons = config.getBoolean(
-            "leftButtons",
-            CATEGORY_GENERAL,
-            false,
-            "Set to true to move the muffle and play buttons to the left side of the GUI");
-        showTip = config.getBoolean("showTip", CATEGORY_GENERAL, true, "Show tips in the Muffler screen?");
-        useDarkTheme = config.getBoolean("useDarkTheme", CATEGORY_GENERAL, false, "Whether or not use the dark theme");
+    public static class Buttons {
+        @Config.Comment("Disable the Muffle button in the player inventory?")
+        public boolean disableInventoryButton = false;
 
-        disableInventoryButton = config.getBoolean(
-            "disableInventoryButton",
-            CATEGORY_INVENTORY_BUTTON,
-            false,
-            "Disable the Muffle button in the player inventory?");
-        invButtonHorizontal = config.getInt(
-            "invButtonX",
-            CATEGORY_INVENTORY_BUTTON,
-            75,
-            Integer.MIN_VALUE,
-            Integer.MAX_VALUE,
-            "Coordinates of the Muffler button in the player inventory. You can change this in game by holding CTRL and LMB over the button and dragging it around");
-        invButtonVertical = config.getInt(
-            "invButtonY",
-            CATEGORY_INVENTORY_BUTTON,
-            7,
-            Integer.MIN_VALUE,
-            Integer.MAX_VALUE,
-            "Coordinates of the Muffler button in the player inventory. You can change this in game by holding CTRL and LMB over the button and dragging it around");
-        disableAnchors = config.getBoolean("disableAnchors", CATEGORY_ANCHORS, false, "Disable the Anchors?");
-        config.save();
+        @Config.Comment("X coordinate of the Muffler button in the player inventory.")
+        public int invButtonX = 75;
+
+        @Config.Comment("Y coordinate of the Muffler button in the player inventory.")
+        public int invButtonY = 7;
+    }
+
+    public static class Anchors {
+        @Config.Comment("Disable the Anchors?")
+        public boolean disableAnchors = false;
     }
 
     static boolean getDisableInventoryButton() {
-        return disableInventoryButton;
+        return BUTTONS.disableInventoryButton;
     }
 
     static boolean useDarkTheme() {
-        return useDarkTheme;
+        return GENERAL.useDarkTheme;
     }
 
     static String[] getForbiddenSounds() {
-        return forbiddenSounds;
+        return GENERAL.forbiddenSounds;
     }
 
     public static boolean getLawfulAllList() {
-        return lawfulAllList;
+        return GENERAL.lawfulAllList;
     }
 
     public static boolean getDisableAnchors() {
-        return disableAnchors;
+        return ANCHORS.disableAnchors;
     }
 
     public static float getDefaultMuteVolume() {
-        return (float) defaultMuteVolume;
+        return (float) GENERAL.defaultMuteVolume;
     }
 
     public static boolean getLeftButtons() {
-        return leftButtons;
+        return GENERAL.leftButtons;
     }
 
     public static boolean getShowTip() {
-        return showTip;
-    }
-
-    static int getInvButtonHorizontal() {
-        return invButtonHorizontal;
+        return GENERAL.showTip;
     }
 
     public static void setInvButtonPosition(int x, int y) {
-        ESMConfig.invButtonHorizontal = x;
-        config.get(CATEGORY_INVENTORY_BUTTON, "invButtonX", invButtonHorizontal)
-            .set(x);
-        ESMConfig.invButtonVertical = y;
-        config.get(CATEGORY_INVENTORY_BUTTON, "invButtonY", invButtonVertical)
-            .set(y);
-        config.save();
+        BUTTONS.invButtonX = x;
+        BUTTONS.invButtonY = y;
+        sync();
     }
 
-    static int getInvButtonVertical() {
-        return invButtonVertical;
+    public static void sync() {
+        ConfigManager.sync(SoundMuffler.MODID, Config.Type.INSTANCE);
     }
 
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(SoundMuffler.MODID)) {
-            buildConfig();
+            sync();
         }
     }
 }

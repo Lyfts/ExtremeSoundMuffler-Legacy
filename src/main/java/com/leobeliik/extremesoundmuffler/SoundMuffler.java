@@ -9,7 +9,6 @@ import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -19,7 +18,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,8 +26,8 @@ import org.apache.logging.log4j.Logger;
     version = Tags.VERSION,
     name = SoundMuffler.MODNAME,
     acceptedMinecraftVersions = "[1.12.2]",
-    acceptableRemoteVersions = "*",
-    guiFactory = "com.leobeliik.extremesoundmuffler.GuiFactory")
+    acceptableRemoteVersions = "*")
+@Mod.EventBusSubscriber(value = Side.CLIENT)
 public class SoundMuffler {
 
     public static final String MODID = "extremesoundmuffler";
@@ -43,7 +41,6 @@ public class SoundMuffler {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(this);
         proxy.preInit(event);
     }
 
@@ -57,17 +54,24 @@ public class SoundMuffler {
         proxy.postInit(event);
     }
 
+    public static int getHotkey() {
+        return ClientProxy.openMufflerScreen.getKeyCode();
+    }
+
+    public static void renderGui() {
+        String texture = ESMConfig.useDarkTheme() ? "textures/gui/sm_gui_dark.png" : "textures/gui/sm_gui.png";
+        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(SoundMuffler.MODID, texture));
+    }
+
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void onPlayerLoggin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+    public static void onPlayerLoggin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         DataManager.loadData(
             event.getManager().getRemoteAddress()
                 .toString());
     }
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
+    public static void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
         GuiScreen screen = event.getGui();
         if (ESMConfig.getDisableInventoryButton() || screen instanceof GuiContainerCreative) {
             return;
@@ -75,28 +79,18 @@ public class SoundMuffler {
         try {
             if (screen instanceof InventoryEffectRenderer inv) {
                 event.getButtonList()
-                    .add(new InvButton(inv, ESMConfig.getInvButtonHorizontal(), ESMConfig.getInvButtonVertical()));
+                    .add(new InvButton(inv, ESMConfig.BUTTONS.invButtonX, ESMConfig.BUTTONS.invButtonY));
             }
         } catch (NullPointerException e) {
-            LOGGER.error(
-                "Extreme sound muffler: Error trying to add the muffler button in the player's inventory. \n" + e);
+            SoundMuffler.LOGGER.error(
+                "Extreme sound muffler: Error trying to add the muffler button in the player's inventory. \n", e);
         }
     }
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public static void onKeyInput(InputEvent.KeyInputEvent event) {
         if (ClientProxy.openMufflerScreen.isPressed()) {
             MainScreen.open();
         }
-    }
-
-    public static int getHotkey() {
-        return ClientProxy.openMufflerScreen.getKeyCode();
-    }
-
-    public static void renderGui() {
-        String texture = ESMConfig.useDarkTheme() ? "textures/gui/sm_gui_dark.png" : "textures/gui/sm_gui.png";
-        Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(SoundMuffler.MODID, texture));
     }
 }

@@ -9,16 +9,14 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class ClientProxy extends CommonProxy {
 
-    public static KeyBinding openMufflerScreen;
+    public static final KeyBinding openMufflerScreen = new KeyBinding("Open sound muffler screen", Keyboard.KEY_NONE, "ESM:Legacy");
 
     public void preInit(FMLPreInitializationEvent event) {
-        openMufflerScreen = new KeyBinding("Open sound muffler screen", Keyboard.KEY_NONE, "ESM:Legacy");
+        ESMConfig.sync();
         ClientRegistry.registerKeyBinding(openMufflerScreen);
-        ESMConfig.init(event);
         ISoundLists.forbiddenSounds.addAll(Arrays.asList(ESMConfig.getForbiddenSounds()));
     }
 
