@@ -1,5 +1,31 @@
 package com.leobeliik.extremesoundmuffler.gui;
 
+import static com.leobeliik.extremesoundmuffler.SoundMuffler.renderGui;
+import static com.leobeliik.extremesoundmuffler.gui.MainScreen.ListMode.MUFFLED;
+import static com.leobeliik.extremesoundmuffler.gui.MainScreen.ListMode.RECENT;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.ANCHOR;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.EDIT_ANCHOR;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.RESET;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.ResourceLocation;
+
+import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
 import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.buttons.ESMButton;
@@ -9,30 +35,8 @@ import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
 import com.leobeliik.extremesoundmuffler.utils.DataManager;
 import com.leobeliik.extremesoundmuffler.utils.Tips;
+
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.ResourceLocation;
-import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Pattern;
-
-import static com.leobeliik.extremesoundmuffler.SoundMuffler.renderGui;
-import static com.leobeliik.extremesoundmuffler.gui.MainScreen.ListMode.MUFFLED;
-import static com.leobeliik.extremesoundmuffler.gui.MainScreen.ListMode.RECENT;
-import static com.leobeliik.extremesoundmuffler.utils.Icon.ANCHOR;
-import static com.leobeliik.extremesoundmuffler.utils.Icon.EDIT_ANCHOR;
-import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE;
-import static com.leobeliik.extremesoundmuffler.utils.Icon.RESET;
 
 public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
 
@@ -95,11 +99,11 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     @Nullable
     public static Anchor getAnchorByName(String name) {
         return anchorList.stream()
-            .filter(
-                a -> a.getName()
-                    .equals(name))
-            .findFirst()
-            .orElse(null);
+                .filter(
+                        a -> a.getName()
+                                .equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     @Nullable
@@ -135,15 +139,16 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         addAnchorButtons();
 
         String display = StringUtils.capitalize(
-            listMode.toString()
-                .toLowerCase());
+                listMode.toString()
+                        .toLowerCase());
         addButton(
-            btnToggleSoundsList = new ESMButton(0, getX() + 13, getY() + 181, 52, 13, display, this::toggleSoundList)
-                .setRenderText(true)
-                .setTooltip("Showing " + display + " Sounds", false));
+                btnToggleSoundsList = new ESMButton(0, getX() + 13, getY() + 181, 52, 13, display,
+                        this::toggleSoundList)
+                                .setRenderText(true)
+                                .setTooltip("Showing " + display + " Sounds", false));
         addButton(
-            btnToggleMuffled = new ESMButton(0, getX() + 229, getY() + 179, 17, 17, () -> isMuffling = !isMuffling)
-                .setTooltip(isMuffling ? "Stop Muffling" : "Start Muffling", false));
+                btnToggleMuffled = new ESMButton(0, getX() + 229, getY() + 179, 17, 17, () -> isMuffling = !isMuffling)
+                        .setTooltip(isMuffling ? "Stop Muffling" : "Start Muffling", false));
         addButton(btnDelete = new ESMButton(1, getX() + 205, getY() + 179, 17, 17, () -> {
             anchor = getAnchorByName(screenTitle);
             if (clearRecentSounds()) {
@@ -169,31 +174,33 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         }).setTooltip(this::getDeleteTooltip, false));
 
         addButton(
-            btnSetAnchor = new ESMButton(
-                2,
-                getX() + 260,
-                getY() + 62,
-                11,
-                11,
-                () -> Objects.requireNonNull(getAnchorByName(screenTitle))
-                    .setAnchor()).setVisible(!isMain())
-                .setTooltip(
-                    () -> btnSetAnchor.mouseOver && !editAnchorTitleBar.getVisible() ? "Set Anchor" : "",
-                    true));
+                btnSetAnchor = new ESMButton(
+                        2,
+                        getX() + 260,
+                        getY() + 62,
+                        11,
+                        11,
+                        () -> Objects.requireNonNull(getAnchorByName(screenTitle))
+                                .setAnchor()).setVisible(!isMain())
+                                        .setTooltip(
+                                                () -> btnSetAnchor.mouseOver && !editAnchorTitleBar.getVisible() ?
+                                                        "Set Anchor" : "",
+                                                true));
 
         addButton(
-            btnEditAnchor = new ESMButton(
-                3,
-                getX() + 274,
-                getY() + 62,
-                11,
-                11,
-                () -> editTitle(Objects.requireNonNull(getAnchorByName(screenTitle))))
-                .setVisible(() -> !isMain() && anchor != null && anchor.getAnchorPos() != null)
-                .setIcon(EDIT_ANCHOR)
-                .setTooltip(
-                    () -> btnEditAnchor.mouseOver && !editAnchorTitleBar.getVisible() ? "Edit Anchor" : "",
-                    true));
+                btnEditAnchor = new ESMButton(
+                        3,
+                        getX() + 274,
+                        getY() + 62,
+                        11,
+                        11,
+                        () -> editTitle(Objects.requireNonNull(getAnchorByName(screenTitle))))
+                                .setVisible(() -> !isMain() && anchor != null && anchor.getAnchorPos() != null)
+                                .setIcon(EDIT_ANCHOR)
+                                .setTooltip(
+                                        () -> btnEditAnchor.mouseOver && !editAnchorTitleBar.getVisible() ?
+                                                "Edit Anchor" : "",
+                                        true));
 
         addEditAnchorButtons();
 
@@ -201,28 +208,28 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         searchBar.setText(searchBarText);
         searchBar.setEnableBackgroundDrawing(false);
         addButton(
-            new ESMButton(
-                0,
-                getX() + 10,
-                getY() + 22,
-                13,
-                20,
-                () -> listScroll(
-                    !searchBar.getText()
-                        .isEmpty() ? filteredButtons : buttonList,
-                    -1)).setTooltip("Previous Sounds", true));
+                new ESMButton(
+                        0,
+                        getX() + 10,
+                        getY() + 22,
+                        13,
+                        20,
+                        () -> listScroll(
+                                !searchBar.getText()
+                                        .isEmpty() ? filteredButtons : buttonList,
+                                -1)).setTooltip("Previous Sounds", true));
 
         addButton(
-            new ESMButton(
-                0,
-                getX() + 233,
-                getY() + 22,
-                13,
-                20,
-                () -> listScroll(
-                    !searchBar.getText()
-                        .isEmpty() ? filteredButtons : buttonList,
-                    1)).setTooltip("Next Sounds", true));
+                new ESMButton(
+                        0,
+                        getX() + 233,
+                        getY() + 22,
+                        13,
+                        20,
+                        () -> listScroll(
+                                !searchBar.getText()
+                                        .isEmpty() ? filteredButtons : buttonList,
+                                1)).setTooltip("Next Sounds", true));
         updateText();
     }
 
@@ -237,19 +244,19 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         soundsList.clear();
         switch (listMode) {
             case RECENT -> {
-                if(!ESMConfig.GENERAL.hideMuffledFromRecent) {
+                if (!ESMConfig.GENERAL.hideMuffledFromRecent) {
                     soundsList.addAll(getMuffledSounds().keySet());
                 }
                 soundsList.addAll(recentSoundsList);
             }
             case ALL -> {
                 soundsList.addAll(Minecraft.getMinecraft()
-                    .getSoundHandler().soundRegistry.getKeys());
+                        .getSoundHandler().soundRegistry.getKeys());
                 if (ESMConfig.getLawfulAllList()) {
                     forbiddenSounds.forEach(
-                        fs -> soundsList.removeIf(
-                            sl -> sl.toString()
-                                .contains(fs)));
+                            fs -> soundsList.removeIf(
+                                    sl -> sl.toString()
+                                            .contains(fs)));
                 }
             }
             case MUFFLED -> soundsList.addAll(getMuffledSounds().keySet());
@@ -282,9 +289,9 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         for (int i = 0; i <= 9; i++) {
             ESMButton btnAnchor;
             if (isAnchorsDisabled) {
-                String[] disabledMsg = {"-", "D", "i", "s", "a", "b", "l", "e", "d", "-"};
+                String[] disabledMsg = { "-", "D", "i", "s", "a", "b", "l", "e", "d", "-" };
                 btnAnchor = new ESMButton(0, buttonW, getY() + 24, 16, 16, disabledMsg[i]).setRenderText(true)
-                    .setEnabled(false);
+                        .setEnabled(false);
             } else {
                 int finalI = i;
                 btnAnchor = new ESMButton(0, buttonW, getY() + 24, 16, 16, (String.valueOf(finalI)), () -> {
@@ -302,71 +309,69 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 if (!anchorList.isEmpty()) {
                     btnAnchor.setTextColor(
                             anchorList.get(i)
-                                .getAnchorPos() != null ? greenText : whiteText)
-                        .setIcon(isActiveAnchor(btnAnchor) ? ANCHOR : null, -5, -2, 27, 22);
+                                    .getAnchorPos() != null ? greenText : whiteText)
+                            .setIcon(isActiveAnchor(btnAnchor) ? ANCHOR : null, -5, -2, 27, 22);
                 }
             }
 
             addButton(
-                btnAnchor.setTooltip(
-                    isAnchorsDisabled ? "Anchors are disabled"
-                                      : anchorList.get(i)
-                        .getName(),
-                    true));
+                    btnAnchor.setTooltip(
+                            isAnchorsDisabled ? "Anchors are disabled" : anchorList.get(i)
+                                    .getName(),
+                            true));
             buttonW += 20;
         }
     }
 
     private void addEditAnchorButtons() {
-
         textFields.add(
-            editAnchorTitleBar = new GuiTextField(0, fontRenderer, getX() + 302, btnEditAnchor.y + 20, 84, 11));
+                editAnchorTitleBar = new GuiTextField(0, fontRenderer, getX() + 302, btnEditAnchor.y + 20, 84, 11));
         editAnchorTitleBar.setVisible(false);
 
         textFields.add(
-            editAnchorRadiusBar = new GuiTextField(
-                0,
-                fontRenderer,
-                getX() + 302,
-                editAnchorTitleBar.y + 15,
-                30,
-                11));
+                editAnchorRadiusBar = new GuiTextField(
+                        0,
+                        fontRenderer,
+                        getX() + 302,
+                        editAnchorTitleBar.y + 15,
+                        30,
+                        11));
         editAnchorRadiusBar.setValidator(s -> NUMBER_PATTERN.matcher(s)
-            .matches());
+                .matches());
 
         editAnchorRadiusBar.setVisible(false);
         addButton(
-            btnAccept = new ESMButton(100, getX() + 259, editAnchorRadiusBar.y + 15, 40, 20, "Accept", () -> {
-                anchor = getAnchorByName(screenTitle);
-                if (!editAnchorTitleBar.getText()
-                    .isEmpty()
-                    && !editAnchorRadiusBar.getText()
-                    .isEmpty()
-                    && anchor != null) {
-                    int radius = Integer.parseInt(editAnchorRadiusBar.getText());
+                btnAccept = new ESMButton(100, getX() + 259, editAnchorRadiusBar.y + 15, 40, 20, "Accept", () -> {
+                    anchor = getAnchorByName(screenTitle);
+                    if (!editAnchorTitleBar.getText()
+                            .isEmpty() &&
+                            !editAnchorRadiusBar.getText()
+                                    .isEmpty() &&
+                            anchor != null) {
+                        int radius = Integer.parseInt(editAnchorRadiusBar.getText());
 
-                    if (radius > 32) {
-                        radius = 32;
-                    } else if (radius < 1) {
-                        radius = 1;
+                        if (radius > 32) {
+                            radius = 32;
+                        } else if (radius < 1) {
+                            radius = 1;
+                        }
+
+                        anchor.editAnchor(editAnchorTitleBar.getText(), radius);
+                        screenTitle = editAnchorTitleBar.getText();
+                        editTitle(anchor);
                     }
-
-                    anchor.editAnchor(editAnchorTitleBar.getText(), radius);
-                    screenTitle = editAnchorTitleBar.getText();
-                    editTitle(anchor);
-                }
-            }).renderNormalButton(true)
-                .setVisible(false));
+                }).renderNormalButton(true)
+                        .setVisible(false));
         addButton(
-            btnCancel = new ESMButton(
-                101,
-                getX() + 300,
-                editAnchorRadiusBar.y + 15,
-                40,
-                20,
-                "Cancel",
-                () -> editTitle(Objects.requireNonNull(getAnchorByName(screenTitle)))).renderNormalButton(true)
-                .setVisible(false));
+                btnCancel = new ESMButton(
+                        101,
+                        getX() + 300,
+                        editAnchorRadiusBar.y + 15,
+                        40,
+                        20,
+                        "Cancel",
+                        () -> editTitle(Objects.requireNonNull(getAnchorByName(screenTitle)))).renderNormalButton(true)
+                                .setVisible(false));
     }
 
     private void renderButtonsTextures(int mouseX, int mouseY) {
@@ -421,11 +426,11 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         y = editAnchorTitleBar.y;
         if (editAnchorRadiusBar.getVisible()) {
             drawRect(
-                x - 4,
-                y - 4,
-                editAnchorTitleBar.x + editAnchorTitleBar.getWidth() + 10,
-                btnAccept.y + 23,
-                darkBG);
+                    x - 4,
+                    y - 4,
+                    editAnchorTitleBar.x + editAnchorTitleBar.getWidth() + 10,
+                    btnAccept.y + 23,
+                    darkBG);
             fontRenderer.drawString("Title: ", x - 2, y + 1, whiteText);
             fontRenderer.drawString("Radius: ", x - 2, editAnchorRadiusBar.y + 1, whiteText);
 
@@ -444,7 +449,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         y = searchBar.y;
         String searchHint = "Search";
         if (!searchBar.isFocused() && searchBar.getText()
-            .isEmpty()) {
+                .isEmpty()) {
             drawString(fontRenderer, searchHint, x + 1, y + 1, -1);
         }
 
@@ -483,7 +488,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         int scroll = Mouse.getEventDWheel();
         if (scroll != 0) {
             if (searchBar.getText()
-                .isEmpty()) {
+                    .isEmpty()) {
                 listScroll(buttonList, scroll * -1);
             } else {
                 listScroll(filteredButtons, scroll * -1);
@@ -532,8 +537,8 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         for (GuiButton button : buttonList) {
             if (button instanceof MuffledSlider btn) {
                 if (btn.displayString.contains(
-                    searchBar.getText()
-                        .toLowerCase())) {
+                        searchBar.getText()
+                                .toLowerCase())) {
                     if (!filteredButtons.contains(btn)) {
                         filteredButtons.add(btn);
                     }
@@ -552,7 +557,6 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-
         // Search bar, Edit title bar & Edit Anchor Radius bar looses focus when pressed "Enter" or "Intro"
         if (keyCode == Keyboard.KEY_RETURN) {
             searchBar.setFocused(false);
@@ -571,10 +575,9 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         }
 
         // Close screen when press "E" or the mod hotkey outside the search bar or edit title bar
-        if (!searchBar.isFocused() && !editAnchorTitleBar.isFocused()
-            && !editAnchorRadiusBar.isFocused()
-            && (minecraft.gameSettings.keyBindInventory.getKeyCode() == keyCode
-                || keyCode == SoundMuffler.getHotkey())) {
+        if (!searchBar.isFocused() && !editAnchorTitleBar.isFocused() && !editAnchorRadiusBar.isFocused() &&
+                (minecraft.gameSettings.keyBindInventory.getKeyCode() == keyCode ||
+                        keyCode == SoundMuffler.getHotkey())) {
             this.onGuiClosed();
             mc.setIngameFocus();
             filteredButtons.clear();
@@ -634,8 +637,8 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         }
 
         btnToggleSoundsList.displayString = StringUtils.capitalize(
-            listMode.toString()
-                .toLowerCase());
+                listMode.toString()
+                        .toLowerCase());
         buttonList.clear();
         open(screenTitle, listMode, searchBar.getText());
     }

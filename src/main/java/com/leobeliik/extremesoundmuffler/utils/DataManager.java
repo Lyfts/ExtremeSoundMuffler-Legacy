@@ -1,5 +1,23 @@
 package com.leobeliik.extremesoundmuffler.utils;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.ThreadedFileIOBase;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import org.apache.commons.io.FileUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -8,23 +26,9 @@ import com.google.gson.stream.JsonReader;
 import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
+
 import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.ThreadedFileIOBase;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.apache.commons.io.FileUtils;
-
-import javax.annotation.Nullable;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class DataManager implements ISoundLists {
@@ -32,7 +36,7 @@ public class DataManager implements ISoundLists {
     public static String identifier;
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting()
-        .create();
+            .create();
 
     public static void loadData(String address) {
         identifier = getIdentifier(address);
@@ -53,19 +57,18 @@ public class DataManager implements ISoundLists {
 
     private static String getIdentifier(String address) {
         if (Minecraft.getMinecraft()
-            .isSingleplayer()) {
+                .isSingleplayer()) {
             return FMLCommonHandler.instance()
-                .getMinecraftServerInstance()
-                .getFolderName();
+                    .getMinecraftServerInstance()
+                    .getFolderName();
         }
 
         int index = address.indexOf("/") + 1;
         return address.substring(index)
-            .replace(":", ".");
+                .replace(":", ".");
     }
 
     private static NBTTagCompound serializeAnchor(Anchor anchor) {
-
         NBTTagCompound anchorNBT = new NBTTagCompound();
         NBTTagCompound muffledNBT = new NBTTagCompound();
 
@@ -80,7 +83,7 @@ public class DataManager implements ISoundLists {
         anchorNBT.setString("DIM", anchor.getDimension());
         anchorNBT.setInteger("RAD", anchor.getRadius());
         anchor.getMuffledSounds()
-            .forEach((R, F) -> muffledNBT.setFloat(R.toString(), F));
+                .forEach((R, F) -> muffledNBT.setFloat(R.toString(), F));
         anchorNBT.setTag("MUFFLED", muffledNBT);
 
         return anchorNBT;
@@ -98,29 +101,28 @@ public class DataManager implements ISoundLists {
             }
 
             return new Anchor(
-                nbt.getInteger("ID"),
-                nbt.getString("NAME"),
-                NBTUtil.getPosFromTag(nbt.getCompoundTag("POS")),
-                nbt.getString("DIM"),
-                nbt.getInteger("RAD"),
-                muffledSounds);
+                    nbt.getInteger("ID"),
+                    nbt.getString("NAME"),
+                    NBTUtil.getPosFromTag(nbt.getCompoundTag("POS")),
+                    nbt.getString("DIM"),
+                    nbt.getInteger("RAD"),
+                    muffledSounds);
         }
     }
 
     private static void saveMuffledMap() {
         new File("ESM/").mkdir();
         try (Writer writer = new OutputStreamWriter(
-            new FileOutputStream("ESM/soundsMuffled.dat"),
-            StandardCharsets.UTF_8)) {
+                new FileOutputStream("ESM/soundsMuffled.dat"),
+                StandardCharsets.UTF_8)) {
             writer.write(gson.toJson(muffledSounds));
-        } catch (IOException ignored) {
-        }
+        } catch (IOException ignored) {}
     }
 
     private static Map<String, Float> loadMuffledMap() {
         try (InputStreamReader reader = new InputStreamReader(
-            new FileInputStream("ESM/soundsMuffled.dat"),
-            StandardCharsets.UTF_8)) {
+                new FileInputStream("ESM/soundsMuffled.dat"),
+                StandardCharsets.UTF_8)) {
             return gson.fromJson(new JsonReader(reader), new TypeToken<Map<String, Float>>() {}.getType());
         } catch (JsonSyntaxException | IOException e) {
             return new HashMap<>();
@@ -141,13 +143,13 @@ public class DataManager implements ISoundLists {
         NBTTagCompound anchorsNBT = readNBT(file);
         if (anchorsNBT == null) {
             return IntStream.range(0, 10)
-                .mapToObj(i -> new Anchor(i, "Anchor " + i))
-                .collect(Collectors.toList());
+                    .mapToObj(i -> new Anchor(i, "Anchor " + i))
+                    .collect(Collectors.toList());
         }
 
         List<Anchor> temp = new ArrayList<>();
         for (int i = 0; i < anchorsNBT.getKeySet()
-            .size(); i++) {
+                .size(); i++) {
             temp.add(deserializeAnchor(anchorsNBT.getCompoundTag("Anchor" + i)));
         }
         return temp;

@@ -1,8 +1,5 @@
 package com.leobeliik.extremesoundmuffler;
 
-import com.leobeliik.extremesoundmuffler.gui.MainScreen;
-import com.leobeliik.extremesoundmuffler.gui.buttons.InvButton;
-import com.leobeliik.extremesoundmuffler.utils.DataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
@@ -18,15 +15,20 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.leobeliik.extremesoundmuffler.gui.MainScreen;
+import com.leobeliik.extremesoundmuffler.gui.buttons.InvButton;
+import com.leobeliik.extremesoundmuffler.utils.DataManager;
+
 @Mod(
-    modid = SoundMuffler.MODID,
-    version = Tags.VERSION,
-    name = SoundMuffler.MODNAME,
-    acceptedMinecraftVersions = "[1.12.2]",
-    acceptableRemoteVersions = "*")
+     modid = SoundMuffler.MODID,
+     version = Tags.VERSION,
+     name = SoundMuffler.MODNAME,
+     acceptedMinecraftVersions = "[1.12.2]",
+     acceptableRemoteVersions = "*")
 @Mod.EventBusSubscriber(value = Side.CLIENT)
 public class SoundMuffler {
 
@@ -35,8 +37,8 @@ public class SoundMuffler {
     public static final Logger LOGGER = LogManager.getLogger();
 
     @SidedProxy(
-        serverSide = "com.leobeliik.extremesoundmuffler.CommonProxy",
-        clientSide = "com.leobeliik.extremesoundmuffler.ClientProxy")
+                serverSide = "com.leobeliik.extremesoundmuffler.CommonProxy",
+                clientSide = "com.leobeliik.extremesoundmuffler.ClientProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler
@@ -66,8 +68,8 @@ public class SoundMuffler {
     @SubscribeEvent
     public static void onPlayerLoggin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         DataManager.loadData(
-            event.getManager().getRemoteAddress()
-                .toString());
+                event.getManager().getRemoteAddress()
+                        .toString());
     }
 
     @SubscribeEvent
@@ -79,11 +81,11 @@ public class SoundMuffler {
         try {
             if (screen instanceof InventoryEffectRenderer inv) {
                 event.getButtonList()
-                    .add(new InvButton(inv, ESMConfig.BUTTONS.invButtonX, ESMConfig.BUTTONS.invButtonY));
+                        .add(new InvButton(inv, ESMConfig.BUTTONS.invButtonX, ESMConfig.BUTTONS.invButtonY));
             }
         } catch (NullPointerException e) {
             SoundMuffler.LOGGER.error(
-                "Extreme sound muffler: Error trying to add the muffler button in the player's inventory. \n", e);
+                    "Extreme sound muffler: Error trying to add the muffler button in the player's inventory. \n", e);
         }
     }
 

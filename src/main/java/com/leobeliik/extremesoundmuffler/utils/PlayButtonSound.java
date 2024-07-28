@@ -4,6 +4,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+
 import org.jetbrains.annotations.NotNull;
 
 public class PlayButtonSound extends PositionedSoundRecord {

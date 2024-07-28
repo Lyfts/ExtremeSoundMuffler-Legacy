@@ -1,5 +1,13 @@
 package com.leobeliik.extremesoundmuffler.mixins.minecraft;
 
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SoundManager;
+import net.minecraft.util.ResourceLocation;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+
 import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
@@ -8,12 +16,6 @@ import com.leobeliik.extremesoundmuffler.utils.PlayButtonSound;
 import com.leobeliik.extremesoundmuffler.utils.SliderSound;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.SoundManager;
-import net.minecraft.util.ResourceLocation;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(SoundManager.class)
 public abstract class SoundMixin implements ISoundLists {
@@ -21,14 +23,14 @@ public abstract class SoundMixin implements ISoundLists {
     @Unique
     private static boolean extremeSoundMuffler$isForbidden(ISound sound) {
         return forbiddenSounds.stream().anyMatch(fs -> sound.getSoundLocation()
-            .toString()
-            .contains(fs));
+                .toString()
+                .contains(fs));
     }
 
     @ModifyReturnValue(method = "getClampedVolume", at = @At("RETURN"))
     private float checkSound(float original, @Local(ordinal = 0, argsOnly = true) ISound sound) {
-        if (extremeSoundMuffler$isForbidden(sound) || sound instanceof PlayButtonSound
-            || sound instanceof SliderSound) {
+        if (extremeSoundMuffler$isForbidden(sound) || sound instanceof PlayButtonSound ||
+                sound instanceof SliderSound) {
             return original;
         }
 
@@ -48,7 +50,7 @@ public abstract class SoundMixin implements ISoundLists {
             Anchor anchor = Anchor.getAnchor(sound);
             if (anchor != null) {
                 return original * anchor.getMuffledSounds()
-                    .get(soundLocation);
+                        .get(soundLocation);
             }
         }
         return original;

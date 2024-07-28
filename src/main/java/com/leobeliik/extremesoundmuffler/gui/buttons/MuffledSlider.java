@@ -1,12 +1,13 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
-import com.leobeliik.extremesoundmuffler.ESMConfig;
-import com.leobeliik.extremesoundmuffler.SoundMuffler;
-import com.leobeliik.extremesoundmuffler.gui.MainScreen;
-import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
-import com.leobeliik.extremesoundmuffler.utils.Anchor;
-import com.leobeliik.extremesoundmuffler.utils.PlayButtonSound;
-import com.leobeliik.extremesoundmuffler.utils.SliderSound;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_OFF;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_ON;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.PLAY;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
@@ -14,16 +15,17 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_OFF;
-import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_ON;
-import static com.leobeliik.extremesoundmuffler.utils.Icon.PLAY;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
+import com.leobeliik.extremesoundmuffler.SoundMuffler;
+import com.leobeliik.extremesoundmuffler.gui.MainScreen;
+import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
+import com.leobeliik.extremesoundmuffler.utils.Anchor;
+import com.leobeliik.extremesoundmuffler.utils.PlayButtonSound;
+import com.leobeliik.extremesoundmuffler.utils.SliderSound;
 
 public class MuffledSlider extends ESMButton implements ISoundLists {
 
@@ -75,21 +77,21 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         int v = Math.max(width, font.getStringWidth(displayString));
         if (showSlider && isMouseOver(mouseX, mouseY)) {
             drawCenteredString(
-                font,
-                "Volume: " + (int) (sliderValue * 100),
-                x + (width / 2),
-                y + 2,
-                whiteText); // title
+                    font,
+                    "Volume: " + (int) (sliderValue * 100),
+                    x + (width / 2),
+                    y + 2,
+                    whiteText); // title
         } else {
             String msgTruncated;
             if (isMouseOver(mouseX, mouseY)) {
                 msgTruncated = displayString;
                 drawRect(
-                    x + width + 3,
-                    y,
-                    x + v + 3,
-                    y + font.FONT_HEIGHT + 2,
-                    darkBG);
+                        x + width + 3,
+                        y,
+                        x + v + 3,
+                        y + font.FONT_HEIGHT + 2,
+                        darkBG);
             } else {
                 msgTruncated = font.trimStringToWidth(displayString, 205);
             }
@@ -100,21 +102,21 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private void drawGradient(int mouseX, int mouseY) {
         if (muffled) {
             drawTexturedModalRect(
-                x,
-                y - 1,
-                0,
-                234,
-                (int) (sliderValue * (width - 6)) + 5,
-                height + 1); // draw bg
+                    x,
+                    y - 1,
+                    0,
+                    234,
+                    (int) (sliderValue * (width - 6)) + 5,
+                    height + 1); // draw bg
 
             if (isMouseOver(mouseX, mouseY) && showSlider) {
                 drawTexturedModalRect(
-                    x + (int) (sliderValue * (width - 6)) + 1,
-                    y + 1,
-                    32,
-                    224,
-                    5,
-                    9); // Slider
+                        x + (int) (sliderValue * (width - 6)) + 1,
+                        y + 1,
+                        32,
+                        224,
+                        5,
+                        9); // Slider
             }
         }
     }
@@ -132,7 +134,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         int aX = ESMConfig.getLeftButtons() ? x - 24 : x + width + 5;
         subButtons.add(btnToggleSound = new ESMButton(0, aX, y, 11, 11, "", this::toggleSound));
         subButtons.add(new ESMButton(0, btnToggleSound.x + 12, y, 10, 10,
-            () -> soundHandler.playSound(new PlayButtonSound(sound))).setIcon(PLAY));
+                () -> soundHandler.playSound(new PlayButtonSound(sound))).setIcon(PLAY));
     }
 
     public ESMButton getBtnToggleSound() {
@@ -225,7 +227,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
 
     public void setTickSound(float volume) {
         SoundHandler soundHandler = Minecraft.getMinecraft()
-            .getSoundHandler();
+                .getSoundHandler();
         if (volume == 1f || !muffled) {
             stopTickSound();
             return;
@@ -238,13 +240,12 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         tickSound.setVolume(volume);
     }
 
-
     private void updateVolume() {
         if (MainScreen.isMain()) {
             muffledSounds.replace(sound, sliderValue);
         } else {
             Objects.requireNonNull(MainScreen.getCurrentAnchor())
-                .replaceSound(sound, sliderValue);
+                    .replaceSound(sound, sliderValue);
         }
     }
 

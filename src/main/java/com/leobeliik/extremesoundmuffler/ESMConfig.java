@@ -20,8 +20,9 @@ public class ESMConfig {
     public static final Anchors ANCHORS = new Anchors();
 
     public static class General {
+
         @Config.Comment("Blacklisted Sounds - add the name of the sounds to blacklist, separated with comma")
-        public String[] forbiddenSounds = new String[]{"ui.", "music.", "ambient."};
+        public String[] forbiddenSounds = new String[] { "ui.", "music.", "ambient." };
 
         @Config.Comment("Allow the \"ALL\" sounds list to include the blacklisted sounds?")
         public boolean lawfulAllList = false;
@@ -45,6 +46,7 @@ public class ESMConfig {
     }
 
     public static class Buttons {
+
         @Config.Comment("Disable the Muffle button in the player inventory?")
         public boolean disableInventoryButton = false;
 
@@ -56,6 +58,7 @@ public class ESMConfig {
     }
 
     public static class Anchors {
+
         @Config.Comment("Disable the Anchors?")
         public boolean disableAnchors = false;
     }

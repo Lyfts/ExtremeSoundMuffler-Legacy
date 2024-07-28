@@ -1,8 +1,8 @@
 package com.leobeliik.extremesoundmuffler.utils;
 
-import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
-import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import java.util.Objects;
+import java.util.SortedMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -11,8 +11,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.DimensionManager;
 
-import java.util.Objects;
-import java.util.SortedMap;
+import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
+
+import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 
 public class Anchor {
 
@@ -112,7 +114,7 @@ public class Anchor {
         EntityPlayerSP player = Objects.requireNonNull(Minecraft.getMinecraft().player);
         setAnchorPos(player.getPosition());
         setDimension(
-            DimensionManager.getProvider(player.dimension).getDimensionType().getName());
+                DimensionManager.getProvider(player.dimension).getDimensionType().getName());
         setRadius(this.getRadius() == 0 ? 32 : this.getRadius());
     }
 
@@ -133,12 +135,11 @@ public class Anchor {
         BlockPos soundPos = new BlockPos(sound.getXPosF(), sound.getYPosF(), sound.getZPosF());
         for (Anchor anchor : ISoundLists.anchorList) {
             WorldClient world = Minecraft.getMinecraft().world;
-            if (anchor.getAnchorPos() != null && world != null
-                && world.provider.getDimensionType().getName()
-                    .equals(anchor.getDimension())
-                && Math.sqrt(soundPos.distanceSq(anchor.getAnchorPos())) <= anchor.getRadius()
-                && anchor.getMuffledSounds()
-                    .containsKey(sound.getSoundLocation())) {
+            if (anchor.getAnchorPos() != null && world != null && world.provider.getDimensionType().getName()
+                    .equals(anchor.getDimension()) &&
+                    Math.sqrt(soundPos.distanceSq(anchor.getAnchorPos())) <= anchor.getRadius() &&
+                    anchor.getMuffledSounds()
+                            .containsKey(sound.getSoundLocation())) {
                 return anchor;
             }
         }

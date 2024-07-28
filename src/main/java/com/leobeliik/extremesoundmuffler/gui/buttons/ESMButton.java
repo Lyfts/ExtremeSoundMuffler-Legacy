@@ -1,15 +1,17 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
-import com.leobeliik.extremesoundmuffler.SoundMuffler;
-import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
-import com.leobeliik.extremesoundmuffler.utils.Icon;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 
-import javax.annotation.Nullable;
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
+import com.leobeliik.extremesoundmuffler.SoundMuffler;
+import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
+import com.leobeliik.extremesoundmuffler.utils.Icon;
 
 public class ESMButton extends GuiButtonExt implements IColorsGui {
 
@@ -65,13 +67,13 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
 
                 if (strWidth > width - 6 && strWidth > ellipsisWidth)
                     buttonText = mc.fontRenderer.trimStringToWidth(buttonText, width - 6 - ellipsisWidth)
-                                     .trim() + "...";
+                            .trim() + "...";
                 this.drawCenteredString(
-                    mc.fontRenderer,
-                    buttonText,
-                    this.x + this.width / 2,
-                    this.y + (this.height - 8) / 2,
-                    textColor);
+                        mc.fontRenderer,
+                        buttonText,
+                        this.x + this.width / 2,
+                        this.y + (this.height - 8) / 2,
+                        textColor);
             }
 
             if (icon != null) {
@@ -85,11 +87,11 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
             int stringW = mc.fontRenderer.getStringWidth(tooltip) / 2;
             if (!renderTooltipAbove) {
                 drawRect(
-                    x - stringW + 3,
-                    y + height + 2,
-                    x + stringW + 10,
-                    y + height + 15,
-                    darkBG);
+                        x - stringW + 3,
+                        y + height + 2,
+                        x + stringW + 10,
+                        y + height + 15,
+                        darkBG);
                 drawCenteredString(mc.fontRenderer, tooltip, x + 8, y + height + 4, whiteText);
             } else {
                 drawRect(x - stringW + 3, y - 2, x + stringW + 10, y - 15, darkBG);
@@ -167,7 +169,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
 
     private boolean hasTooltip() {
         return !tooltip.isEmpty() || tooltipSupplier != null && !tooltipSupplier.get()
-            .isEmpty();
+                .isEmpty();
     }
 
     public boolean isVisible() {
@@ -175,8 +177,6 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     }
 
     public boolean isMouseOver(int mouseX, int mouseY) {
-        return mouseX >= this.x && mouseY >= this.y
-               && mouseX < this.x + this.width
-               && mouseY < this.y + this.height;
+        return mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
     }
 }

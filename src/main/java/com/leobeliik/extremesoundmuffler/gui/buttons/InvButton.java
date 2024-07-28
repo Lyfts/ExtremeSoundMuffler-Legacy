@@ -1,13 +1,14 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
-import com.leobeliik.extremesoundmuffler.ESMConfig;
-import com.leobeliik.extremesoundmuffler.gui.MainScreen;
-import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
+import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_ON;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
-import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_ON;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
+import com.leobeliik.extremesoundmuffler.gui.MainScreen;
+import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
 
 public class InvButton extends ESMButton implements IColorsGui {
 

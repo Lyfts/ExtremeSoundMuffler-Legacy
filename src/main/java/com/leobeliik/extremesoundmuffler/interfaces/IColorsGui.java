@@ -7,5 +7,4 @@ public interface IColorsGui {
     int greenText = 0x00ff00;
     int darkBG = 0xbb000000;
     int brightBG = 0x4e464646;
-
 }

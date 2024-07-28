@@ -1,6 +1,9 @@
 package com.leobeliik.extremesoundmuffler.interfaces;
 
+import net.minecraft.util.ResourceLocation;
+
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
+
 import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
@@ -8,7 +11,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-import net.minecraft.util.ResourceLocation;
 
 public interface ISoundLists {
 
