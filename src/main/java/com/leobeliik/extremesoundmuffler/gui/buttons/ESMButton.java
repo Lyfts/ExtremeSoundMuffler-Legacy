@@ -4,8 +4,8 @@ import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
 import com.leobeliik.extremesoundmuffler.utils.Icon;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.function.BooleanSupplier;
@@ -53,9 +53,8 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
         if (!isVisible()) return;
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mouseOver = isMouseOver(mouseX, mouseY);
-
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         if (renderNormal) {
             super.drawButton(mc, mouseX, mouseY, partial);
         } else {
@@ -97,7 +96,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
                 drawCenteredString(mc.fontRenderer, tooltip, x + 8, y - 12, whiteText);
             }
         }
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     public ESMButton renderNormalButton(boolean state) {

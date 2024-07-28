@@ -14,7 +14,6 @@ public class ESMConfig {
     public static final General GENERAL = new General();
 
     @Config.Name("inventory_button")
-    @Config.LangKey("stat.inventoryButton")
     @Config.Comment("Buttons can be moved by holding CTRL and LMB over the button and dragging it around")
     public static final Buttons BUTTONS = new Buttons();
 
@@ -40,6 +39,9 @@ public class ESMConfig {
 
         @Config.Comment("Whether or not use the dark theme")
         public boolean useDarkTheme = false;
+
+        @Config.Comment("Hide non-recent muffled sounds from the recent sounds list")
+        public boolean hideMuffledFromRecent = true;
     }
 
     public static class Buttons {

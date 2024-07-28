@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
@@ -37,9 +37,9 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private final List<ESMButton> subButtons = new ArrayList<>();
     private boolean muffled = false;
 
-    public MuffledSlider(int x, int y, int width, int height, float sliderValue, ResourceLocation sound,
+    public MuffledSlider(int id, int x, int y, int width, int height, float sliderValue, ResourceLocation sound,
                          Anchor anchor) {
-        super(0, x, y, width, height, sound.toString());
+        super(id, x, y, width, height, sound.toString());
         this.sliderValue = sliderValue;
         this.sound = sound;
         this.anchor = anchor;
@@ -51,16 +51,23 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         if (!isVisible()) return;
         SoundMuffler.renderGui();
         setTextColor(muffled ? cyanText : whiteText);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        drawSubButtons(mc, mouseX, mouseY, partial);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        GlStateManager.disableLighting();
         drawGradient(mouseX, mouseY);
+        drawButtonHighlight();
+        drawSubButtons(mc, mouseX, mouseY, partial);
         drawMessage(mc, mouseX, mouseY);
         mouseDragged(mc, mouseX, mouseY);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    private void drawButtonHighlight() {
+        int adjustedX = ESMConfig.getLeftButtons() ? x - 3 : x + 1;
+        int bW = ESMConfig.getLeftButtons() ? adjustedX + width + 5 : adjustedX + width + 28;
+        if (id % 2 == 0 && isVisible()) {
+            drawRect(adjustedX, y, bW, y + height, brightBG);
+        }
     }
 
     private void drawMessage(Minecraft minecraft, int mouseX, int mouseY) {
