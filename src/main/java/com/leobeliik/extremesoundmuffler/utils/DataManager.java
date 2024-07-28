@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
@@ -37,7 +37,7 @@ public class DataManager implements ISoundLists {
     public static void loadData(String address) {
         identifier = getIdentifier(address);
         loadMuffledMap().forEach((R, F) -> muffledSounds.put(new ResourceLocation(R), F));
-        if (!Config.getDisableAnchors()) {
+        if (!ESMConfig.getDisableAnchors()) {
             anchorList.clear();
             anchorList.addAll(loadAnchors());
         }
@@ -46,7 +46,7 @@ public class DataManager implements ISoundLists {
     public static void saveData() {
         saveMuffledMap();
 
-        if (!Config.getDisableAnchors()) {
+        if (!ESMConfig.getDisableAnchors()) {
             saveAnchors();
         }
     }

@@ -1,6 +1,6 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
-import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
 import net.minecraft.client.Minecraft;
@@ -46,7 +46,7 @@ public class InvButton extends ESMButton implements IColorsGui {
     public void mouseReleased(int mouseX, int mouseY) {
         if (hold) {
             hold = false;
-            Config.setInvButtonPosition(x - parent.guiLeft, y - parent.guiTop);
+            ESMConfig.setInvButtonPosition(x - parent.guiLeft, y - parent.guiTop);
         }
         super.mouseReleased(mouseX, mouseY);
     }

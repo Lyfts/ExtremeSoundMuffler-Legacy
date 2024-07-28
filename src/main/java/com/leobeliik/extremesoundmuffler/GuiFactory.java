@@ -45,7 +45,7 @@ public class GuiFactory implements IModGuiFactory {
         }
 
         private static List<IConfigElement> getConfigElements() {
-            Configuration config = Config.config;
+            Configuration config = ESMConfig.config;
             return config.getCategoryNames()
                 .stream()
                 .map(name -> new ConfigElement(config.getCategory(name)))

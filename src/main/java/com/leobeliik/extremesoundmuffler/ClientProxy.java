@@ -18,10 +18,8 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
         openMufflerScreen = new KeyBinding("Open sound muffler screen", Keyboard.KEY_NONE, "ESM:Legacy");
         ClientRegistry.registerKeyBinding(openMufflerScreen);
-        Config.init(event);
-        ISoundLists.forbiddenSounds.addAll(
-            Arrays.stream(Config.getForbiddenSounds())
-                .collect(Collectors.toList()));
+        ESMConfig.init(event);
+        ISoundLists.forbiddenSounds.addAll(Arrays.asList(ESMConfig.getForbiddenSounds()));
     }
 
     public void init(FMLInitializationEvent event) {}

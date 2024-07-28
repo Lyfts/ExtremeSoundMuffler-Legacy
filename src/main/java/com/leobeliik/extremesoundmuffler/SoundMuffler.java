@@ -69,13 +69,13 @@ public class SoundMuffler {
     @SideOnly(Side.CLIENT)
     public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
         GuiScreen screen = event.getGui();
-        if (Config.getDisableInventoryButton() || screen instanceof GuiContainerCreative) {
+        if (ESMConfig.getDisableInventoryButton() || screen instanceof GuiContainerCreative) {
             return;
         }
         try {
             if (screen instanceof InventoryEffectRenderer inv) {
                 event.getButtonList()
-                    .add(new InvButton(inv, Config.getInvButtonHorizontal(), Config.getInvButtonVertical()));
+                    .add(new InvButton(inv, ESMConfig.getInvButtonHorizontal(), ESMConfig.getInvButtonVertical()));
             }
         } catch (NullPointerException e) {
             LOGGER.error(
@@ -96,7 +96,7 @@ public class SoundMuffler {
     }
 
     public static void renderGui() {
-        String texture = Config.useDarkTheme() ? "textures/gui/sm_gui_dark.png" : "textures/gui/sm_gui.png";
+        String texture = ESMConfig.useDarkTheme() ? "textures/gui/sm_gui_dark.png" : "textures/gui/sm_gui.png";
         Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(SoundMuffler.MODID, texture));
     }
 }

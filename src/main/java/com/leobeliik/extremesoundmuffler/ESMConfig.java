@@ -6,7 +6,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class Config {
+public class ESMConfig {
 
     public static Configuration config;
     private static String[] forbiddenSounds;
@@ -27,7 +27,7 @@ public class Config {
         config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
         buildConfig();
-        MinecraftForge.EVENT_BUS.register(new Config());
+        MinecraftForge.EVENT_BUS.register(new ESMConfig());
     }
 
     private static void buildConfig() {
@@ -112,10 +112,10 @@ public class Config {
     }
 
     public static void setInvButtonPosition(int x, int y) {
-        Config.invButtonHorizontal = x;
+        ESMConfig.invButtonHorizontal = x;
         config.get(CATEGORY_INVENTORY_BUTTON, "invButtonX", invButtonHorizontal)
             .set(x);
-        Config.invButtonVertical = y;
+        ESMConfig.invButtonVertical = y;
         config.get(CATEGORY_INVENTORY_BUTTON, "invButtonY", invButtonVertical)
             .set(y);
         config.save();

@@ -1,6 +1,6 @@
 package com.leobeliik.extremesoundmuffler.gui;
 
-import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.buttons.ESMButton;
 import com.leobeliik.extremesoundmuffler.gui.buttons.MuffledSlider;
@@ -45,7 +45,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     private static String screenTitle = "";
     private final int xSize = 256;
     private final int ySize = 202;
-    private final boolean isAnchorsDisabled = Config.getDisableAnchors();
+    private final boolean isAnchorsDisabled = ESMConfig.getDisableAnchors();
     private final String tip = Tips.randomTip();
     private int minYButton, maxYButton, index;
     private ESMButton btnToggleMuffled;
@@ -242,7 +242,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             case ALL -> {
                 soundsList.addAll(Minecraft.getMinecraft()
                     .getSoundHandler().soundRegistry.getKeys());
-                if (Config.getLawfulAllList()) {
+                if (ESMConfig.getLawfulAllList()) {
                     forbiddenSounds.forEach(
                         fs -> soundsList.removeIf(
                             sl -> sl.toString()
@@ -270,7 +270,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     }
 
     private MuffledSlider getMuffledSlider(ResourceLocation sound, int buttonH, float volume) {
-        int x = Config.getLeftButtons() ? getX() + 36 : getX() + 11;
+        int x = ESMConfig.getLeftButtons() ? getX() + 36 : getX() + 11;
         boolean muffled = getMuffledSounds().containsKey(sound);
         return new MuffledSlider(x, buttonH, 205, 11, volume, sound, anchor).setMuffled(muffled);
     }
@@ -450,9 +450,9 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         for (int i = 0; i < buttonList.size(); i++) {
             GuiButton button = buttonList.get(i);
             if (button instanceof MuffledSlider slider) {
-                x = Config.getLeftButtons() ? button.x - 3 : button.x + 1;
+                x = ESMConfig.getLeftButtons() ? button.x - 3 : button.x + 1;
                 y = button.y;
-                int bW = Config.getLeftButtons() ? x + button.width + 5 : x + button.width + 28;
+                int bW = ESMConfig.getLeftButtons() ? x + button.width + 5 : x + button.width + 28;
 
                 if (i % 2 == 0 && slider.isVisible()) {
                     drawRect(x, y, bW, y + button.height, brightBG);
@@ -471,7 +471,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     }
 
     private void renderTip() {
-        if (!Config.getShowTip()) return;
+        if (!ESMConfig.getShowTip()) return;
         // Show a tip
         List<String> tips = fontRenderer.listFormattedStringToWidth(tip, xSize);
         drawHoveringText(tips, getX() - 5, getY() + 223, fontRenderer);

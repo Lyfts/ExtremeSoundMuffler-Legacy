@@ -1,6 +1,6 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
-import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
@@ -122,7 +122,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     public void refreshButtons() {
         SoundHandler soundHandler = Minecraft.getMinecraft().getSoundHandler();
         subButtons.clear();
-        int aX = Config.getLeftButtons() ? x - 24 : x + width + 5;
+        int aX = ESMConfig.getLeftButtons() ? x - 24 : x + width + 5;
         subButtons.add(btnToggleSound = new ESMButton(0, aX, y, 11, 11, "", this::toggleSound));
         subButtons.add(new ESMButton(0, btnToggleSound.x + 12, y, 10, 10,
             () -> soundHandler.playSound(new PlayButtonSound(sound))).setIcon(PLAY));
@@ -143,11 +143,11 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         } else {
             boolean didMuffle = false;
             if (MainScreen.isMain()) {
-                setSliderValue(Config.getDefaultMuteVolume());
+                setSliderValue(ESMConfig.getDefaultMuteVolume());
                 muffledSounds.put(sound, sliderValue);
                 didMuffle = true;
             } else if (anchor.getAnchorPos() != null) {
-                setSliderValue(Config.getDefaultMuteVolume());
+                setSliderValue(ESMConfig.getDefaultMuteVolume());
                 anchor.addSound(sound, sliderValue);
                 didMuffle = true;
             }

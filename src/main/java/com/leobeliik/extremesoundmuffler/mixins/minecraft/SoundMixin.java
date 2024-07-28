@@ -1,6 +1,6 @@
 package com.leobeliik.extremesoundmuffler.mixins.minecraft;
 
-import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
@@ -41,7 +41,7 @@ public abstract class SoundMixin implements ISoundLists {
                 return original * muffledSounds.get(soundLocation);
             }
 
-            if (Config.getDisableAnchors()) {
+            if (ESMConfig.getDisableAnchors()) {
                 return original;
             }
 
