@@ -1,4 +1,4 @@
-//version: 1719793363
+//version: 1720840170
 /*
  * DO NOT CHANGE THIS FILE!
  * Also, you may replace this file at any time if there is an update available.
@@ -33,11 +33,11 @@ plugins {
     id 'base'
     id 'eclipse'
     id 'maven-publish'
-    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.7'
-    id 'com.gtnewhorizons.retrofuturagradle' version '1.3.33'
-    id 'net.darkhax.curseforgegradle' version '1.1.18' apply false
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.8'
+    id 'com.gtnewhorizons.retrofuturagradle' version '1.4.0'
+    id 'net.darkhax.curseforgegradle' version '1.1.24' apply false
     id 'com.modrinth.minotaur' version '2.8.7' apply false
-    id 'com.diffplug.spotless' version '6.13.0' apply false
+    id 'com.diffplug.spotless' version '6.19.0' apply false
     id 'com.palantir.git-version' version '3.0.0' apply false
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
     id 'org.jetbrains.kotlin.jvm' version '1.8.0' apply false
@@ -78,8 +78,10 @@ propertyDefaultIfUnset("gradleTokenVersion", "")
 propertyDefaultIfUnset("useSrcApiPath", false)
 propertyDefaultIfUnset("includeWellKnownRepositories", true)
 propertyDefaultIfUnset("includeCommonDevEnvMods", true)
+propertyDefaultIfUnset("stripForgeRequirements", false)
 propertyDefaultIfUnset("noPublishedSources", false)
 propertyDefaultIfUnset("forceEnableMixins", false)
+propertyDefaultIfUnset("mixinConfigRefmap", "mixins.${project.modId}.refmap.json")
 propertyDefaultIfUnsetWithEnvVar("enableCoreModDebug", false, "CORE_MOD_DEBUG")
 propertyDefaultIfUnset("generateMixinConfig", true)
 propertyDefaultIfUnset("usesShadowedDependencies", false)
@@ -187,18 +189,18 @@ pluginManager.withPlugin('org.jetbrains.kotlin.jvm') {
         jvmToolchain(8)
     }
     def disabledKotlinTaskList = [
-        "kaptGenerateStubsMcLauncherKotlin",
-        "kaptGenerateStubsPatchedMcKotlin",
-        "kaptGenerateStubsInjectedTagsKotlin",
-        "compileMcLauncherKotlin",
-        "compilePatchedMcKotlin",
-        "compileInjectedTagsKotlin",
-        "kaptMcLauncherKotlin",
-        "kaptPatchedMcKotlin",
-        "kaptInjectedTagsKotlin",
-        "kspMcLauncherKotlin",
-        "kspPatchedMcKotlin",
-        "kspInjectedTagsKotlin",
+            "kaptGenerateStubsMcLauncherKotlin",
+            "kaptGenerateStubsPatchedMcKotlin",
+            "kaptGenerateStubsInjectedTagsKotlin",
+            "compileMcLauncherKotlin",
+            "compilePatchedMcKotlin",
+            "compileInjectedTagsKotlin",
+            "kaptMcLauncherKotlin",
+            "kaptPatchedMcKotlin",
+            "kaptInjectedTagsKotlin",
+            "kspMcLauncherKotlin",
+            "kspPatchedMcKotlin",
+            "kspInjectedTagsKotlin",
     ]
     tasks.configureEach { task ->
         if (task.name in disabledKotlinTaskList) {
@@ -329,8 +331,8 @@ if (!modVersion) {
         modVersion = gitVersion()
     } catch (Exception ignored) {
         out.style(Style.Failure).text(
-            "Mod version could not be determined! Property 'modVersion' is not set, and either git is not installed or no git tags exist.\n" +
-                "Either specify a mod version in 'gradle.properties', or create at least one tag in git for this project."
+                "Mod version could not be determined! Property 'modVersion' is not set, and either git is not installed or no git tags exist.\n" +
+                        "Either specify a mod version in 'gradle.properties', or create at least one tag in git for this project."
         )
         modVersion = 'NO-GIT-TAG-SET'
     }
@@ -377,9 +379,9 @@ minecraft {
 
     if (enableCoreModDebug.toBoolean()) {
         extraRunJvmArguments.addAll([
-            '-Dlegacy.debugClassLoading=true',
-            '-Dlegacy.debugClassLoadingFiner=true',
-            '-Dlegacy.debugClassLoadingSave=true'
+                '-Dlegacy.debugClassLoading=true',
+                '-Dlegacy.debugClassLoadingFiner=true',
+                '-Dlegacy.debugClassLoadingSave=true'
         ])
     }
 
@@ -517,6 +519,7 @@ configurations {
 }
 
 String mixinProviderSpec = 'zone.rong:mixinbooter:9.1'
+ext.mixinProviderSpec = mixinProviderSpec
 dependencies {
     if (usesMixins.toBoolean()) {
         annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
@@ -525,7 +528,7 @@ dependencies {
         // should use 2.8.6 but 2.8.9+ has a vulnerability fix
         annotationProcessor 'com.google.code.gson:gson:2.8.9'
 
-        mixinProviderSpec = modUtils.enableMixins(mixinProviderSpec, "mixins.${modId}.refmap.json")
+        mixinProviderSpec = modUtils.enableMixins(mixinProviderSpec, mixinConfigRefmap)
         api (mixinProviderSpec) {
             transitive = false
         }
@@ -565,6 +568,10 @@ dependencies {
     annotationProcessor 'org.jetbrains:annotations:24.1.0'
     patchedMinecraft('net.minecraft:launchwrapper:1.17.2') {
         transitive = false
+    }
+
+    if ((usesMixins.toBoolean() || forceEnableMixins.toBoolean()) && stripForgeRequirements.toBoolean()) {
+        runtimeOnlyNonPublishable 'com.cleanroommc:strip-latest-forge-requirements:1.0'
     }
 
     if (includeCommonDevEnvMods.toBoolean()) {
@@ -646,10 +653,10 @@ processResources {
     // replace stuff in mcmod.info, nothing else
     filesMatching('mcmod.info') { fcd ->
         fcd.expand(
-            'version': modVersion,
-            'mcversion': minecraftVersion,
-            'modid': modId,
-            'modname': modName
+                'version': modVersion,
+                'mcversion': minecraftVersion,
+                'modid': modId,
+                'modname': modName
         )
     }
 
@@ -700,7 +707,6 @@ tasks.register('generateAssets') {
         if (usesMixins.toBoolean() && generateMixinConfig.toBoolean()) {
             def mixinConfigFile = getFile("src/main/resources/mixins.${modId}.json")
             if (!mixinConfigFile.exists()) {
-                def mixinConfigRefmap = "mixins.${modId}.refmap.json"
 
                 mixinConfigFile.text = """{
   "package": "${modGroup}.${mixinsPackage}",
@@ -791,8 +797,8 @@ if (usesShadowedDependencies.toBoolean()) {
             minimize()
         }
         configurations = [
-            project.configurations.shadowImplementation,
-            project.configurations.shadowCompile
+                project.configurations.shadowImplementation,
+                project.configurations.shadowCompile
         ]
         archiveClassifier.set('dev')
         if (relocateShadowedDependencies.toBoolean()) {
@@ -873,31 +879,31 @@ if (enableJava17RunTasks.toBoolean()) {
     }
 
     ext.java17JvmArgs = [
-        "-Dfile.encoding=UTF-8",
-        "-Djava.system.class.loader=com.gtnewhorizons.retrofuturabootstrap.RfbSystemClassLoader",
-        "-Djava.security.manager=allow",
-        "--add-opens", "java.base/jdk.internal.loader=ALL-UNNAMED",
-        "--add-opens", "java.base/java.net=ALL-UNNAMED",
-        "--add-opens", "java.base/java.nio=ALL-UNNAMED",
-        "--add-opens", "java.base/java.io=ALL-UNNAMED",
-        "--add-opens", "java.base/java.lang=ALL-UNNAMED",
-        "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED",
-        "--add-opens", "java.base/java.text=ALL-UNNAMED",
-        "--add-opens", "java.base/java.util=ALL-UNNAMED",
-        "--add-opens", "java.base/jdk.internal.reflect=ALL-UNNAMED",
-        "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
-        "--add-opens", "jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED,java.naming",
-        "--add-opens", "java.desktop/sun.awt=ALL-UNNAMED",
-        "--add-opens", "java.desktop/sun.awt.image=ALL-UNNAMED",
-        "--add-opens", "java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED",
-        "--add-opens", "jdk.dynalink/jdk.dynalink.beans=ALL-UNNAMED",
-        "--add-opens", "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED"
+            "-Dfile.encoding=UTF-8",
+            "-Djava.system.class.loader=com.gtnewhorizons.retrofuturabootstrap.RfbSystemClassLoader",
+            "-Djava.security.manager=allow",
+            "--add-opens", "java.base/jdk.internal.loader=ALL-UNNAMED",
+            "--add-opens", "java.base/java.net=ALL-UNNAMED",
+            "--add-opens", "java.base/java.nio=ALL-UNNAMED",
+            "--add-opens", "java.base/java.io=ALL-UNNAMED",
+            "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+            "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED",
+            "--add-opens", "java.base/java.text=ALL-UNNAMED",
+            "--add-opens", "java.base/java.util=ALL-UNNAMED",
+            "--add-opens", "java.base/jdk.internal.reflect=ALL-UNNAMED",
+            "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
+            "--add-opens", "jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED,java.naming",
+            "--add-opens", "java.desktop/sun.awt=ALL-UNNAMED",
+            "--add-opens", "java.desktop/sun.awt.image=ALL-UNNAMED",
+            "--add-opens", "java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED",
+            "--add-opens", "jdk.dynalink/jdk.dynalink.beans=ALL-UNNAMED",
+            "--add-opens", "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED"
     ]
 
     ext.hotswapJvmArgs = [
-        // DCEVM advanced hot reload
-        "-XX:+AllowEnhancedClassRedefinition",
-        "-XX:HotswapAgent=fatjar"
+            // DCEVM advanced hot reload
+            "-XX:+AllowEnhancedClassRedefinition",
+            "-XX:HotswapAgent=fatjar"
     ]
 
     ext.setupHotswapAgent17 = tasks.register("setupHotswapAgent17", SetupHotswapAgentTask, t -> {
@@ -986,10 +992,10 @@ abstract class RunHotswappableMinecraftTask extends RunMinecraftTask {
         super.setup(project)
 
         dependsOn(
-            mcpTasks.getLauncherSources().getClassesTaskName(),
-            mcTasks.getTaskDownloadVanillaAssets(),
-            mcpTasks.getTaskPackagePatchedMc(),
-            "jar"
+                mcpTasks.getLauncherSources().getClassesTaskName(),
+                mcTasks.getTaskDownloadVanillaAssets(),
+                mcpTasks.getTaskPackagePatchedMc(),
+                "jar"
         )
 
         getMainClass().set((side == Distribution.CLIENT) ? "GradleStart" : "GradleStartServer")
@@ -1125,9 +1131,9 @@ idea {
                 afterEvaluate {
                     javacAdditionalOptions = '-encoding utf8'
                     moduleJavacAdditionalOptions = [
-                        (project.name + '.main'): tasks.compileJava.options.compilerArgs.collect {
-                            '"' + it + '"'
-                        }.join(' ')
+                            (project.name + '.main'): tasks.compileJava.options.compilerArgs.collect {
+                                '"' + it + '"'
+                            }.join(' ')
                     ]
                 }
             }
@@ -1163,13 +1169,13 @@ tasks.register('generateChangelog') {
         def lastTag = getLastTag()
 
         def changelog = runShell(([
-            "git",
-            "log",
-            "--date=format:%d %b %Y",
-            "--pretty=%s - **%an** (%ad)",
-            "${lastTag}..HEAD"
+                "git",
+                "log",
+                "--date=format:%d %b %Y",
+                "--pretty=%s - **%an** (%ad)",
+                "${lastTag}..HEAD"
         ] + (sourceSets.main.java.srcDirs + sourceSets.main.resources.srcDirs)
-            .collect { ['--', it] }).flatten())
+                .collect { ['--', it] }).flatten())
 
         if (changelog) {
             changelog = "Changes since ${lastTag}:\n${{("\n" + changelog).replaceAll("\n", "\n* ")}}"
@@ -1215,10 +1221,10 @@ if (cfApiKey.isPresent() || deploymentDebug.toBoolean()) {
                     String[] parts = dep.split(':')
                     String type = parts[0], slug = parts[1]
                     def types = [
-                        'req'   : 'requiredDependency', 'required': 'requiredDependency',
-                        'opt'   : 'optionalDependency', 'optional': 'optionalDependency',
-                        'embed' : 'embeddedLibrary',    'embedded': 'embeddedLibrary',
-                        'incomp': 'incompatible',       'fail'    : 'incompatible']
+                            'req'   : 'requiredDependency', 'required': 'requiredDependency',
+                            'opt'   : 'optionalDependency', 'optional': 'optionalDependency',
+                            'embed' : 'embeddedLibrary',    'embedded': 'embeddedLibrary',
+                            'incomp': 'incompatible',       'fail'    : 'incompatible']
                     if (types.containsKey(type)) type = types[type]
                     if (!(type in ['requiredDependency', 'embeddedLibrary', 'optionalDependency', 'tool', 'incompatible'])) {
                         throw new Exception('Invalid Curseforge dependency type: ' + type)
@@ -1230,6 +1236,30 @@ if (cfApiKey.isPresent() || deploymentDebug.toBoolean()) {
             for (artifact in getSecondaryArtifacts()) {
                 def additionalFile = mainFile.withAdditionalFile(artifact)
                 additionalFile.changelog = changelogRaw
+            }
+        }
+        doLast {
+            // No File IDs in Debug Mode
+            if (!deploymentDebug.toBoolean()) {
+                def list = []
+                for (def artifact : tasks.curseforge.getUploadArtifacts()) {
+                    list.add(artifact)
+                    for (def additionalArtifact : artifact.getAdditionalArtifacts()) {
+                        list.add(additionalArtifact)
+                    }
+                }
+                def summary = "## CurseForge Build Summary (Mod ${modName} | Project ID ${curseForgeProjectId})"
+                for (def artifact : list) {
+                    def fileId = artifact.getCurseFileId()
+                    def fileName = artifact.getArtifact().getSingleFile().name
+                    println("Uploaded File ${fileName}, With File ID: ${fileId}")
+                    summary = summary + "\n  - File: ${fileName} | File ID: ${fileId}"
+                }
+                println(summary)
+                def stepSummary = providers.environmentVariable("GITHUB_STEP_SUMMARY")
+                if (stepSummary.isPresent()) {
+                    file(stepSummary.get()).write(summary)
+                }
             }
         }
     }
@@ -1272,10 +1302,10 @@ if (modrinthApiKey.isPresent() || deploymentDebug.toBoolean()) {
 def addModrinthDep(String scope, String type, String name) {
     com.modrinth.minotaur.dependencies.Dependency dep
     def types = [
-        'req'   : 'required',
-        'opt'   : 'optional',
-        'embed' : 'embedded',
-        'incomp': 'incompatible', 'fail': 'incompatible']
+            'req'   : 'required',
+            'opt'   : 'optional',
+            'embed' : 'embedded',
+            'incomp': 'incompatible', 'fail': 'incompatible']
     if (types.containsKey(scope)) scope = types[scope]
     if (!(scope in ['required', 'optional', 'incompatible', 'embedded'])) {
         throw new Exception('Invalid modrinth dependency scope: ' + scope)
@@ -1442,13 +1472,13 @@ tasks.register('faq') {
     description = 'Prints frequently asked questions about building a project'
     doLast {
         print("\nTo update this buildscript to the latest version, run 'gradlew updateBuildScript' or run the generated run configuration if you are using IDEA.\n" +
-            "To set up the project, run the 'setupDecompWorkspace' task, which you can run as './gradlew setupDecompWorkspace' in a terminal, or find in the 'modded minecraft' gradle category.\n\n" +
-            "To add new dependencies to your project, place them in 'dependencies.gradle', NOT in 'build.gradle' as they would be replaced when the script updates.\n" +
-            "To add new repositories to your project, place them in 'repositories.gradle'.\n" +
-            "If you need additional gradle code to run, you can place it in a file named 'addon.gradle' (or either of the above, up to you for organization).\n\n" +
-            "If your build fails to recognize the syntax of newer Java versions, enable Jabel in your 'gradle.properties' under the option name 'enableModernJavaSyntax'.\n" +
-            "To see information on how to configure your IDE properly for Java 17, see https://github.com/GregTechCEu/Buildscripts/blob/master/docs/jabel.md\n\n" +
-            "Report any issues or feature requests you have for this build script to https://github.com/GregTechCEu/Buildscripts/issues\n")
+                "To set up the project, run the 'setupDecompWorkspace' task, which you can run as './gradlew setupDecompWorkspace' in a terminal, or find in the 'modded minecraft' gradle category.\n\n" +
+                "To add new dependencies to your project, place them in 'dependencies.gradle', NOT in 'build.gradle' as they would be replaced when the script updates.\n" +
+                "To add new repositories to your project, place them in 'repositories.gradle'.\n" +
+                "If you need additional gradle code to run, you can place it in a file named 'addon.gradle' (or either of the above, up to you for organization).\n\n" +
+                "If your build fails to recognize the syntax of newer Java versions, enable Jabel in your 'gradle.properties' under the option name 'enableModernJavaSyntax'.\n" +
+                "To see information on how to configure your IDE properly for Java 17, see https://github.com/GregTechCEu/Buildscripts/blob/master/docs/jabel.md\n\n" +
+                "Report any issues or feature requests you have for this build script to https://github.com/GregTechCEu/Buildscripts/issues\n")
     }
 }
 
@@ -1502,5 +1532,5 @@ static runShell(command) {
 def getLastTag() {
     def githubTag = providers.environmentVariable('GITHUB_TAG')
     return runShell('git describe --abbrev=0 --tags ' +
-        (githubTag.isPresent() ? runShell('git rev-list --tags --skip=1 --max-count=1') : ''))
+            (githubTag.isPresent() ? runShell('git rev-list --tags --skip=1 --max-count=1') : ''))
 }
