@@ -131,6 +131,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         Keyboard.enableRepeatEvents(true);
         MuffledSlider.showSlider = true;
         textFields.clear();
+        index = 0;
         minYButton = getY() + 46;
         maxYButton = getY() + 164;
         addSoundButtons();
@@ -228,6 +229,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         updateText();
     }
 
+    @SuppressWarnings("unchecked")
     private void addSoundButtons() {
         int buttonH = minYButton;
         anchor = getAnchorByName(screenTitle);
@@ -239,7 +241,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         soundsList.clear();
         switch (listMode) {
             case RECENT -> {
-                if(!Config.hideMuffledFromRecent) {
+                if (!Config.hideMuffledFromRecent) {
                     soundsList.addAll(getMuffledSounds().keySet());
                 }
                 soundsList.addAll(recentSoundsList);
@@ -263,10 +265,11 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             return;
         }
 
+        int id = 0;
         for (ComparableResource sound : soundsList) {
             float maxVolume = 1F;
             float volume = getMuffledSounds().get(sound) == null ? maxVolume : getMuffledSounds().get(sound);
-            MuffledSlider volumeSlider = getMuffledSlider(sound, buttonH, volume);
+            MuffledSlider volumeSlider = getMuffledSlider(sound, id++, buttonH, volume);
 
             buttonH += volumeSlider.height + 2;
             buttonList.add(volumeSlider);
@@ -274,10 +277,10 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         }
     }
 
-    private MuffledSlider getMuffledSlider(ComparableResource sound, int buttonH, float volume) {
+    private MuffledSlider getMuffledSlider(ComparableResource sound, int id, int buttonH, float volume) {
         int x = Config.getLeftButtons() ? getX() + 36 : getX() + 11;
         boolean muffled = getMuffledSounds().containsKey(sound);
-        return new MuffledSlider(x, buttonH, 205, 11, volume, sound, anchor).setMuffled(muffled);
+        return new MuffledSlider(id, x, buttonH, 205, 11, volume, sound, anchor).setMuffled(muffled);
     }
 
     private void addAnchorButtons() {
@@ -463,20 +466,6 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         if (!searchBar.isFocused() && searchBar.getText()
             .isEmpty()) {
             drawString(fontRendererObj, searchHint, x + 1, y + 1, -1);
-        }
-
-        // highlight every other row
-        for (int i = 0; i < buttonList.size(); i++) {
-            GuiButton button = buttonList.get(i);
-            if (button instanceof MuffledSlider slider) {
-                x = Config.getLeftButtons() ? button.xPosition - 3 : button.xPosition + 1;
-                y = button.yPosition;
-                int bW = Config.getLeftButtons() ? x + button.width + 5 : x + button.width + 28;
-
-                if (i % 2 == 0 && slider.isVisible()) {
-                    drawRect(x, y, bW, y + button.height, brightBG);
-                }
-            }
         }
 
         for (GuiTextField textField : textFields) {
