@@ -38,9 +38,9 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private final List<ESMButton> subButtons = new ArrayList<>();
     private boolean muffled = false;
 
-    public MuffledSlider(int x, int y, int width, int height, float sliderValue, ComparableResource sound,
+    public MuffledSlider(int id, int x, int y, int width, int height, float sliderValue, ComparableResource sound,
         Anchor anchor) {
-        super(0, x, y, width, height, sound.toString());
+        super(id, x, y, width, height, sound.toString());
         this.sliderValue = sliderValue;
         this.sound = sound;
         this.anchor = anchor;
@@ -54,14 +54,22 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         setTextColor(muffled ? cyanText : whiteText);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         GL11.glDisable(GL11.GL_LIGHTING);
-        drawSubButtons(mc, mouseX, mouseY);
         drawGradient(mouseX, mouseY);
+        drawButtonHighlight();
+        drawSubButtons(mc, mouseX, mouseY);
         drawMessage(mc, mouseX, mouseY);
         mouseDragged(mc, mouseX, mouseY);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    private void drawButtonHighlight() {
+        int x = Config.getLeftButtons() ? xPosition - 3 : xPosition + 1;
+        int bW = Config.getLeftButtons() ? x + width + 5 : x + width + 28;
+        if (id % 2 == 0 && isVisible()) {
+            drawRect(x, yPosition, bW, yPosition + height, brightBG);
+        }
     }
 
     private void drawMessage(Minecraft minecraft, int mouseX, int mouseY) {
