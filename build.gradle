@@ -1,4 +1,4 @@
-//version: 1720840170
+//version: 1743737794
 /*
  * DO NOT CHANGE THIS FILE!
  * Also, you may replace this file at any time if there is an update available.
@@ -37,7 +37,7 @@ plugins {
     id 'com.gtnewhorizons.retrofuturagradle' version '1.4.0'
     id 'net.darkhax.curseforgegradle' version '1.1.24' apply false
     id 'com.modrinth.minotaur' version '2.8.7' apply false
-    id 'com.diffplug.spotless' version '6.19.0' apply false
+    id 'com.diffplug.spotless' version '6.13.0' apply false
     id 'com.palantir.git-version' version '3.0.0' apply false
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
     id 'org.jetbrains.kotlin.jvm' version '1.8.0' apply false
@@ -80,6 +80,7 @@ propertyDefaultIfUnset("includeWellKnownRepositories", true)
 propertyDefaultIfUnset("includeCommonDevEnvMods", true)
 propertyDefaultIfUnset("stripForgeRequirements", false)
 propertyDefaultIfUnset("noPublishedSources", false)
+propertyDefaultIfUnset("mixinProviderSpec", "zone.rong:mixinbooter:10.6")
 propertyDefaultIfUnset("forceEnableMixins", false)
 propertyDefaultIfUnset("mixinConfigRefmap", "mixins.${project.modId}.refmap.json")
 propertyDefaultIfUnsetWithEnvVar("enableCoreModDebug", false, "CORE_MOD_DEBUG")
@@ -518,8 +519,6 @@ configurations {
     testRuntimeClasspath.extendsFrom(runtimeOnlyNonPublishable)
 }
 
-String mixinProviderSpec = 'zone.rong:mixinbooter:9.1'
-ext.mixinProviderSpec = mixinProviderSpec
 dependencies {
     if (usesMixins.toBoolean()) {
         annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
@@ -1392,7 +1391,7 @@ def getChangelog() {
 
 // Buildscript updating
 
-def buildscriptGradleVersion = '8.5'
+def buildscriptGradleVersion = '8.9'
 
 tasks.named('wrapper', Wrapper).configure {
     gradleVersion = buildscriptGradleVersion
