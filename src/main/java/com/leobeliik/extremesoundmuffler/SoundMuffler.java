@@ -8,8 +8,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -44,16 +42,6 @@ public class SoundMuffler {
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
         proxy.preInit(event);
-    }
-
-    @Mod.EventHandler
-    public void onInit(FMLInitializationEvent event) {
-        proxy.init(event);
-    }
-
-    @Mod.EventHandler
-    public void onPostInit(FMLPostInitializationEvent event) {
-        proxy.postInit(event);
     }
 
     public static int getHotkey() {

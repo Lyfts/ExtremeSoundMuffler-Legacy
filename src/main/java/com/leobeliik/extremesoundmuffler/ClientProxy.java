@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import org.lwjgl.input.Keyboard;
@@ -22,8 +20,4 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.registerKeyBinding(openMufflerScreen);
         ISoundLists.forbiddenSounds.addAll(Arrays.asList(ESMConfig.getForbiddenSounds()));
     }
-
-    public void init(FMLInitializationEvent event) {}
-
-    public void postInit(FMLPostInitializationEvent event) {}
 }

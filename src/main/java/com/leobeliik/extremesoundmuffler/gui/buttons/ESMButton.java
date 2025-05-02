@@ -9,13 +9,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
 import com.leobeliik.extremesoundmuffler.utils.Icon;
 
 public class ESMButton extends GuiButtonExt implements IColorsGui {
 
-    private Runnable runnable;
+    private final Runnable runnable;
     protected boolean renderNormal = false;
     protected boolean renderText = false;
     protected int textColor = whiteText;
@@ -44,7 +46,7 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     }
 
     @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+    public boolean mousePressed(@NotNull Minecraft mc, int mouseX, int mouseY) {
         if (isMouseOver(mouseX, mouseY) && enabled && isVisible() && runnable != null) {
             runnable.run();
             return true;
@@ -159,11 +161,6 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
         this.iconHeight = height;
         this.iconXOffset = xOffset;
         this.iconYOffset = yOffset;
-        return this;
-    }
-
-    public ESMButton setClickAction(Runnable runnable) {
-        this.runnable = runnable;
         return this;
     }
 

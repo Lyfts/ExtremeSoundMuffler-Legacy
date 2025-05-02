@@ -188,7 +188,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     }
 
     @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+    public boolean mousePressed(@NotNull Minecraft mc, int mouseX, int mouseY) {
         if (!isVisible() || !enabled) return false;
         for (ESMButton button : subButtons) {
             if (!button.isMouseOver(mouseX, mouseY)) continue;

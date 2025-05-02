@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
@@ -31,7 +33,7 @@ public class InvButton extends ESMButton implements IColorsGui {
     }
 
     @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+    public boolean mousePressed(@NotNull Minecraft mc, int mouseX, int mouseY) {
         if (super.mousePressed(mc, mouseX, mouseY)) {
             if (GuiScreen.isCtrlKeyDown() && isMouseOver(mouseX, mouseY)) {
                 hold = true;
