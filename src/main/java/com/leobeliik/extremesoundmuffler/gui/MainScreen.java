@@ -445,12 +445,9 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         }
 
         // Draw Searchbar prompt text
-        x = searchBar.x;
-        y = searchBar.y;
-        String searchHint = "Search";
         if (!searchBar.isFocused() && searchBar.getText()
                 .isEmpty()) {
-            drawString(fontRenderer, searchHint, x + 1, y + 1, -1);
+            drawString(fontRenderer, "Search", searchBar.x + 1, searchBar.y + 1, -1);
         }
 
         for (GuiTextField textField : textFields) {
@@ -495,11 +492,6 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             }
         }
         super.handleMouseInput();
-    }
-
-    @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
     }
 
     private void listScroll(List<GuiButton> buttonList, double direction) {

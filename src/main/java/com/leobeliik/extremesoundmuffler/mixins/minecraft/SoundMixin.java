@@ -1,5 +1,7 @@
 package com.leobeliik.extremesoundmuffler.mixins.minecraft;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.util.ResourceLocation;
@@ -25,6 +27,14 @@ public abstract class SoundMixin implements ISoundLists {
         return forbiddenSounds.stream().anyMatch(fs -> sound.getSoundLocation()
                 .toString()
                 .contains(fs));
+    }
+
+    @WrapOperation(method = "playSound", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/ForgeHooksClient;playSound(Lnet/minecraft/client/audio/SoundManager;Lnet/minecraft/client/audio/ISound;)Lnet/minecraft/client/audio/ISound;", remap = false))
+    private ISound checkSound(SoundManager manager, ISound sound, Operation<ISound> original) {
+        if(sound instanceof SliderSound sliderSound) {
+            return sliderSound;
+        }
+        return original.call(manager, sound);
     }
 
     @ModifyReturnValue(method = "getClampedVolume", at = @At("RETURN"))
