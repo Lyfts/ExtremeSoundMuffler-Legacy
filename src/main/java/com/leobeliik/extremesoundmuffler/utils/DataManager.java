@@ -92,7 +92,7 @@ public class DataManager implements ISoundLists {
         anchorNBT.setInteger("X", (int) anchor.getAnchorPos().xCoord);
         anchorNBT.setInteger("Y", (int) anchor.getAnchorPos().yCoord);
         anchorNBT.setInteger("Z", (int) anchor.getAnchorPos().zCoord);
-        anchorNBT.setString("DIM", anchor.getDimension());
+        anchorNBT.setInteger("DIM", anchor.getDimensionId());
         anchorNBT.setInteger("RAD", anchor.getRadius());
         anchor.getMuffledSounds()
             .forEach((R, F) -> muffledNBT.setFloat(R.toString(), F));
@@ -116,7 +116,7 @@ public class DataManager implements ISoundLists {
                 nbt.getInteger("ID"),
                 nbt.getString("NAME"),
                 Vec3.createVectorHelper(nbt.getInteger("X"), nbt.getInteger("Y"), nbt.getInteger("Z")),
-                nbt.getString("DIM"),
+                nbt.getInteger("DIM"),
                 nbt.getInteger("RAD"),
                 muffledSounds);
         }

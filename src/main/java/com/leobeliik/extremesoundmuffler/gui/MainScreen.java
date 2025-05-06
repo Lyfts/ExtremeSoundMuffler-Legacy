@@ -410,10 +410,8 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         if (anchor != null) {
             stringW = fontRendererObj.getStringWidth("Dimension: ");
             radius = anchor.getRadius() == 0 ? "" : String.valueOf(anchor.getRadius());
-            if (anchor.getDimension() != null) {
-                stringW += fontRendererObj.getStringWidth(anchor.getDimension());
-                dimensionName = anchor.getDimension();
-            }
+            stringW += fontRendererObj.getStringWidth(anchor.getDimensionName());
+            dimensionName = anchor.getDimensionName();
             drawRect(x - 5, y - 56, x + stringW + 6, y + 16, darkBG);
             drawString(fontRendererObj, "X: " + anchor.getX(), x + 1, y - 50, whiteText);
             drawString(fontRendererObj, "Y: " + anchor.getY(), x + 1, y - 40, whiteText);
