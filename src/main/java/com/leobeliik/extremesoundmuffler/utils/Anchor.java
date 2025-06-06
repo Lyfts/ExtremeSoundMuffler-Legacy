@@ -10,6 +10,7 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.DimensionManager;
 
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 
@@ -100,8 +101,8 @@ public class Anchor {
     }
 
     public String getDimensionName() {
-        EntityClientPlayerMP player = Objects.requireNonNull(Minecraft.getMinecraft().thePlayer);
-        String name = player.worldObj.provider.getProviderForDimension(this.dimensionId)
+        if (this.dimensionId == Integer.MIN_VALUE) return "";
+        String name = DimensionManager.createProviderFor(this.dimensionId)
             .getDimensionName();
         return name == null ? "???" : name;
     }
@@ -122,7 +123,7 @@ public class Anchor {
     }
 
     public void deleteAnchor() {
-        setName("Anchor: " + this.getAnchorId());
+        setName("Anchor " + this.getAnchorId());
         anchorPos = null;
         setDimensionId(Integer.MIN_VALUE);
         setRadius(0);
