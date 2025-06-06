@@ -391,8 +391,6 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     private void renderButtonsTextures(int mouseX, int mouseY) {
         int x; // start x point of the button
         int y; // start y point of the button
-        String message; // Button message
-        int stringW; // text width
 
         if (buttonList.size() < soundsList.size()) {
             return;
@@ -402,22 +400,26 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         btnToggleMuffled.setIcon(isMuffling ? MUFFLE : null, 1, 1, 15, 15);
 
         // Anchor coordinates and set coord button
-        String dimensionName = "";
-        String radius;
         x = btnSetAnchor.xPosition;
         y = btnSetAnchor.yPosition;
 
         if (anchor != null) {
-            stringW = fontRendererObj.getStringWidth("Dimension: ");
-            radius = anchor.getRadius() == 0 ? "" : String.valueOf(anchor.getRadius());
-            stringW += fontRendererObj.getStringWidth(anchor.getDimensionName());
-            dimensionName = anchor.getDimensionName();
-            drawRect(x - 5, y - 56, x + stringW + 6, y + 16, darkBG);
+            drawRect(
+                x - 5,
+                y - 56,
+                x + fontRendererObj.getStringWidth("Dimension: " + anchor.getDimensionName()) + 6,
+                y + 16,
+                darkBG);
             drawString(fontRendererObj, "X: " + anchor.getX(), x + 1, y - 50, whiteText);
             drawString(fontRendererObj, "Y: " + anchor.getY(), x + 1, y - 40, whiteText);
             drawString(fontRendererObj, "Z: " + anchor.getZ(), x + 1, y - 30, whiteText);
-            drawString(fontRendererObj, "Radius: " + radius, x + 1, y - 20, whiteText);
-            drawString(fontRendererObj, "Dimension: " + dimensionName, x + 1, y - 10, whiteText);
+            drawString(
+                fontRendererObj,
+                "Radius: " + (anchor.getRadius() == 0 ? "" : String.valueOf(anchor.getRadius())),
+                x + 1,
+                y - 20,
+                whiteText);
+            drawString(fontRendererObj, "Dimension: " + anchor.getDimensionName(), x + 1, y - 10, whiteText);
             renderGui();
             func_146110_a(x, y, 0, 69.45F, 11, 11, 88, 88); // set coordinates button
 
@@ -449,10 +451,9 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
 
             x = editAnchorRadiusBar.xPosition + editAnchorRadiusBar.getWidth();
             y = editAnchorRadiusBar.yPosition;
-            message = "Range: 1 - 32";
-            stringW = fontRendererObj.getStringWidth(message);
+            String message = "Range: 1 - 32";
             if (editAnchorRadiusBar.isFocused()) {
-                drawRect(x + 3, y, x + stringW + 9, y + 12, darkBG);
+                drawRect(x + 3, y, x + fontRendererObj.getStringWidth(message) + 9, y + 12, darkBG);
                 fontRendererObj.drawString(message, x + 10, y + 2, whiteText);
             }
         }
