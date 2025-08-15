@@ -9,7 +9,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.DimensionManager;
 
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 
@@ -20,7 +19,7 @@ public class Anchor {
 
     private final int id;
     private String name;
-    private String dimension;
+    private int dimensionId;
     private int radius;
     private Object2FloatMap<String> muffledSounds = new Object2FloatAVLTreeMap<>();
     private BlockPos anchorPos;
@@ -30,12 +29,12 @@ public class Anchor {
         this.name = name;
     }
 
-    public Anchor(int id, String name, BlockPos anchorPos, String dimension, int radius,
+    public Anchor(int id, String name, BlockPos anchorPos, int dimensionId, int radius,
                   Object2FloatMap<String> muffledSounds) {
         this.id = id;
         this.name = name;
         this.anchorPos = anchorPos;
-        this.dimension = dimension;
+        this.dimensionId = dimensionId;
         this.radius = radius;
         this.muffledSounds = muffledSounds;
     }
@@ -98,12 +97,18 @@ public class Anchor {
         return anchorPos == null ? 0 : anchorPos.getZ();
     }
 
-    public String getDimension() {
-        return dimension;
+    public int getDimensionId() {
+        return this.dimensionId;
     }
 
-    private void setDimension(String dimension) {
-        this.dimension = dimension;
+    public String getDimensionName() {
+        EntityPlayerSP player = Objects.requireNonNull(Minecraft.getMinecraft().player);
+        String DimensionName = player.world.provider.getDimensionType().getName();
+        return DimensionName == null ? "???" : DimensionName;
+    }
+
+    private void setDimensionId(int dimensionId) {
+        this.dimensionId = dimensionId;
     }
 
     public void removeSound(ResourceLocation sound) {
@@ -113,15 +118,14 @@ public class Anchor {
     public void setAnchor() {
         EntityPlayerSP player = Objects.requireNonNull(Minecraft.getMinecraft().player);
         setAnchorPos(player.getPosition());
-        setDimension(
-                DimensionManager.getProvider(player.dimension).getDimensionType().getName());
+        setDimensionId(player.dimension);
         setRadius(this.getRadius() == 0 ? 32 : this.getRadius());
     }
 
     public void deleteAnchor() {
         setName("Anchor: " + this.getAnchorId());
         anchorPos = null;
-        setDimension(null);
+        setDimensionId(Integer.MIN_VALUE);
         setRadius(0);
         muffledSounds.clear();
     }
@@ -135,8 +139,8 @@ public class Anchor {
         BlockPos soundPos = new BlockPos(sound.getXPosF(), sound.getYPosF(), sound.getZPosF());
         for (Anchor anchor : ISoundLists.anchorList) {
             WorldClient world = Minecraft.getMinecraft().world;
-            if (anchor.getAnchorPos() != null && world != null && world.provider.getDimensionType().getName()
-                    .equals(anchor.getDimension()) &&
+            if (anchor.getAnchorPos() != null && world != null &&
+                    world.provider.getDimension() == anchor.getDimensionId() &&
                     Math.sqrt(soundPos.distanceSq(anchor.getAnchorPos())) <= anchor.getRadius() &&
                     anchor.getMuffledSounds()
                             .containsKey(sound.getSoundLocation())) {
