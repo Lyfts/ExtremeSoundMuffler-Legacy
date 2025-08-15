@@ -39,4 +39,5 @@
  */
 dependencies {
 
+    compileOnly(rfg.deobf("curse.maven:mekanism-ce-399904:5351260"))
 }
