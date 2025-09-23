@@ -41,6 +41,7 @@ public abstract class SoundMixin implements ISoundLists {
 
         ResourceLocation soundLocation = sound.getPositionedSoundLocation();
 
+        recentSoundsList.remove(soundLocation);
         recentSoundsList.add(soundLocation);
 
         if (MainScreen.isMuffled()) {

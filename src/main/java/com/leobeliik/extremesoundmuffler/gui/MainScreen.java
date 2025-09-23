@@ -8,10 +8,13 @@ import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE;
 import static com.leobeliik.extremesoundmuffler.utils.Icon.RESET;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
@@ -26,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import com.google.common.collect.Lists;
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.buttons.ESMButton;
@@ -41,6 +45,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     private static final Minecraft minecraft = Minecraft.getMinecraft();
     private static final Pattern NUMBER_PATTERN = Pattern.compile("[0-9]*(?:[0-9]*)?");
     private static final String mainTitle = "ESM - Main Screen";
+    private static Set<ResourceLocation> allSounds;
     private final List<GuiButton> filteredButtons = new ArrayList<>();
     private static boolean isMuffling = true;
     private static String searchBarText = "";
@@ -61,6 +66,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
     private Anchor anchor;
     private final List<GuiTextField> textFields = new ArrayList<>();
     private static ListMode listMode;
+    private Set<ResourceLocation> currentSoundList;
 
     enum ListMode {
 
@@ -228,7 +234,6 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         updateText();
     }
 
-    @SuppressWarnings("unchecked")
     private void addSoundButtons() {
         int buttonH = minYButton;
         anchor = getAnchorByName(screenTitle);
@@ -237,36 +242,13 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             return;
         }
 
-        soundsList.clear();
-        switch (listMode) {
-            case RECENT -> {
-                if (!Config.hideMuffledFromRecent) {
-                    soundsList.addAll(getMuffledSounds().keySet());
-                }
-                soundsList.addAll(recentSoundsList);
-            }
-            case ALL -> {
-                soundsList.addAll(
-                    ((Set<ResourceLocation>) Minecraft.getMinecraft()
-                        .getSoundHandler().sndRegistry.getKeys()));
-                if (Config.getLawfulAllList()) {
-                    forbiddenSounds.forEach(
-                        fs -> soundsList.removeIf(
-                            sl -> sl.toString()
-                                .contains(fs)));
-                }
-            }
-            case MUFFLED -> {
-                soundsList.addAll(getMuffledSounds().keySet());
-            }
-        }
-
-        if (soundsList.isEmpty()) {
+        currentSoundList = getSoundList(listMode);
+        if (currentSoundList.isEmpty()) {
             return;
         }
 
         int id = 0;
-        for (ResourceLocation sound : soundsList) {
+        for (ResourceLocation sound : currentSoundList) {
             float maxVolume = 1F;
             float volume = getMuffledSounds().get(sound) == null ? maxVolume : getMuffledSounds().get(sound);
             MuffledSlider volumeSlider = getMuffledSlider(sound, id++, buttonH, volume);
@@ -392,7 +374,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         int x; // start x point of the button
         int y; // start y point of the button
 
-        if (buttonList.size() < soundsList.size()) {
+        if (buttonList.size() < currentSoundList.size()) {
             return;
         }
 
@@ -523,7 +505,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
             return;
         }
 
-        if ((index >= buttonList.size() - 10 || index >= soundsList.size() - 10) && direction > 0) {
+        if ((index >= buttonList.size() - 10 || index >= currentSoundList.size() - 10) && direction > 0) {
             return;
         }
 
@@ -673,5 +655,32 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         } else {
             return "Clear recent sounds list";
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Set<ResourceLocation> getSoundList(ListMode mode) {
+        return switch (mode) {
+            case RECENT -> new LinkedHashSet<>(Lists.reverse(new ArrayList<>(recentSoundsList)));
+            case ALL -> {
+                if (allSounds == null) {
+                    allSounds = new TreeSet<>(Comparator.comparing(ResourceLocation::toString));
+                    allSounds.addAll(
+                        Minecraft.getMinecraft()
+                            .getSoundHandler().sndRegistry.getKeys());
+                    if (Config.getLawfulAllList() && listMode == ALL) {
+                        forbiddenSounds.forEach(
+                            fs -> allSounds.removeIf(
+                                sl -> sl.toString()
+                                    .contains(fs)));
+                    }
+                }
+                yield allSounds;
+            }
+            case MUFFLED -> {
+                Set<ResourceLocation> set = new TreeSet<>(Comparator.comparing(ResourceLocation::toString));
+                set.addAll(getMuffledSounds().keySet());
+                yield set;
+            }
+        };
     }
 }
