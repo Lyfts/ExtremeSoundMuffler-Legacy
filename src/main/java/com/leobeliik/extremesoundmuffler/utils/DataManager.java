@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.storage.ThreadedFileIOBase;
 
@@ -49,7 +50,7 @@ public class DataManager implements ISoundLists {
 
     public static void loadData(String address) {
         identifier = getIdentifier(address);
-        loadMuffledMap().forEach((R, F) -> muffledSounds.put(new ComparableResource(R), F));
+        loadMuffledMap().forEach((R, F) -> muffledSounds.put(new ResourceLocation(R), F));
         if (!Config.getDisableAnchors()) {
             anchorList.clear();
             anchorList.addAll(loadAnchors());

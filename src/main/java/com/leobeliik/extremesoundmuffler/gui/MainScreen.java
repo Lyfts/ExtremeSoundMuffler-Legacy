@@ -33,7 +33,6 @@ import com.leobeliik.extremesoundmuffler.gui.buttons.MuffledSlider;
 import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
-import com.leobeliik.extremesoundmuffler.utils.ComparableResource;
 import com.leobeliik.extremesoundmuffler.utils.DataManager;
 import com.leobeliik.extremesoundmuffler.utils.Tips;
 
@@ -247,8 +246,9 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 soundsList.addAll(recentSoundsList);
             }
             case ALL -> {
-                ((Set<ResourceLocation>) Minecraft.getMinecraft()
-                    .getSoundHandler().sndRegistry.getKeys()).forEach(e -> soundsList.add(new ComparableResource(e)));
+                soundsList.addAll(
+                    ((Set<ResourceLocation>) Minecraft.getMinecraft()
+                        .getSoundHandler().sndRegistry.getKeys()));
                 if (Config.getLawfulAllList()) {
                     forbiddenSounds.forEach(
                         fs -> soundsList.removeIf(
@@ -266,7 +266,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         }
 
         int id = 0;
-        for (ComparableResource sound : soundsList) {
+        for (ResourceLocation sound : soundsList) {
             float maxVolume = 1F;
             float volume = getMuffledSounds().get(sound) == null ? maxVolume : getMuffledSounds().get(sound);
             MuffledSlider volumeSlider = getMuffledSlider(sound, id++, buttonH, volume);
@@ -277,7 +277,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         }
     }
 
-    private MuffledSlider getMuffledSlider(ComparableResource sound, int id, int buttonH, float volume) {
+    private MuffledSlider getMuffledSlider(ResourceLocation sound, int id, int buttonH, float volume) {
         int x = Config.getLeftButtons() ? getX() + 36 : getX() + 11;
         boolean muffled = getMuffledSounds().containsKey(sound);
         return new MuffledSlider(id, x, buttonH, 205, 11, volume, sound, anchor).setMuffled(muffled);
@@ -659,7 +659,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         open(screenTitle, listMode, searchBar.getText());
     }
 
-    private Map<ComparableResource, Float> getMuffledSounds() {
+    private Map<ResourceLocation, Float> getMuffledSounds() {
         return isMain() ? muffledSounds : anchor.getMuffledSounds();
     }
 

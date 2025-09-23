@@ -2,6 +2,7 @@ package com.leobeliik.extremesoundmuffler.mixins.minecraft;
 
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SoundManager;
+import net.minecraft.util.ResourceLocation;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -11,7 +12,6 @@ import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
-import com.leobeliik.extremesoundmuffler.utils.ComparableResource;
 import com.leobeliik.extremesoundmuffler.utils.PlayButtonSound;
 import com.leobeliik.extremesoundmuffler.utils.SliderSound;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -39,7 +39,7 @@ public abstract class SoundMixin implements ISoundLists {
             return original;
         }
 
-        ComparableResource soundLocation = new ComparableResource(sound.getPositionedSoundLocation());
+        ResourceLocation soundLocation = sound.getPositionedSoundLocation();
 
         recentSoundsList.add(soundLocation);
 
