@@ -1,5 +1,6 @@
 package com.leobeliik.extremesoundmuffler.utils;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -66,9 +67,9 @@ public class Anchor {
         this.name = name;
     }
 
-    public SortedMap<ComparableResource, Float> getMuffledSounds() {
-        SortedMap<ComparableResource, Float> temp = new TreeMap<>();
-        this.muffledSounds.forEach((R, F) -> temp.put(new ComparableResource(R), F));
+    public SortedMap<ResourceLocation, Float> getMuffledSounds() {
+        SortedMap<ResourceLocation, Float> temp = new TreeMap<>(Comparator.comparing(ResourceLocation::toString));
+        this.muffledSounds.forEach((R, F) -> temp.put(new ResourceLocation(R), F));
         return temp;
     }
 
@@ -143,7 +144,7 @@ public class Anchor {
                 && world.provider.dimensionId == anchor.getDimensionId()
                 && soundPos.distanceTo(anchor.getAnchorPos()) < anchor.getRadius()
                 && anchor.getMuffledSounds()
-                    .containsKey(new ComparableResource(sound.getPositionedSoundLocation()))) {
+                    .containsKey(sound.getPositionedSoundLocation())) {
                 return anchor;
             }
         }

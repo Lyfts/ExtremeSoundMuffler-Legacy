@@ -14,6 +14,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -22,7 +23,6 @@ import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
-import com.leobeliik.extremesoundmuffler.utils.ComparableResource;
 import com.leobeliik.extremesoundmuffler.utils.PlayButtonSound;
 import com.leobeliik.extremesoundmuffler.utils.SliderSound;
 
@@ -31,14 +31,14 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private final Anchor anchor;
     private float sliderValue;
     private ESMButton btnToggleSound;
-    private final ComparableResource sound;
+    private final ResourceLocation sound;
     public static SliderSound tickSound;
     public static boolean showSlider = false;
     private boolean isDragging;
     private final List<ESMButton> subButtons = new ArrayList<>();
     private boolean muffled = false;
 
-    public MuffledSlider(int id, int x, int y, int width, int height, float sliderValue, ComparableResource sound,
+    public MuffledSlider(int id, int x, int y, int width, int height, float sliderValue, ResourceLocation sound,
         Anchor anchor) {
         super(id, x, y, width, height, sound.toString());
         this.sliderValue = sliderValue;
