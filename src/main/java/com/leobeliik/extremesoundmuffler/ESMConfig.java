@@ -40,9 +40,6 @@ public class ESMConfig {
 
         @Config.Comment("Whether or not use the dark theme")
         public boolean useDarkTheme = false;
-
-        @Config.Comment("Hide non-recent muffled sounds from the recent sounds list")
-        public boolean hideMuffledFromRecent = true;
     }
 
     public static class Buttons {
