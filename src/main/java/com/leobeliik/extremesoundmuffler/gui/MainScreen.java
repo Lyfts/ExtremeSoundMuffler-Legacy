@@ -667,7 +667,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                     allSounds.addAll(
                         Minecraft.getMinecraft()
                             .getSoundHandler().sndRegistry.getKeys());
-                    if (Config.getLawfulAllList() && listMode == ALL) {
+                    if (Config.getLawfulAllList()) {
                         forbiddenSounds.forEach(
                             fs -> allSounds.removeIf(
                                 sl -> sl.toString()
