@@ -5,6 +5,7 @@ import cpw.mods.fml.client.config.GuiUtils;
 public enum Icon {
 
     PLAY(32, 202),
+    INVENTORY(98, 202),
     MUFFLE_ON(43, 202),
     MUFFLE_OFF(43, 213),
     MUFFLE(54, 202),

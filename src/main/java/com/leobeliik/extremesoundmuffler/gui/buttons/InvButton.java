@@ -17,7 +17,7 @@ public class InvButton extends ESMButton implements IColorsGui {
     public InvButton(GuiContainer parentGui, int x, int y) {
         super(1001, parentGui.guiLeft + x, parentGui.guiTop + y, 11, 11, "");
         parent = parentGui;
-        setIcon(Icon.MUFFLE_ON, 11, 11);
+        setIcon(Icon.INVENTORY, 11, 11);
         setTooltip("Muffler", true);
     }
 
