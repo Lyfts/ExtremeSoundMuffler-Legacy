@@ -13,6 +13,7 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -78,7 +79,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         if (showSlider && isMouseOver(mouseX, mouseY)) {
             drawCenteredString(
                     font,
-                    "Volume: " + (int) (sliderValue * 100),
+                    I18n.format("esm.slider.btn.volume", (int) (sliderValue * 100)),
                     x + (width / 2),
                     y + 2,
                     whiteText); // title

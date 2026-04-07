@@ -1,0 +1,52 @@
+esm.key.open_muffler_gui=サウンド消音メニューを開く
+
+esm.inventory.btn=SEを消音
+
+esm.slider.btn.muffler.muffle=サウンドを消音
+esm.slider.btn.muffler.unmuffle=消音を解除
+esm.slider.btn.play.play_sound=サウンドを再生／停止
+esm.slider.btn.volume=音量: %s
+
+esm.main_screen.btn.csl.recent=最近
+esm.main_screen.btn.csl.all=すべて
+esm.main_screen.btn.csl.muffled=消音中
+esm.main_screen.btn.csl.tooltip=%sのサウンドを表示中
+esm.main_screen.btn.tms.stop=消音を停止
+esm.main_screen.btn.tms.start=消音を開始
+esm.main_screen.btn.delete.sounds=全ての消音を削除
+esm.main_screen.btn.delete.list=サウンド履歴を削除
+esm.main_screen.btn.delete.anchor=アンカーを削除
+esm.main_screen.btn.accept=決定
+esm.main_screen.btn.next_sounds=次のサウンドへ
+esm.main_screen.btn.previous_sounds=前のサウンドへ
+esm.main_screen.btn.anchors.disabled=アンカーは無効化されています
+esm.main_screen.btn.anchors.set_message=先にアンカーをセットしてください
+esm.main_screen.btn.anchors.set=アンカーをセット
+esm.main_screen.btn.anchors.set_range=半径: 1 - 32
+esm.main_screen.btn.anchors.set_title=アンカーの名前を変更
+esm.main_screen.btn.anchors.edit=アンカーを編集
+
+esm.main_screen.main_title=ESM - 全体
+esm.main_screen.tip=ヒント: %s
+
+esm.main_screen.side_screen.radius=半径: %s
+esm.main_screen.side_screen.dimension=世界: %s
+esm.main_screen.side_screen.title=名前:
+esm.main_screen.side_screen.radius_edit=半径:
+
+esm.tip.disable=このヒントは設定で非表示にできます。
+esm.tip.change_volume=消音したサウンドのスライダーをドラッグすると、 個別に音量を調節できます。
+esm.tip.inv_button=インベントリの消音ボタンは 右クリックでドラッグして動かせます。
+esm.tip.inv_button_disable=インベントリの消音ボタンは設定で非表示にできます。
+esm.tip.play_sound=どのサウンドも再生ボタンを押すと試聴できます。
+esm.tip.unmuffle=「消音を停止」ボタンを押すと、選択したサウンドの消音を停止できます。もう一度押すと消音を再開します。
+esm.tip.no_anchors=設定でアンカー機能を無効にできます。
+esm.tip.sound_blacklist=設定からサウンド一覧のブラックリストを設定できます。
+esm.tip.left_buttons=設定で消音と再生ボタンの位置を左側に変更できます。
+esm.tip.dark_theme=設定からダークテーマに変更できます。
+esm.tip.use_anchors=アンカー（上部の番号付きボタン）は、 指定した範囲のサウンドを消音することができます。
+esm.tip.set_anchors=アンカーボタン（上部の番号付きボタン）を クリックし、右側のマーカーボタンをクリックすると アンカーを設定できます。
+esm.tip.modify_anchors=アンカーを設定したあとでも、マーカーボタンを クリックするとアンカーの場所を変更できます。
+esm.tip.modify_anchors_2=「アンカーを編集」ボタンから、 アンカーの名前と範囲を変更できます。
+esm.tip.reset_recent_sounds=「最近」の画面でShiftキーを押しながらゴミ箱ボタンを クリックすると、最近のサウンド履歴が消去されます。
+
