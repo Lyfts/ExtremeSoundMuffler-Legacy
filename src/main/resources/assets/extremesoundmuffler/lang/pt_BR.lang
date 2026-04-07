@@ -1,0 +1,52 @@
+esm.key.open_muffler_gui=Open sound muffler screen
+
+esm.inventory.btn=Silenciosa
+
+esm.slider.btn.muffler.muffle=Som de mufla
+esm.slider.btn.muffler.unmuffle=Som sem arruinar
+esm.slider.btn.play.play_sound=Play/Stop Sound
+esm.slider.btn.volume=volume: %s
+
+esm.main_screen.btn.csl.recent=Recente
+esm.main_screen.btn.csl.all=Tudo
+esm.main_screen.btn.csl.muffled=Abafada
+esm.main_screen.btn.csl.tooltip=Mostrando %sonsds
+esm.main_screen.btn.tms.stop=Pare de abafar
+esm.main_screen.btn.tms.start=Comece a abafar
+esm.main_screen.btn.delete.sounds=Exclua sons abafados
+esm.main_screen.btn.delete.list=Exclua lista abafada
+esm.main_screen.btn.delete.anchor=Exclua a âncora
+esm.main_screen.btn.accept=Aceitar
+esm.main_screen.btn.next_sounds=Próximo sons
+esm.main_screen.btn.previous_sounds=Sons anteriores
+esm.main_screen.btn.anchors.disabled=As âncoras estão desativadas!
+esm.main_screen.btn.anchors.set_message=Defina a âncora primeiro
+esm.main_screen.btn.anchors.set=Defina a âncora
+esm.main_screen.btn.anchors.set_range=Variar: 1 - 32
+esm.main_screen.btn.anchors.set_title=Alterar o título âncora
+esm.main_screen.btn.anchors.edit=Editar âncora
+
+esm.main_screen.main_title=ESM - tela principal
+esm.main_screen.tip=Dica: %s
+
+esm.main_screen.side_screen.radius=Raio: %s
+esm.main_screen.side_screen.dimension=Dimensão: %s
+esm.main_screen.side_screen.title=Título:
+esm.main_screen.side_screen.radius_edit=Raio:
+
+esm.tip.disable=Você pode desativar essas dicas na configuração
+esm.tip.change_volume=Você pode alterar o volume de sons abafados arrastando o controle deslizante
+esm.tip.inv_button=Você pode mover o botão de inventário segurando o RMB sobre o botão e arrastando -o
+esm.tip.inv_button_disable=Você pode desativar e ativar o botão do silenciador na tela de inventário na configuração
+esm.tip.play_sound=Você pode reproduzir qualquer som pressionando o botão de som de reprodução correspondente
+esm.tip.unmuffle=Você pode parar de abafar todos os sons selecionados pressionando o botão Stop Sofling Sounds, pressione -o novamente para retomar o stefling
+esm.tip.no_anchors=Você pode desativar as âncoras na configuração
+esm.tip.sound_blacklist=Você pode sons na lista negra na configuração
+esm.tip.left_buttons=Você pode mudar o lado do silenciador e jogar botões para a esquerda na configuração
+esm.tip.dark_theme=Você pode definir o tema sombrio na configuração
+esm.tip.use_anchors=Âncoras (os 10 botões superiores) são usados para abafar sons em uma área selecionada
+esm.tip.set_anchors=Clique em qualquer um dos botões da âncora (os numerados) e depois clique no botão Marcador (à direita) para definir a posição da âncora
+esm.tip.modify_anchors=Depois de definir as âncoras, você pode clicar no botão Marcador para mover a posição a qualquer momento.
+esm.tip.modify_anchors_2=Você pode alterar o nome e o alcance das âncoras depois de definir a posição
+esm.tip.reset_recent_sounds=Mantenha o SHIFT no \"Recente\" tela de sons e clique no botão de lixo para limpar a lista de sons recentes
+
