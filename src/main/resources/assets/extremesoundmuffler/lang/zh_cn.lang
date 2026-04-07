@@ -1,0 +1,52 @@
+esm.key.open_muffler_gui=打开音效消音器界面
+esm.inventory.btn=音效消音器
+
+esm.slider.btn.muffler.muffle=消音
+esm.slider.btn.muffler.unmuffle=取消消音
+esm.slider.btn.play.play_sound=播放/停止音效
+esm.slider.btn.volume=音量： %s
+
+esm.main_screen.btn.csl.recent=最近
+esm.main_screen.btn.csl.all=全部
+esm.main_screen.btn.csl.muffled=已消音
+esm.main_screen.btn.csl.tooltip=显示%s音效
+esm.main_screen.btn.tms.stop=停止消音
+esm.main_screen.btn.tms.start=开始消音
+esm.main_screen.btn.delete.sounds=删除已消音的声音
+esm.main_screen.btn.delete.list=删除已消音的声音
+esm.main_screen.btn.delete.anchor=删除消音坐标
+esm.main_screen.btn.accept=确认
+esm.main_screen.btn.next_sounds=下一页
+esm.main_screen.btn.previous_sounds=上一页
+esm.main_screen.btn.anchors.disabled=消音坐标已禁用！
+esm.main_screen.btn.anchors.set_message=请先设置消音坐标
+esm.main_screen.btn.anchors.set=设置消音坐标
+esm.main_screen.btn.anchors.set_range=范围： 1 - %s
+esm.main_screen.btn.anchors.set_title=修改消音坐标名称
+esm.main_screen.btn.anchors.edit=编辑坐标
+esm.main_screen_btn.clear_recent=清空最近声音列表
+esm.main_screen_btn.search=搜索...
+
+esm.main_screen.main_title=ESM - 主界面
+esm.main_screen.tip=提示： %s
+
+esm.main_screen.side_screen.radius=半径： %s
+esm.main_screen.side_screen.dimension=维度： %s
+esm.main_screen.side_screen.title=名称： 
+esm.main_screen.side_screen.radius_edit=半径： 
+
+esm.tip.disable=你可以在配置文件中禁用这些提示
+esm.tip.change_volume=你可以通过拖动滑块来调整消音音效的音量
+esm.tip.inv_button=你可以按住Ctrl+鼠标右键拖动物品栏界面上的消音器按钮来移动它的位置
+esm.tip.inv_button_disable=你可以在配置文件中禁用或启用物品栏界面上的消音器按钮
+esm.tip.play_sound=你可以点击对应的播放按钮来试听任意声音
+esm.tip.unmuffle=你可以点击“停止消音”按钮来暂停所有已选声音的消音，再次点击可恢复消音
+esm.tip.no_anchors=你可以在配置文件中禁用消音坐标功能
+esm.tip.sound_blacklist=你可以在配置文件中添加音效黑名单
+esm.tip.left_buttons=你可以在配置文件中将消音和播放按钮切换到左侧
+esm.tip.dark_theme=你可以在配置文件中设置深色主题
+esm.tip.use_anchors=消音坐标（上方10个按钮）用于在选定区域内消音
+esm.tip.set_anchors=点击任意消音坐标按钮（带数字的按钮），然后点击右侧的标记按钮来设置消音坐标的位置
+esm.tip.modify_anchors=设置消音坐标后，你可以随时点击标记按钮来移动坐标位置
+esm.tip.modify_anchors_2=设置位置后，你可以修改消音坐标的名称和范围
+esm.tip.reset_recent_sounds=在“最近”音效界面按住Shift并点击垃圾桶按钮可清空最近声音列表
