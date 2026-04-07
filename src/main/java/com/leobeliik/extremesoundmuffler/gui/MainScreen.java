@@ -144,15 +144,9 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         addAnchorButtons();
 
         buttonList.add(
-            new ESMButton(
-                0,
-                getX() + 13,
-                getY() + 181,
-                52,
-                13,
-                listMode.title,
-                this::toggleSoundList).setRenderText(true)
-                    .setTooltip(I18n.format("esm.main_screen.btn.csl.tooltip", listMode.title), false));
+            new ESMButton(0, getX() + 13, getY() + 181, 52, 13, listMode.title, this::toggleSoundList)
+                .setRenderText(true)
+                .setTooltip(I18n.format("esm.main_screen.btn.csl.tooltip", listMode.title), false));
         buttonList.add(
             btnToggleMuffled = new ESMButton(0, getX() + 229, getY() + 179, 17, 17, () -> isMuffling = !isMuffling)
                 .setTooltip(
