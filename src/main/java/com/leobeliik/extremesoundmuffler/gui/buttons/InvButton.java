@@ -3,6 +3,7 @@ package com.leobeliik.extremesoundmuffler.gui.buttons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
 
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
@@ -18,7 +19,7 @@ public class InvButton extends ESMButton implements IColorsGui {
         super(1001, parentGui.guiLeft + x, parentGui.guiTop + y, 11, 11, "");
         parent = parentGui;
         setIcon(Icon.INVENTORY, 11, 11);
-        setTooltip("Muffler", true);
+        setTooltip(I18n.format("esm.inventory.btn"), true);
     }
 
     @Override

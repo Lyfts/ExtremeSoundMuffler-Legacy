@@ -2,6 +2,7 @@ package com.leobeliik.extremesoundmuffler;
 
 import java.util.Arrays;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
@@ -18,7 +19,7 @@ public class ClientProxy extends CommonProxy {
     public static KeyBinding openMufflerScreen;
 
     public void preInit(FMLPreInitializationEvent event) {
-        openMufflerScreen = new KeyBinding("Open sound muffler screen", Keyboard.KEY_NONE, "ESM:Legacy");
+        openMufflerScreen = new KeyBinding(I18n.format("esm.key.open_muffler_gui"), Keyboard.KEY_NONE, "ESM:Legacy");
         ClientRegistry.registerKeyBinding(openMufflerScreen);
         Config.init(event);
         ISoundLists.forbiddenSounds.addAll(Arrays.asList(Config.getForbiddenSounds()));
