@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -28,6 +29,8 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Lists;
 import com.leobeliik.extremesoundmuffler.Config;
@@ -699,5 +702,71 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 yield set;
             }
         };
+    }
+
+    /**
+     * Basically identical to {@link net.minecraft.client.gui.GuiScreen#drawHoveringText(List, int, int, FontRenderer)}
+     * needs to be overridden as https://github.com/slprime/ChromaticTooltips changes all calls to this method
+     * to render at the mouse position, which is not what we want.
+     */
+    @SuppressWarnings("DuplicatedCode")
+    @Override
+    protected void drawHoveringText(List<String> textLines, int x, int y, FontRenderer font) {
+        if (textLines.isEmpty()) return;
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        int maxLength = 0;
+
+        for (String s : textLines) {
+            int l = font.getStringWidth(s);
+
+            if (l > maxLength) {
+                maxLength = l;
+            }
+        }
+
+        int adjX = x + 12;
+        int adjY = y - 12;
+        int height = 8;
+
+        if (textLines.size() > 1) {
+            height += 2 + (textLines.size() - 1) * 10;
+        }
+
+        if (adjX + maxLength > this.width) {
+            adjX -= 28 + maxLength;
+        }
+
+        if (adjY + height + 6 > this.height) {
+            adjY = this.height - height - 6;
+        }
+
+        int j1 = -267386864;
+        this.drawGradientRect(adjX - 3, adjY - 4, adjX + maxLength + 3, adjY - 3, j1, j1);
+        this.drawGradientRect(adjX - 3, adjY + height + 3, adjX + maxLength + 3, adjY + height + 4, j1, j1);
+        this.drawGradientRect(adjX - 3, adjY - 3, adjX + maxLength + 3, adjY + height + 3, j1, j1);
+        this.drawGradientRect(adjX - 4, adjY - 3, adjX - 3, adjY + height + 3, j1, j1);
+        this.drawGradientRect(adjX + maxLength + 3, adjY - 3, adjX + maxLength + 4, adjY + height + 3, j1, j1);
+        int k1 = 1347420415;
+        int l1 = (k1 & 16711422) >> 1 | k1 & -16777216;
+        this.drawGradientRect(adjX - 3, adjY - 3 + 1, adjX - 3 + 1, adjY + height + 3 - 1, k1, l1);
+        this.drawGradientRect(adjX + maxLength + 2, adjY - 3 + 1, adjX + maxLength + 3, adjY + height + 3 - 1, k1, l1);
+        this.drawGradientRect(adjX - 3, adjY - 3, adjX + maxLength + 3, adjY - 3 + 1, k1, k1);
+        this.drawGradientRect(adjX - 3, adjY + height + 2, adjX + maxLength + 3, adjY + height + 3, l1, l1);
+
+        for (int i = 0; i < textLines.size(); ++i) {
+            font.drawStringWithShadow(textLines.get(i), adjX, adjY, -1);
+
+            if (i == 0) {
+                adjY += 2;
+            }
+
+            adjY += 10;
+        }
+
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
     }
 }
