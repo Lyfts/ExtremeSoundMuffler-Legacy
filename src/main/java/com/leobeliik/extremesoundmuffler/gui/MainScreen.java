@@ -8,6 +8,7 @@ import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE;
 import static com.leobeliik.extremesoundmuffler.utils.Icon.RESET;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -124,6 +125,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         renderButtonsTextures(mouseX, mouseY);
         super.drawScreen(mouseX, mouseY, partialTicks);
         renderTip();
+        renderHoveredButtonTooltip(mouseX, mouseY);
     }
 
     @Override
@@ -146,12 +148,11 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         buttonList.add(
             new ESMButton(0, getX() + 13, getY() + 181, 52, 13, listMode.title, this::toggleSoundList)
                 .setRenderText(true)
-                .setTooltip(I18n.format("esm.main_screen.btn.csl.tooltip", listMode.title), false));
+                .setTooltip(I18n.format("esm.main_screen.btn.csl.tooltip", listMode.title)));
         buttonList.add(
             btnToggleMuffled = new ESMButton(0, getX() + 229, getY() + 179, 17, 17, () -> isMuffling = !isMuffling)
                 .setTooltip(
-                    I18n.format(isMuffling ? "esm.main_screen.btn.tms.stop" : "esm.main_screen.btn.tms.start"),
-                    false));
+                    () -> I18n.format(isMuffling ? "esm.main_screen.btn.tms.stop" : "esm.main_screen.btn.tms.start")));
         buttonList.add(btnDelete = new ESMButton(1, getX() + 205, getY() + 179, 17, 17, () -> {
             anchor = getAnchorByName(screenTitle);
             if (clearRecentSounds()) {
@@ -174,7 +175,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                     open(anchor.getName(), listMode, searchBar.getText());
                 }
             }
-        }).setTooltip(this::getDeleteTooltip, false));
+        }).setTooltip(this::getDeleteTooltip));
 
         buttonList.add(
             btnSetAnchor = new ESMButton(
@@ -186,10 +187,8 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 () -> Objects.requireNonNull(getAnchorByName(screenTitle))
                     .setAnchor()).setVisible(!isMain())
                         .setTooltip(
-                            () -> btnSetAnchor.mouseOver && !editAnchorTitleBar.getVisible()
-                                ? I18n.format("esm.main_screen.btn.anchors.set")
-                                : "",
-                            true));
+                            () -> !editAnchorTitleBar.getVisible() ? I18n.format("esm.main_screen.btn.anchors.set")
+                                : ""));
 
         buttonList.add(
             btnEditAnchor = new ESMButton(
@@ -202,11 +201,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                     .setVisible(() -> !isMain() && anchor != null && anchor.getAnchorPos() != null)
                     .setIcon(EDIT_ANCHOR)
                     .setTooltip(
-                        () -> btnEditAnchor.mouseOver && !editAnchorTitleBar.getVisible()
-                            ? I18n.format("esm.main_screen.btn.anchors.edit")
-                            : "",
-
-                        true));
+                        () -> !editAnchorTitleBar.getVisible() ? I18n.format("esm.main_screen.btn.anchors.edit") : ""));
 
         addEditAnchorButtons();
 
@@ -223,7 +218,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 () -> listScroll(
                     !searchBar.getText()
                         .isEmpty() ? filteredButtons : buttonList,
-                    -1)).setTooltip(I18n.format("esm.main_screen.btn.previous_sounds"), true));
+                    -1)).setTooltip(I18n.format("esm.main_screen.btn.previous_sounds")));
 
         buttonList.add(
             new ESMButton(
@@ -235,7 +230,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 () -> listScroll(
                     !searchBar.getText()
                         .isEmpty() ? filteredButtons : buttonList,
-                    1)).setTooltip(I18n.format("esm.main_screen.btn.next_sounds"), true));
+                    1)).setTooltip(I18n.format("esm.main_screen.btn.next_sounds")));
         updateText();
     }
 
@@ -304,8 +299,7 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
                 btnAnchor.setTooltip(
                     isAnchorsDisabled ? I18n.format("esm.main_screen.btn.anchors.disabled")
                         : anchorList.get(i)
-                            .getName(),
-                    true));
+                            .getName()));
             buttonW += 20;
         }
     }
@@ -484,6 +478,23 @@ public class MainScreen extends GuiScreen implements ISoundLists, IColorsGui {
         // Show a tip
         List<String> tips = fontRendererObj.listFormattedStringToWidth(tip, xSize);
         drawHoveringText(tips, getX() - 5, getY() + 223, fontRendererObj);
+    }
+
+    private void renderHoveredButtonTooltip(int mouseX, int mouseY) {
+        String hoveredTooltip = "";
+        for (int i = buttonList.size() - 1; i >= 0; i--) {
+            GuiButton button = buttonList.get(i);
+            if (!(button instanceof ESMButton esmButton)) continue;
+            String tooltip = esmButton.getTooltipForMouse(mouseX, mouseY);
+            if (!tooltip.isEmpty()) {
+                hoveredTooltip = tooltip;
+                break;
+            }
+        }
+
+        if (!hoveredTooltip.isEmpty()) {
+            func_146283_a(Collections.singletonList(hoveredTooltip), mouseX, mouseY);
+        }
     }
 
     private void editTitle(Anchor anchor) {
