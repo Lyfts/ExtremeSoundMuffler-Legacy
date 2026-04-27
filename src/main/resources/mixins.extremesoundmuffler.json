@@ -5,7 +5,8 @@
   "refmap": "mixins.extremesoundmuffler.refmap.json",
   "minVersion": "0.8",
   "client": [
-    "minecraft.SoundMixin"
+    "minecraft.SoundMixin",
+    "minecraft.GuiScreenInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

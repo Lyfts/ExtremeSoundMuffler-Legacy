@@ -1,7 +1,6 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
 import java.util.Collections;
-import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -10,9 +9,8 @@ import net.minecraft.client.resources.I18n;
 
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
+import com.leobeliik.extremesoundmuffler.mixins.minecraft.GuiScreenMixin;
 import com.leobeliik.extremesoundmuffler.utils.Icon;
-
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class InvButton extends ESMButton {
 
@@ -35,18 +33,8 @@ public class InvButton extends ESMButton {
         super.drawButton(mc, mouseX, mouseY);
 
         String tooltip = getTooltipForMouse(mouseX, mouseY);
-        if (!tooltip.isEmpty() && mc.currentScreen != null) {
-            try {
-                ReflectionHelper
-                    .findMethod(
-                        GuiScreen.class,
-                        mc.currentScreen,
-                        new String[] { "func_146283_a" },
-                        List.class,
-                        int.class,
-                        int.class)
-                    .invoke(mc.currentScreen, Collections.singletonList(tooltip), mouseX, mouseY);
-            } catch (Exception ignored) {}
+        if (!tooltip.isEmpty() && mc.currentScreen instanceof GuiScreenMixin invoker) {
+            invoker.invokeFunc_146283_a(Collections.singletonList(tooltip), mouseX, mouseY);
         }
     }
 
