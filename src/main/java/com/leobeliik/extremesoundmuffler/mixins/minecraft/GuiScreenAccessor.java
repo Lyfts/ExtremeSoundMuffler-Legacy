@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(GuiScreen.class)
-public interface GuiScreenMixin {
+public interface GuiScreenAccessor {
 
     @Invoker("func_146283_a")
-    void invokeFunc_146283_a(List<String> tooltipLines, int x, int y);
+    void invokeDrawHoveringText(List<String> tooltipLines, int x, int y);
 }

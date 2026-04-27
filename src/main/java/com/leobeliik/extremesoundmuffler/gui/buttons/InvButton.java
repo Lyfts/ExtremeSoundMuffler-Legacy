@@ -9,7 +9,7 @@ import net.minecraft.client.resources.I18n;
 
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
-import com.leobeliik.extremesoundmuffler.mixins.minecraft.GuiScreenMixin;
+import com.leobeliik.extremesoundmuffler.mixins.minecraft.GuiScreenAccessor;
 import com.leobeliik.extremesoundmuffler.utils.Icon;
 
 public class InvButton extends ESMButton {
@@ -33,8 +33,8 @@ public class InvButton extends ESMButton {
         super.drawButton(mc, mouseX, mouseY);
 
         String tooltip = getTooltipForMouse(mouseX, mouseY);
-        if (!tooltip.isEmpty() && mc.currentScreen instanceof GuiScreenMixin invoker) {
-            invoker.invokeFunc_146283_a(Collections.singletonList(tooltip), mouseX, mouseY);
+        if (!tooltip.isEmpty() && mc.currentScreen instanceof GuiScreenAccessor invoker) {
+            invoker.invokeDrawHoveringText(Collections.singletonList(tooltip), mouseX, mouseY);
         }
     }
 
