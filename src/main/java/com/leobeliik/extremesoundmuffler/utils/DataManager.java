@@ -44,6 +44,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class DataManager implements ISoundLists {
 
     public static String identifier;
+    public static boolean isDirty;
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting()
         .create();
@@ -58,6 +59,8 @@ public class DataManager implements ISoundLists {
     }
 
     public static void saveData() {
+        if (!isDirty) return;
+        isDirty = false;
         saveMuffledMap();
 
         if (!Config.getDisableAnchors()) {
@@ -193,5 +196,9 @@ public class DataManager implements ISoundLists {
                 return null;
             }
         }
+    }
+
+    public static void setDirty() {
+        isDirty = true;
     }
 }

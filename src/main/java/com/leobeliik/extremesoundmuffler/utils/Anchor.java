@@ -73,10 +73,6 @@ public class Anchor {
         return temp;
     }
 
-    public void setMuffledSounds(SortedMap<ResourceLocation, Float> muffledSounds) {
-        muffledSounds.forEach((R, F) -> this.muffledSounds.put(R.toString(), F));
-    }
-
     public void addSound(ResourceLocation sound, float volume) {
         muffledSounds.put(sound.toString(), volume);
     }
@@ -121,6 +117,7 @@ public class Anchor {
         setAnchorPos((int) player.posX, (int) player.posY, (int) player.posZ);
         setDimensionId(player.dimension);
         setRadius(this.getRadius() == 0 ? 32 : this.getRadius());
+        DataManager.setDirty();
     }
 
     public void deleteAnchor() {
@@ -129,11 +126,13 @@ public class Anchor {
         setDimensionId(Integer.MIN_VALUE);
         setRadius(0);
         muffledSounds.clear();
+        DataManager.setDirty();
     }
 
     public void editAnchor(String title, int Radius) {
         setName(title);
         setRadius(Radius);
+        DataManager.setDirty();
     }
 
     public static Anchor getAnchor(ISound sound) {
