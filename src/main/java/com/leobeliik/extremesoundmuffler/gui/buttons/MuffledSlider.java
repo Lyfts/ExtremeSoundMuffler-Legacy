@@ -25,6 +25,7 @@ import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
+import com.leobeliik.extremesoundmuffler.utils.DataManager;
 import com.leobeliik.extremesoundmuffler.utils.PlayButtonSound;
 import com.leobeliik.extremesoundmuffler.utils.SliderSound;
 
@@ -143,6 +144,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     }
 
     private void toggleSound() {
+        DataManager.setDirty();
         if (muffled) {
             if (MainScreen.isMain()) {
                 muffledSounds.remove(sound);

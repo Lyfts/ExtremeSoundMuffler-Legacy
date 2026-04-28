@@ -120,6 +120,7 @@ public class Anchor {
         setAnchorPos(player.getPosition());
         setDimensionId(player.dimension);
         setRadius(this.getRadius() == 0 ? 32 : this.getRadius());
+        DataManager.setDirty();
     }
 
     public void deleteAnchor() {
@@ -128,11 +129,13 @@ public class Anchor {
         setDimensionId(Integer.MIN_VALUE);
         setRadius(0);
         muffledSounds.clear();
+        DataManager.setDirty();
     }
 
     public void editAnchor(String title, int Radius) {
         setName(title);
         setRadius(Radius);
+        DataManager.setDirty();
     }
 
     public static Anchor getAnchor(ISound sound) {
