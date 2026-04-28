@@ -63,14 +63,14 @@ public class Config {
         invButtonHorizontal = config.getInt(
             "invButtonX",
             CATEGORY_INVENTORY_BUTTON,
-            75,
+            161,
             Integer.MIN_VALUE,
             Integer.MAX_VALUE,
             "Coordinates of the Muffler button in the player inventory. You can change this in game by holding CTRL and LMB over the button and dragging it around");
         invButtonVertical = config.getInt(
             "invButtonY",
             CATEGORY_INVENTORY_BUTTON,
-            7,
+            5,
             Integer.MIN_VALUE,
             Integer.MAX_VALUE,
             "Coordinates of the Muffler button in the player inventory. You can change this in game by holding CTRL and LMB over the button and dragging it around");

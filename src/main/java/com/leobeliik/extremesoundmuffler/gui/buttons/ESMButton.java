@@ -21,16 +21,13 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     protected boolean renderNormal = false;
     protected boolean renderText = false;
     protected int textColor = whiteText;
-    protected boolean renderTooltipAbove = true;
-    protected String tooltip = "";
-    protected Supplier<String> tooltipSupplier;
+    protected Supplier<String> tooltipSupplier = () -> "";
     protected BooleanSupplier visibilitySupplier;
     protected Icon icon;
     protected int iconWidth;
     protected int iconHeight;
     protected int iconXOffset;
     protected int iconYOffset;
-    public boolean mouseOver;
 
     public ESMButton(int id, int x, int y, int width, int height, String displayString) {
         this(id, x, y, width, height, displayString, null);
@@ -58,7 +55,6 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (!isVisible()) return;
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mouseOver = isMouseOver(mouseX, mouseY);
 
         if (renderNormal) {
             super.drawButton(mc, mouseX, mouseY);
@@ -85,22 +81,6 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
             }
         }
 
-        if (hasTooltip() && isMouseOver(mouseX, mouseY)) {
-            if (tooltipSupplier != null) tooltip = tooltipSupplier.get();
-            int stringW = mc.fontRenderer.getStringWidth(tooltip) / 2;
-            if (!renderTooltipAbove) {
-                drawRect(
-                    xPosition - stringW + 3,
-                    yPosition + height + 2,
-                    xPosition + stringW + 10,
-                    yPosition + height + 15,
-                    darkBG);
-                drawCenteredString(mc.fontRenderer, tooltip, xPosition + 8, yPosition + height + 4, whiteText);
-            } else {
-                drawRect(xPosition - stringW + 3, yPosition - 2, xPosition + stringW + 10, yPosition - 15, darkBG);
-                drawCenteredString(mc.fontRenderer, tooltip, xPosition + 8, yPosition - 12, whiteText);
-            }
-        }
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
@@ -134,15 +114,13 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
         return this;
     }
 
-    public ESMButton setTooltip(String tooltip, boolean above) {
-        this.tooltip = tooltip;
-        this.renderTooltipAbove = above;
+    public ESMButton setTooltip(String tooltip) {
+        this.tooltipSupplier = () -> tooltip == null ? "" : tooltip;
         return this;
     }
 
-    public ESMButton setTooltip(Supplier<String> supplier, boolean above) {
-        this.tooltipSupplier = supplier;
-        this.renderTooltipAbove = above;
+    public ESMButton setTooltip(Supplier<String> supplier) {
+        this.tooltipSupplier = supplier == null ? () -> "" : supplier;
         return this;
     }
 
@@ -170,11 +148,6 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
         return this;
     }
 
-    private boolean hasTooltip() {
-        return !tooltip.isEmpty() || tooltipSupplier != null && !tooltipSupplier.get()
-            .isEmpty();
-    }
-
     public boolean isVisible() {
         return visible && (visibilitySupplier == null || visibilitySupplier.getAsBoolean());
     }
@@ -183,5 +156,11 @@ public class ESMButton extends GuiButtonExt implements IColorsGui {
         return mouseX >= this.xPosition && mouseY >= this.yPosition
             && mouseX < this.xPosition + this.width
             && mouseY < this.yPosition + this.height;
+    }
+
+    public String getTooltipForMouse(int mouseX, int mouseY) {
+        if (!isVisible() || !isMouseOver(mouseX, mouseY)) return "";
+        String tooltipText = tooltipSupplier.get();
+        return tooltipText == null ? "" : tooltipText;
     }
 }

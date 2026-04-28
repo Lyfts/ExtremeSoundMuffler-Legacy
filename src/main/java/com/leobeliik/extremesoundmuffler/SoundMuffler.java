@@ -3,7 +3,7 @@ package com.leobeliik.extremesoundmuffler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
-import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -80,7 +80,8 @@ public class SoundMuffler {
             return;
         }
         try {
-            if (screen instanceof InventoryEffectRenderer inv) {
+            if (screen.getClass() == GuiInventory.class) {
+                GuiInventory inv = (GuiInventory) screen;
                 event.buttonList
                     .add(new InvButton(inv, Config.getInvButtonHorizontal(), Config.getInvButtonVertical()));
             }

@@ -1,5 +1,7 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
+import java.util.Collections;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -7,19 +9,19 @@ import net.minecraft.client.resources.I18n;
 
 import com.leobeliik.extremesoundmuffler.Config;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
-import com.leobeliik.extremesoundmuffler.interfaces.IColorsGui;
+import com.leobeliik.extremesoundmuffler.mixins.minecraft.GuiScreenAccessor;
 import com.leobeliik.extremesoundmuffler.utils.Icon;
 
-public class InvButton extends ESMButton implements IColorsGui {
+public class InvButton extends ESMButton {
 
     private final GuiContainer parent;
     private boolean hold = false;
 
     public InvButton(GuiContainer parentGui, int x, int y) {
-        super(1001, parentGui.guiLeft + x, parentGui.guiTop + y, 11, 11, "");
+        super(1001, parentGui.guiLeft + x, parentGui.guiTop + y, 10, 10, "");
         parent = parentGui;
         setIcon(Icon.INVENTORY, 11, 11);
-        setTooltip(I18n.format("esm.inventory.btn"), true);
+        setTooltip(I18n.format("esm.inventory.btn"));
     }
 
     @Override
@@ -29,6 +31,11 @@ public class InvButton extends ESMButton implements IColorsGui {
         }
 
         super.drawButton(mc, mouseX, mouseY);
+
+        String tooltip = getTooltipForMouse(mouseX, mouseY);
+        if (!tooltip.isEmpty() && mc.currentScreen instanceof GuiScreenAccessor invoker) {
+            invoker.invokeDrawHoveringText(Collections.singletonList(tooltip), mouseX, mouseY);
+        }
     }
 
     @Override

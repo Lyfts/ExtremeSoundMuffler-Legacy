@@ -117,7 +117,9 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
             .getSoundHandler();
         subButtons.clear();
         int x = Config.getLeftButtons() ? xPosition - 24 : xPosition + width + 5;
-        subButtons.add(btnToggleSound = new ESMButton(0, x, yPosition, 11, 11, "", this::toggleSound));
+        subButtons.add(
+            btnToggleSound = new ESMButton(0, x, yPosition, 11, 11, "", this::toggleSound).setTooltip(
+                () -> I18n.format(muffled ? "esm.slider.btn.muffler.unmuffle" : "esm.slider.btn.muffler.muffle")));
         subButtons.add(
             new ESMButton(
                 0,
@@ -126,11 +128,21 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
                 10,
                 10,
                 "",
-                () -> soundHandler.playSound(new PlayButtonSound(sound))).setIcon(PLAY));
+                () -> soundHandler.playSound(new PlayButtonSound(sound))).setIcon(PLAY)
+                    .setTooltip(I18n.format("esm.slider.btn.play.play_sound")));
     }
 
     public ESMButton getBtnToggleSound() {
         return btnToggleSound;
+    }
+
+    @Override
+    public String getTooltipForMouse(int mouseX, int mouseY) {
+        for (ESMButton button : subButtons) {
+            String tooltip = button.getTooltipForMouse(mouseX, mouseY);
+            if (!tooltip.isEmpty()) return tooltip;
+        }
+        return super.getTooltipForMouse(mouseX, mouseY);
     }
 
     private void toggleSound() {
