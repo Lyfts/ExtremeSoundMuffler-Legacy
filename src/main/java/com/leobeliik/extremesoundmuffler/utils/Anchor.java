@@ -73,10 +73,6 @@ public class Anchor {
         return temp;
     }
 
-    public void setMuffledSounds(SortedMap<ResourceLocation, Float> muffledSounds) {
-        muffledSounds.forEach((R, F) -> this.muffledSounds.put(R.toString(), F));
-    }
-
     public void addSound(ResourceLocation sound, float volume) {
         muffledSounds.put(sound.toString(), volume);
     }

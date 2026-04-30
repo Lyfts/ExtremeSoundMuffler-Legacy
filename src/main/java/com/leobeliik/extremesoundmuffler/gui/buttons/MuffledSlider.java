@@ -144,7 +144,6 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     }
 
     private void toggleSound() {
-        DataManager.setDirty();
         if (muffled) {
             if (MainScreen.isMain()) {
                 muffledSounds.remove(sound);
@@ -152,6 +151,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
                 anchor.removeSound(sound);
             }
             setMuffled(false);
+            DataManager.setDirty();
         } else {
             boolean didMuffle = false;
             if (MainScreen.isMain()) {
@@ -250,6 +250,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
             Objects.requireNonNull(MainScreen.getCurrentAnchor())
                     .replaceSound(sound, sliderValue);
         }
+        DataManager.setDirty();
     }
 
     public MuffledSlider setMuffled(boolean muffled) {
