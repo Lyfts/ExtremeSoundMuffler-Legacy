@@ -2,20 +2,18 @@ package com.leobeliik.extremesoundmuffler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.gui.buttons.InvButton;
 import com.leobeliik.extremesoundmuffler.utils.DataManager;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -31,14 +29,19 @@ import cpw.mods.fml.relauncher.SideOnly;
     modid = SoundMuffler.MODID,
     version = Tags.VERSION,
     name = SoundMuffler.MODNAME,
+    dependencies = "required-after:gtnhlib;",
     acceptedMinecraftVersions = "[1.7.10]",
-    acceptableRemoteVersions = "*",
-    guiFactory = "com.leobeliik.extremesoundmuffler.GuiFactory")
+    acceptableRemoteVersions = "*")
+@EventBusSubscriber(side = Side.CLIENT)
 public class SoundMuffler {
 
     public static final String MODID = "extremesoundmuffler";
     public static final String MODNAME = "Extreme Sound Muffler Legacy";
     public static final Logger LOGGER = LogManager.getLogger();
+    public static final ResourceLocation DARK_TEXTURE = new ResourceLocation(
+        SoundMuffler.MODID,
+        "textures/gui/sm_gui_dark.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(SoundMuffler.MODID, "textures/gui/sm_gui.png");
 
     @SidedProxy(
         serverSide = "com.leobeliik.extremesoundmuffler.CommonProxy",
@@ -47,10 +50,6 @@ public class SoundMuffler {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(this);
         proxy.preInit(event);
     }
 
@@ -66,7 +65,7 @@ public class SoundMuffler {
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void onPlayerLoggin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+    public static void onPlayerLogin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         DataManager.loadData(
             event.manager.getSocketAddress()
                 .toString());
@@ -74,26 +73,27 @@ public class SoundMuffler {
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
-        GuiScreen screen = event.gui;
-        if (Config.getDisableInventoryButton() || screen instanceof GuiContainerCreative) {
+    public static void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
+        if (ESMConfig.INV_BUTTONS.disableInventoryButton) {
             return;
         }
+
+        GuiScreen screen = event.gui;
         try {
             if (screen.getClass() == GuiInventory.class) {
-                GuiInventory inv = (GuiInventory) screen;
-                event.buttonList
-                    .add(new InvButton(inv, Config.getInvButtonHorizontal(), Config.getInvButtonVertical()));
+                // noinspection unchecked
+                event.buttonList.add(
+                    new InvButton(
+                        (GuiInventory) screen,
+                        ESMConfig.INV_BUTTONS.invButtonX,
+                        ESMConfig.INV_BUTTONS.invButtonY));
             }
-        } catch (NullPointerException e) {
-            LOGGER.error(
-                "Extreme sound muffler: Error trying to add the muffler button in the player's inventory. \n" + e);
-        }
+        } catch (NullPointerException ignored) {}
     }
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public static void onKeyInput(InputEvent.KeyInputEvent event) {
         if (ClientProxy.openMufflerScreen.isPressed()) {
             MainScreen.open();
         }
@@ -103,8 +103,7 @@ public class SoundMuffler {
         return ClientProxy.openMufflerScreen.getKeyCode();
     }
 
-    public static void renderGui() {
-        String texture = Config.useDarkTheme() ? "textures/gui/sm_gui_dark.png" : "textures/gui/sm_gui.png";
-        Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(SoundMuffler.MODID, texture));
+    public static void bindTexture() {
+        Minecraft.getMinecraft().renderEngine.bindTexture(ESMConfig.GENERAL.useDarkTheme ? DARK_TEXTURE : TEXTURE);
     }
 }

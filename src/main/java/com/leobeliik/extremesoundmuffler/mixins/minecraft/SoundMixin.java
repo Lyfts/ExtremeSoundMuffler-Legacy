@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 import com.leobeliik.extremesoundmuffler.utils.Anchor;
@@ -46,17 +46,17 @@ public abstract class SoundMixin implements ISoundLists {
 
         if (MainScreen.isMuffled()) {
             if (muffledSounds.containsKey(soundLocation)) {
-                return original * muffledSounds.get(soundLocation);
+                return original * muffledSounds.getFloat(soundLocation);
             }
 
-            if (Config.getDisableAnchors()) {
+            if (ESMConfig.getDisableAnchors()) {
                 return original;
             }
 
             Anchor anchor = Anchor.getAnchor(sound);
             if (anchor != null) {
                 return original * anchor.getMuffledSounds()
-                    .get(soundLocation);
+                    .getFloat(soundLocation);
             }
         }
         return original;

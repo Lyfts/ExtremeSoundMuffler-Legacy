@@ -22,6 +22,8 @@ public enum Tips {
     modify_anchors_2("esm.tip.modify_anchors_2"),
     reset_recent_sounds("esm.tip.reset_recent_sounds");
 
+    private static final Tips[] vals = values();
+
     private final String tip;
 
     Tips(String s) {
@@ -29,7 +31,7 @@ public enum Tips {
     }
 
     public static String randomTip() {
-        return Tips.values()[new Random().nextInt(Tips.values().length)].toString();
+        return vals[new Random().nextInt(vals.length)].toString();
     }
 
     public String toString() {

@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -34,13 +32,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class DataManager implements ISoundLists {
 
     public static String identifier;
@@ -51,8 +50,9 @@ public class DataManager implements ISoundLists {
 
     public static void loadData(String address) {
         identifier = getIdentifier(address);
+        // noinspection deprecation
         loadMuffledMap().forEach((R, F) -> muffledSounds.put(new ResourceLocation(R), F));
-        if (!Config.getDisableAnchors()) {
+        if (!ESMConfig.getDisableAnchors()) {
             anchorList.clear();
             anchorList.addAll(loadAnchors());
         }
@@ -63,7 +63,7 @@ public class DataManager implements ISoundLists {
         isDirty = false;
         saveMuffledMap();
 
-        if (!Config.getDisableAnchors()) {
+        if (!ESMConfig.getDisableAnchors()) {
             saveAnchors();
         }
     }
@@ -106,7 +106,7 @@ public class DataManager implements ISoundLists {
     }
 
     public static Anchor deserializeAnchor(NBTTagCompound nbt) {
-        SortedMap<String, Float> muffledSounds = new TreeMap<>();
+        Object2FloatSortedMap<String> muffledSounds = new Object2FloatAVLTreeMap<>();
         NBTTagCompound muffledNBT = nbt.getCompoundTag("MUFFLED");
 
         for (String key : muffledNBT.func_150296_c()) {
@@ -126,6 +126,7 @@ public class DataManager implements ISoundLists {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void saveMuffledMap() {
         new File("ESM/").mkdir();
         try (Writer writer = new OutputStreamWriter(
