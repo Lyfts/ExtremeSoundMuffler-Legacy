@@ -20,7 +20,7 @@ public class ESMCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixins(Set<String> loadedCoreMods) {
-        return Arrays.asList("minecraft.SoundMixin");
+        return Arrays.asList("minecraft.SoundMixin", "minecraft.GuiScreenAccessor");
     }
 
     @Override

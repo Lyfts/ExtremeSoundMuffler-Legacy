@@ -2,8 +2,6 @@ package com.leobeliik.extremesoundmuffler.utils;
 
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -15,13 +13,16 @@ import net.minecraftforge.common.DimensionManager;
 
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatSortedMap;
+
 public class Anchor {
 
     private final int id;
     private String name;
     private int dimensionId;
     private int radius;
-    private SortedMap<String, Float> muffledSounds = new TreeMap<>();
+    private Object2FloatSortedMap<String> muffledSounds = new Object2FloatAVLTreeMap<>();
     private Vec3 anchorPos;
 
     public Anchor(int id, String name) {
@@ -30,7 +31,7 @@ public class Anchor {
     }
 
     public Anchor(int id, String name, Vec3 anchorPos, int dimensionId, int radius,
-        SortedMap<String, Float> muffledSounds) {
+        Object2FloatSortedMap<String> muffledSounds) {
         this.id = id;
         this.name = name;
         this.anchorPos = anchorPos;
@@ -67,9 +68,11 @@ public class Anchor {
         this.name = name;
     }
 
-    public SortedMap<ResourceLocation, Float> getMuffledSounds() {
-        SortedMap<ResourceLocation, Float> temp = new TreeMap<>(Comparator.comparing(ResourceLocation::toString));
-        this.muffledSounds.forEach((R, F) -> temp.put(new ResourceLocation(R), F));
+    public Object2FloatSortedMap<ResourceLocation> getMuffledSounds() {
+        Object2FloatSortedMap<ResourceLocation> temp = new Object2FloatAVLTreeMap<>(
+            Comparator.comparing(ResourceLocation::toString));
+        this.muffledSounds.object2FloatEntrySet()
+            .forEach(entry -> temp.put(new ResourceLocation(entry.getKey()), entry.getFloatValue()));
         return temp;
     }
 
@@ -109,7 +112,7 @@ public class Anchor {
     }
 
     public void removeSound(ResourceLocation sound) {
-        muffledSounds.remove(sound.toString());
+        muffledSounds.removeFloat(sound.toString());
     }
 
     public void setAnchor() {

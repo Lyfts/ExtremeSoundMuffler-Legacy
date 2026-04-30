@@ -1,5 +1,6 @@
 package com.leobeliik.extremesoundmuffler.gui.buttons;
 
+import static com.leobeliik.extremesoundmuffler.ESMConfig.GENERAL;
 import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_OFF;
 import static com.leobeliik.extremesoundmuffler.utils.Icon.MUFFLE_ON;
 import static com.leobeliik.extremesoundmuffler.utils.Icon.PLAY;
@@ -19,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.SoundMuffler;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.interfaces.ISoundLists;
@@ -52,7 +53,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (!isVisible()) return;
-        SoundMuffler.renderGui();
+        SoundMuffler.bindTexture();
         setTextColor(muffled ? cyanText : whiteText);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glEnable(GL11.GL_BLEND);
@@ -67,8 +68,8 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     }
 
     private void drawButtonHighlight() {
-        int x = Config.getLeftButtons() ? xPosition - 3 : xPosition + 1;
-        int bW = Config.getLeftButtons() ? x + width + 5 : x + width + 28;
+        int x = ESMConfig.getLeftButtons() ? xPosition - 3 : xPosition + 1;
+        int bW = ESMConfig.getLeftButtons() ? x + width + 5 : x + width + 28;
         if (id % 2 == 0 && isVisible()) {
             drawRect(x, yPosition, bW, yPosition + height, brightBG);
         }
@@ -117,9 +118,9 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         SoundHandler soundHandler = Minecraft.getMinecraft()
             .getSoundHandler();
         subButtons.clear();
-        int x = Config.getLeftButtons() ? xPosition - 24 : xPosition + width + 5;
+        int x = ESMConfig.getLeftButtons() ? xPosition - 24 : xPosition + width + 5;
         subButtons.add(
-            btnToggleSound = new ESMButton(0, x, yPosition, 11, 11, "", this::toggleSound).setTooltip(
+            btnToggleSound = new ESMButton(0, x, yPosition, 11, 11, this::toggleSound).setTooltip(
                 () -> I18n.format(muffled ? "esm.slider.btn.muffler.unmuffle" : "esm.slider.btn.muffler.muffle")));
         subButtons.add(
             new ESMButton(
@@ -128,7 +129,6 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
                 yPosition,
                 10,
                 10,
-                "",
                 () -> soundHandler.playSound(new PlayButtonSound(sound))).setIcon(PLAY)
                     .setTooltip(I18n.format("esm.slider.btn.play.play_sound")));
     }
@@ -149,7 +149,7 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
     private void toggleSound() {
         if (muffled) {
             if (MainScreen.isMain()) {
-                muffledSounds.remove(sound);
+                muffledSounds.removeFloat(sound);
             } else {
                 anchor.removeSound(sound);
             }
@@ -158,11 +158,11 @@ public class MuffledSlider extends ESMButton implements ISoundLists {
         } else {
             boolean didMuffle = false;
             if (MainScreen.isMain()) {
-                setSliderValue(Config.getDefaultMuteVolume());
+                setSliderValue(GENERAL.defaultMuteVolume);
                 muffledSounds.put(sound, sliderValue);
                 didMuffle = true;
             } else if (anchor.getAnchorPos() != null) {
-                setSliderValue(Config.getDefaultMuteVolume());
+                setSliderValue(GENERAL.defaultMuteVolume);
                 anchor.addSound(sound, sliderValue);
                 didMuffle = true;
             }

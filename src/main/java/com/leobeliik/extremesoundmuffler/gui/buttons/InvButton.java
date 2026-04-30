@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 
-import com.leobeliik.extremesoundmuffler.Config;
+import com.leobeliik.extremesoundmuffler.ESMConfig;
 import com.leobeliik.extremesoundmuffler.gui.MainScreen;
 import com.leobeliik.extremesoundmuffler.mixins.minecraft.GuiScreenAccessor;
 import com.leobeliik.extremesoundmuffler.utils.Icon;
@@ -55,7 +55,7 @@ public class InvButton extends ESMButton {
     public void mouseReleased(int mouseX, int mouseY) {
         if (hold) {
             hold = false;
-            Config.setInvButtonPosition(xPosition - parent.guiLeft, yPosition - parent.guiTop);
+            ESMConfig.setInvButtonPosition(xPosition - parent.guiLeft, yPosition - parent.guiTop);
         }
         super.mouseReleased(mouseX, mouseY);
     }
