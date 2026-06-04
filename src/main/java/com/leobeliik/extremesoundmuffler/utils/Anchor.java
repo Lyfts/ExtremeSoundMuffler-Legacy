@@ -1,7 +1,6 @@
 package com.leobeliik.extremesoundmuffler.utils;
 
 import java.util.Objects;
-import java.util.SortedMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;

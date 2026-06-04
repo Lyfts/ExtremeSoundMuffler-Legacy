@@ -22,7 +22,7 @@ public class ESMConfig {
     public static class General {
 
         @Config.Comment("Blacklisted Sounds - add the name of the sounds to blacklist, separated with comma")
-        public String[] forbiddenSounds = new String[] { "ui.", "music.", "ambient." };
+        public String[] forbiddenSounds = new String[] { "ui.", "music." };
 
         @Config.Comment("Allow the \"ALL\" sounds list to include the blacklisted sounds?")
         public boolean lawfulAllList = false;
