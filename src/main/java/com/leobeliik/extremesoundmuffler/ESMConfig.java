@@ -16,7 +16,7 @@ public class ESMConfig {
 
     public static class General {
 
-        @Config.DefaultStringList({ "ui.", "music.", "ambient." })
+        @Config.DefaultStringList({ "ui.", "music." })
         @Config.Comment("Blacklisted Sounds - add the name of the sounds to blacklist, separated with comma")
         public String[] forbiddenSounds;
 
